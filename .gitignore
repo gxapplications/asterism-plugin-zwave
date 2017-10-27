@@ -1,0 +1,17 @@
+npm-debug.log
+.jshint*
+package-lock.json
+
+/node_modules
+/dist
+
+/open-zwave/OZW_Log.txt
+/open-zwave/zwscene.xml
+
+.idea
+.DS_Store
+*/.DS_Store
+*/*/.DS_Store
+._*
+*/._*
+*/*/._*

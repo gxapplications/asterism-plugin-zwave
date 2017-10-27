@@ -1,2 +1,5 @@
+![asterism-logo](https://raw.githubusercontent.com/gxapplications/asterism/master/doc/asterism-text.png)
+
 # asterism-plugin-zwave
-Plug a zwave controller on your server and use its power!
+
+_This asterism plugin will add z-wave support to control z-wave compatible devices_

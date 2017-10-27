@@ -1,0 +1,101 @@
+{
+  "name": "asterism-plugin-zwave",
+  "version": "0.3.2",
+  "description": "An asterism plugin to add z-wave support",
+  "author": "Xavier Gouley <gxapplications@gmail.com>",
+  "contributors": [],
+  "license": "CC-BY-NC-SA-4.0",
+  "scripts": {
+    "dist": "rimraf dist && babel lib --out-dir dist",
+    "wrap:install": "cd ../asterism/ && npm install --no-save file:../asterism-plugin-zwave",
+    "wrap:clean": "cd ../asterism/ && rimraf node_modules/asterism-plugin-zwave/dist",
+    "wrap:link": "cd ../asterism/ && ln -s ../../../asterism-plugin-zwave/dist/ node_modules/asterism-plugin-zwave/dist",
+    "wrap": "npm run dist && npm run wrap:install && npm run wrap:clean && npm run wrap:link",
+    "start": "cd ../asterism/ && cross-env ASTERISM_PLUGINS=asterism-plugin-zwave npm start",
+    "start:debug": "cd ../asterism/ && cross-env ASTERISM_PLUGINS=asterism-plugin-zwave npm run start:debug",
+    "prepublishOnly": "npm run dist",
+    "validate": "npm ls"
+  },
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gxapplications/asterism-plugin-zwave"
+  },
+  "bugs": {
+    "url": "https://github.com/gxapplications/asterism-plugin-zwave/issues"
+  },
+  "homepage": "https://github.com/gxapplications/asterism-plugin-zwave",
+  "keywords": [
+    "zwave",
+    "z-wave",
+    "asterism",
+    "domotics"
+  ],
+  "engines": {
+    "node": ">= 7.0.0",
+    "npm": ">= 3.10.8"
+  },
+  "babel": {
+    "presets": [
+      "env",
+      "react"
+    ],
+    "plugins": ["transform-object-rest-spread"],
+    "env": {
+      "development": {
+        "plugins": [
+          [
+            "css-modules-transform",
+            {
+              "preprocessCss": "./babel-sass-preprocess.js",
+              "generateScopedName": "[local]",
+              "extractCss": "./dist/styles.css",
+              "extensions": [
+                ".css",
+                ".sass",
+                ".scss"
+              ]
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "debounce": "1.x",
+    "joi": "13.x",
+    "joi-browser": "13.x",
+    "openzwave-shared": "1.x",
+    "os": "0.1.x",
+    "path": "0.12.x"
+  },
+  "devDependencies": {
+    "asterism-plugin-library": ">= 1.8.0",
+    "babel-cli": "6.26.x",
+    "babel-core": "6.26.x",
+    "babel-plugin-css-modules-transform": "1.2.x",
+    "babel-plugin-transform-object-rest-spread": "6.23.x",
+    "babel-preset-env": "1.6.x",
+    "babel-preset-react": "6.24.x",
+    "cross-env": "^5.x",
+    "express": "4.16.x",
+    "node-sass": "^4.6.1",
+    "prop-types": "15.6.x",
+    "react": "15.6.x",
+    "react-materialize": "1.0.x",
+    "rimraf": "2.x"
+  },
+  "peerDependencies": {
+    "asterism": ">= 0.13.2",
+    "asterism-plugin-library": ">= 1.8.0",
+    "express": "4.16.x",
+    "prop-types": "15.6.x",
+    "react": "15.6.x",
+    "react-materialize": "1.0.x"
+  },
+  "directories": {
+    "lib": "./lib",
+    "dist": "./dist"
+  },
+  "config": {}
+}
