@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Options xmlns='http://code.google.com/p/open-zwave/'>
+    <Option name="Logging" value="true" />
+    <Option name="ConsoleOutput" value="false" />
+    <Option name="Associate" value="true" />
+    <Option name="NotifyTransactions" value="false" />
+    <Option name="DriverMaxAttempts" value="4" />
+    <Option name="SaveConfiguration" value="true" />
+    <Option name="NetworkKey" value="0x05, 0x02, 0x0A, 0x04, 0x01, 0x06, 0x0F, 0x0E, 0x09, 0x03, 0x0B, 0x0D, 0x0C, 0x08, 0x07, 0x10" />
+    <Option name="RefreshAllUserCodes" value="false" />
+</Options>
