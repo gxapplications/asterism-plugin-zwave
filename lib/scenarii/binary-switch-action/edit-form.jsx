@@ -3,6 +3,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Input, Preloader, Row } from 'react-materialize'
+import uuid from 'uuid'
 
 import zwaveBinarySwitchSchema from './schema'
 
@@ -13,7 +14,8 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
 
     this.state = {
       compatibleNodes: [],
-      ready: false
+      ready: false,
+      nodeIds: []
     }
 
     this._mounted = false
@@ -30,6 +32,13 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
           compatibleNodes: nodes.length ? nodes : [{ nodeid: 0, name: 'No compatible device available' }],
           ready: true
         })
+        if (nodes.length === 1) {
+          this.props.instance.data.nodeIds[0] = nodes[0].nodeid
+          this.nameChange()
+          this.setState({
+            nodeIds: this.props.instance.data.nodeIds
+          })
+        }
       }
     })
     .catch(console.error)
@@ -45,10 +54,23 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
-        <Input s={12} m={9} label='Z-wave device' type='select' icon='power' onChange={this.nodeChanged.bind(this)}
-          defaultValue={instance.data.nodeId}>
+        {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
+          <Input key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} type='select' icon='power_off'
+            onChange={this.nodeChanged.bind(this, idx)} defaultValue={nodeId}>
+            {compatibleNodes.map((node, i) => (
+              <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
+            ))}
+            <option key={uuid.v4()} value='0'>(Remove it)</option>
+          </Input>
+        )) : (
+          <div>Compatible devices not found on the network.</div>
+        )}
+        <Input key={uuid.v4()} s={12} m={6} l={4}
+          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} type='select' icon='power_off'
+          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} defaultValue=''>
+          <option key={uuid.v4()} value='0'>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
-              <option key={node.nodeid} value={node.nodeid}>{node.name}</option>
+            <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
         </Input>
 
@@ -66,9 +88,19 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     )
   }
 
-  nodeChanged (event) {
+  nodeChanged (index, event) {
     const newNodeId = event.currentTarget.value
-    this.props.instance.data.nodeId = newNodeId
+    if (newNodeId > 0) {
+      this.props.instance.data.nodeIds[index] = newNodeId
+    } else {
+      const nodeIds = this.props.instance.data.nodeIds.filter((nodeId, idx) => idx !== index)
+      if (nodeIds.length > 0) { // avoid to remove all nodes (1 min needed)
+        this.props.instance.data.nodeIds = nodeIds
+      }
+    }
+    this.setState({
+      nodeIds: this.props.instance.data.nodeIds
+    })
     this.nameChange()
   }
 
@@ -78,22 +110,15 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
   }
 
   nameChange () {
-    if (!this.props.instance.data.nodeId) {
+    if (this.props.instance.data.nodeIds.length === 0) {
       this.props.instance.data.name = 'Misconfigured switch control'
       return
     }
-    const nodeName = this.state.compatibleNodes.find((node) => node.nodeid === this.props.instance.data.nodeId).name
-    switch (this.props.instance.data.controlMode) {
-      case 'invert':
-      default:
-        this.props.instance.data.name = `Invert "${nodeName}"`
-        break
-      case 'force-on':
-        this.props.instance.data.name = `Turn ON "${nodeName}"`
-        break
-      case 'force-off':
-        this.props.instance.data.name = `Turn OFF "${nodeName}"`
-    }
+    const nodeNames = this.state.compatibleNodes
+      .filter((node) => this.props.instance.data.nodeIds.includes(node.nodeid))
+      .map((node) => `"${node.name}"`)
+    this.props.instance.data.name = nodeNames.join(', ')
+    this.props.highlightCloseButton()
   }
 }
 
@@ -101,7 +126,12 @@ ZwaveBinarySwitchActionEditForm.propTypes = {
   theme: PropTypes.object.isRequired,
   animationLevel: PropTypes.number.isRequired,
   instance: PropTypes.object.isRequired,
-  services: PropTypes.func.isRequired
+  services: PropTypes.func.isRequired,
+  highlightCloseButton: PropTypes.func
+}
+
+ZwaveBinarySwitchActionEditForm.defaultProps = {
+  highlightCloseButton: () => {}
 }
 
 ZwaveBinarySwitchActionEditForm.label = 'Z-wave binary switch control'

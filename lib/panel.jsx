@@ -21,7 +21,8 @@ class ZwaveEditPanel extends React.Component {
       nodes: null,
       rescanInProgress: false,
       ConfigurePanel: null,
-      configurePanelObjectProxy: null
+      configurePanelObjectProxy: null,
+      alarms: []
     }
 
     this._mounted = false
@@ -70,9 +71,21 @@ class ZwaveEditPanel extends React.Component {
       }
     })
 
-    this._zwaveService.getNodes()
-    .then((nodes) => {
-      this.setState({ nodes })
+    this._socket.on('node-event-alarm-triggered', () => {
+      if (this._mounted) {
+        this._zwaveService.getAlarms()
+        .then((alarms) => {
+          this.setState({ alarms })
+        })
+      }
+    })
+
+    Promise.all([
+      this._zwaveService.getNodes(),
+      this._zwaveService.getAlarms()
+    ])
+    .then(([nodes, alarms]) => {
+      this.setState({ nodes, alarms })
     })
   }
 
@@ -80,29 +93,43 @@ class ZwaveEditPanel extends React.Component {
     this._mounted = false
   }
 
+  _getIcon (element) {
+    return element.ready === false ?
+      'block' :
+      ((element.ready === true && !element.meta.battery) ?
+        'check' :
+        ((!element.battery || !element.battery.icon) ?
+          'blur_circular' :
+          element.battery.icon
+        )
+      )
+  }
+
   render () {
     const { theme, animationLevel, privateSocket, serverStorage, localStorage, services } = this.props
-    const { controllerState, nodes, rescanInProgress, ConfigurePanel, configurePanelObjectProxy } = this.state
+    const { controllerState, nodes, rescanInProgress, ConfigurePanel, configurePanelObjectProxy, alarms } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
-    const list = (nodes || []).map((el) => ({
-      title: el.name || `Unnamed device #${el.nodeid}`,
-      icon: el.meta.icon,
-      onClick: (el.ready === true && el.meta.settingPanel) ? this.configureElement.bind(this, el) : undefined,
-      details: `${el.location || 'Location unknown'}, ${el.meta.type} (${el.meta.product} from ${el.meta.manufacturer})`,
-      secondary: {
-        icon: el.ready === false ? 'block' : (el.ready === true ? 'check' : 'youtube_searched_for')
+    const list = (nodes || []).map((el) => {
+      const nodeAlarms = alarms.filter(([k, a]) => a.node.nodeid === el.nodeid).map(([k, a]) => a)
+      return {
+        title: (el.name || `Unnamed device #${el.nodeid}`) + (el.location ? ` @ ${el.location}` : ''),
+        icon: el.meta.icon,
+        onClick: (el.ready !== false && el.meta.settingPanel) ? this.configureElement.bind(this, el) : undefined,
+        details: nodeAlarms.map((a) => a.status.join('/')).join(' | ') || `${el.meta.type} (${el.meta.product} from ${el.meta.manufacturer})`,
+        css: nodeAlarms.length > 0 ? theme.feedbacks.warning : '',
+        secondary: { icon: nodeAlarms.length > 0 ? 'warning' : this._getIcon(el) }
       }
-    }))
+    })
 
     return (
-      <div id='zwave-edit-panel' className={cx(styles.ZwaveEditPanel, { 'configurePanelOpened': !!ConfigurePanel })}>
+      <div id='zwave-edit-panel' className={cx('thin-scrollable ZwaveEditPanel', styles.ZwaveEditPanel, { 'configurePanelOpened': !!ConfigurePanel })}>
         {(controllerState < 3 && !rescanInProgress) ? (
           <div className='not-ready'>
             <div className='valign-wrapper'>
               <div>
-                <p><Icon left>warning</Icon>The Zwave controller is not ready or not found.<br />You can configure it below:</p>
+                <p><Icon left>warning</Icon>The Zwave controller is not ready or not found, or the initial network scan is in progress.<br />You can configure it below:</p>
                 <Button className={cx(theme.actions.secondary)} onClick={this.openSettings.bind(this)} waves={waves}>Open Zwave settings</Button>
               </div>
             </div>
@@ -132,7 +159,7 @@ class ZwaveEditPanel extends React.Component {
                 list={list} header='Devices in your network'
                 addElement={{
                   empty: { title: 'No device found... Need help?', icon: 'device_hub' },
-                  trailing: { title: 'How to add a new device' },
+                  trailing: { title: 'How to add a new device?' },
                   onClick: this.helpAdd.bind(this)
                 }}
               />
@@ -144,6 +171,7 @@ class ZwaveEditPanel extends React.Component {
           {ConfigurePanel ? (
             <ConfigurePanel productObjectProxy={configurePanelObjectProxy} serverStorage={serverStorage}
               localStorage={localStorage} theme={theme} animationLevel={animationLevel}
+              reconfigureElement={this.reconfigureElement.bind(this, configurePanelObjectProxy.nodeid)}
               services={services} privateSocket={privateSocket} nodeId={configurePanelObjectProxy.nodeid}
             />
           ) : null}
@@ -177,7 +205,7 @@ class ZwaveEditPanel extends React.Component {
     if (element.meta.settingPanel) {
       const panel = this._zwaveService.getSettingPanel(element.meta.settingPanel)
       if (panel) {
-        this._zwaveService.getProductObjectProxyForNodeId(element.nodeid)
+        this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
         .then((productObjectProxy) => {
           this.setState({
             ConfigurePanel: panel,
@@ -186,6 +214,16 @@ class ZwaveEditPanel extends React.Component {
         })
       }
     }
+  }
+
+  reconfigureElement (nodeId) {
+    this._zwaveService.getNodes()
+    .then((nodes) => {
+      this.setState({
+        nodes
+      })
+      this.configureElement(nodes.find((n) => n.nodeid === nodeId))
+    })
   }
 
   helpAdd () {

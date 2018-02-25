@@ -1,0 +1,128 @@
+'use strict'
+
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Input, Preloader, Row } from 'react-materialize'
+import uuid from 'uuid'
+
+import { CollectionSetting } from 'asterism-plugin-library'
+import ZwaveCentralSceneLearner from '../../central-scene-learner'
+
+class ZwaveCentralSceneTriggerEditForm extends React.Component {
+  constructor (props) {
+    super(props)
+    this.zwaveService = props.services()['asterism-plugin-zwave']
+    this.privateSocket = this.zwaveService.privateSocket
+
+    this.state = {
+      compatibleNodes: [],
+      ready: false,
+      nodes: []
+    }
+
+    this._mounted = false
+  }
+
+  componentDidMount () {
+    this._mounted = true
+
+    this.zwaveService.getNodesByProvidedFunctions(['centralSceneGetLabel'])
+    .then((nodes) => {
+      if (this._mounted) {
+        this.setState({
+          compatibleNodes: nodes,
+          ready: true,
+          nodes: this.props.instance.data.nodes.map((n) => ({
+              nodeId: n.nodeId,
+              centralSceneValue: n.centralSceneValue,
+              node: nodes.find((node) => node.nodeid === n.nodeId)
+            }))
+        })
+      }
+    })
+    .catch(console.error)
+  }
+
+  componentWillUnmount () {
+    this._mounted = false
+  }
+
+  render () {
+    const { theme, animationLevel } = this.props
+    const { ready, compatibleNodes, nodes } = this.state
+
+    const list = nodes.map((n) => ({
+        title: `${n.node.name} @ ${n.node.location}`,
+        icon: n.node.meta.icon,
+        details: n.centralSceneValue.toString()
+      }))
+
+    return ready ? (
+      <Row className='section central-scene-learner'>
+        <CollectionSetting theme={theme} animationLevel={animationLevel}
+          list={list} header='Central scene events' addElement={{
+            empty: { title: 'No event selected. Please add with learning mode.', icon: 'settings_remote' },
+            trailing: false
+          }}
+        />
+        <br />
+
+        {compatibleNodes.length > 0 ? (
+          <ZwaveCentralSceneLearner theme={theme} animationLevel={animationLevel} zwaveService={this.zwaveService}
+            privateSocket={this.privateSocket} compatibleNodes={compatibleNodes} setSelection={this.setSelection.bind(this)} />
+        ) : (
+          <p>No compatible node available on the network.</p>
+        )}
+
+      </Row>
+    ) : (
+      <div className='valign-wrapper centered-loader'>
+        <Preloader size='big' />
+      </div>
+    )
+  }
+
+  setSelection (selecteds) {
+    this.props.instance.data.nodes = selecteds.map((s) => ({
+      nodeId: s.nodeId,
+      centralSceneValue: s.centralSceneValue
+    }))
+    this.setState({
+      nodes: selecteds
+    })
+
+    this.nameChange()
+  }
+
+  nameChange () {
+    const names = this.props.instance.data.nodes
+    .map((n) => [this.state.compatibleNodes.find((node) => node.nodeid === n.nodeId), n.centralSceneValue])
+    .map(([n, v]) => `${n.name}/${v.toString()}`)
+
+    if (names.length === 1) {
+      return this.props.instance.data.name = names[0]
+    }
+    if (names.length === 0) {
+      return this.props.instance.data.name = 'Unconfigured Z-wave central scene trigger'
+    }
+
+    this.props.instance.data.name = `[${names.join(', ')}]`
+    this.props.highlightCloseButton()
+  }
+}
+
+ZwaveCentralSceneTriggerEditForm.propTypes = {
+  theme: PropTypes.object.isRequired,
+  animationLevel: PropTypes.number.isRequired,
+  instance: PropTypes.object.isRequired,
+  services: PropTypes.func.isRequired,
+  highlightCloseButton: PropTypes.func
+}
+
+ZwaveCentralSceneTriggerEditForm.defaultProps = {
+  highlightCloseButton: () => {}
+}
+
+ZwaveCentralSceneTriggerEditForm.label = 'Z-wave central scene trigger'
+
+export default ZwaveCentralSceneTriggerEditForm

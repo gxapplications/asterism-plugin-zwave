@@ -2,7 +2,7 @@
 
 import cx from 'classnames'
 import React from 'react'
-import { Button, Input, Row } from 'react-materialize'
+import { Button, Input, Preloader, Row } from 'react-materialize'
 
 import { ItemSettingPanel, IconPicker, ActionColorSwitch } from 'asterism-plugin-library'
 
@@ -14,6 +14,7 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
 
     this.zwaveService = props.context.services['asterism-plugin-zwave']
     this.state.compatibleNodes = []
+    this.state.panelReady = false
     this._mounted = false
   }
 
@@ -26,8 +27,11 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
       if (this._mounted) {
         this.setState({
           compatibleNodes: nodes.length ? nodes : [{ nodeid: 0, name: 'No compatible device available' }],
-          ready: true
+          panelReady: true
         })
+        if (nodes.length === 1) {
+          this.handleValueChange('nodeId', nodes[0].nodeid)
+        }
       }
     })
     .catch(console.error)
@@ -46,21 +50,84 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
 
   render () {
     const { theme, mainState } = this.props.context
-    const { title = '' } = this.state.params
+    const { compatibleNodes, panelReady } = this.state
+    const { title = '', nodeId = 0, color = 'secondary', icon = 'power' } = this.state.params
+    let { showPower, showConsumption } = this.state.params
     const { animationLevel } = mainState()
 
     const waves = animationLevel >= 2 ? 'light' : undefined
+    const selectedNode = compatibleNodes.find((node) => node.nodeid == nodeId)
 
-    // TODO !0: node choice (compatible only), then (if node is compatible with: ) add color ring depending on the energy(W) ; add comsumption table & energy in time
-    return (
+    if (showPower === undefined) {
+      showPower = true
+    }
+
+    if (showConsumption === undefined) {
+      showConsumption = true
+    }
+
+    const energyLevelCompatible = selectedNode ? (selectedNode.meta.settingPanelProvidedFunctions.includes('sensorMultiLevelGetValue')) : false
+    const meterCompatible = selectedNode ? (
+      selectedNode.meta.settingPanelProvidedFunctions.includes('meterGetLastValue') &&
+      selectedNode.meta.settingPanelProvidedFunctions.includes('sensorMultiLevelGetHistory')
+    ) : false
+
+    return panelReady ? (
       <div className='clearing padded'>
         <Row className='padded card'>
+          <Input s={12} type='select' label='Choose a Z-wave device' icon='power'
+            onChange={this.handleEventChange.bind(this, 'nodeId')} value={`${nodeId}`}>
+            {compatibleNodes.map((node) => (
+              <option key={node.nodeid} value={`${node.nodeid}`}>{node.name}</option>
+            ))}
+          </Input>
           <Input placeholder='Button title' s={12} label='Label' ref={(c) => { this._title = c }}
-            value={title} onChange={this.handleEventChange.bind(this, 'title')} />
+            value={title} onChange={this.handleEventChange.bind(this, 'title')} className='iconPicker'>
+            <div>
+              <IconPicker theme={theme} animationLevel={animationLevel} defaultIcon={icon} onChange={this.handleValueChange.bind(this, 'icon')} />
+            </div>
+          </Input>
+
+          {energyLevelCompatible ? (
+            <div className='col s12'>
+              <br />
+              <div className='switch'>
+                <label>
+                  Power: &nbsp; Hide
+                  <input type='checkbox' name='show-power' value='show-power' checked={showPower}
+                    onChange={() => { this.handleValueChange('showPower', !showPower) }} />
+                  <span className='lever'></span>
+                  Show
+                </label>
+              </div>
+            </div>
+          ) : null}
+
+          {meterCompatible ? (
+            <div className='col s12'>
+              <br />
+              <div className='switch'>
+                <label>
+                  Consumption: &nbsp; Hide
+                  <input type='checkbox' name='show-consumption' value='show-consumption' checked={showConsumption}
+                    onChange={() => { this.handleValueChange('showConsumption', !showConsumption) }} />
+                  <span className='lever'></span>
+                  Show
+                </label>
+              </div>
+            </div>
+          ) : null}
         </Row>
-        <Button waves={waves} className={cx('right', theme.actions.primary)} onClick={this.save.bind(this)}>
+
+        <ActionColorSwitch theme={theme} animationLevel={animationLevel} defaultColor={color} onChange={this.handleValueChange.bind(this, 'color')} />
+
+        <Button waves={waves} className={cx('right btn-bottom-sticky', theme.actions.primary)} onClick={this.save.bind(this)}>
           Save &amp; close
         </Button>
+      </div>
+    ) : (
+      <div className='valign-wrapper centered-loader'>
+        <Preloader size='big' />
       </div>
     )
   }

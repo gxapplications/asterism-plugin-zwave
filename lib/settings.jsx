@@ -41,7 +41,7 @@ class ZwaveSettings extends React.Component {
         this.setState({
           stateError: false,
           buttonError: false,
-          controllerState: states[restartCmdWaiting ? '1' : '0']
+          controllerState: states[this.state.restartCmdWaiting ? '1' : '0']
         })
       }
     })
@@ -106,7 +106,7 @@ class ZwaveSettings extends React.Component {
     const waves = animationLevel >= 2 ? 'light' : undefined
 
     return (
-      <div id='zwave_settings' className={cx('card', styles.zwaveSettings)}>
+      <div id='zwave_settings' className={cx('card zwaveSettings', styles.zwaveSettings)}>
         <div className='section left-align'>
           <h5>Z-wave controller</h5>
           <p>
