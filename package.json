@@ -1,6 +1,6 @@
 {
   "name": "asterism-plugin-zwave",
-  "version": "0.8.999",
+  "version": "1.0.0",
   "description": "An asterism plugin to add Z-wave support",
   "author": "Xavier Gouley <gxapplications@gmail.com>",
   "contributors": [],
@@ -30,12 +30,17 @@
     "domotics"
   ],
   "engines": {
-    "node": ">= 8.0.0",
-    "npm": ">= 5.0.0"
+    "node": ">= 8.9.4",
+    "npm": ">= 5.6.0"
   },
   "babel": {
     "presets": [
-      "env",
+      [
+        "env",
+        { "targets": {
+          "chrome": "71"
+        } }
+      ],
       "react"
     ],
     "plugins": [
@@ -80,7 +85,7 @@
     "path": "0.12.x"
   },
   "devDependencies": {
-    "asterism-plugin-library": ">= 1.12.8",
+    "asterism-plugin-library": ">= 2.0.0",
     "babel-cli": "6.26.x",
     "babel-core": "6.26.x",
     "babel-eslint": "6.1.x",
@@ -99,8 +104,8 @@
     "standard": "10.x"
   },
   "peerDependencies": {
-    "asterism": ">= 0.20.15",
-    "asterism-plugin-library": ">= 1.12.8",
+    "asterism": ">= 1.0.0",
+    "asterism-plugin-library": ">= 2.0.0",
     "express": "4.16.x",
     "prop-types": "15.6.x",
     "react": "16.2.x",
