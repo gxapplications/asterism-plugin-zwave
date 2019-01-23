@@ -4,6 +4,16 @@
 
 _This asterism plugin will add z-wave support to control Z-wave compatible devices_
 
+---
+
+[![release date](https://img.shields.io/github/release-date/gxapplications/asterism-plugin-zwave.svg)](https://github.com/gxapplications/asterism-plugin-zwave/releases)
+[![npm package version](https://badge.fury.io/js/asterism-plugin-zwave.svg?logo=npm)](https://www.npmjs.com/package/asterism-plugin-zwave)
+[![npm downloads](https://img.shields.io/npm/dt/asterism-plugin-zwave.svg?logo=npm&label=npm%20downloads)](https://www.npmjs.com/package/asterism-plugin-zwave)
+[![Dependencies](https://david-dm.org/gxapplications/asterism-plugin-zwave/status.svg?logo=dependabot)](https://david-dm.org/gxapplications/asterism-plugin-zwave)
+
+_[Roadmap available here (asterism and plugins)](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open)_
+
+---
 
 ## INSTALL PREREQUISITES
 
