@@ -85,7 +85,7 @@
     "path": "0.12.x"
   },
   "devDependencies": {
-    "asterism-plugin-library": ">= 2.0.0",
+    "asterism-plugin-library": ">= 2.0.1",
     "babel-cli": "6.26.x",
     "babel-core": "6.26.x",
     "babel-eslint": "6.1.x",
@@ -105,7 +105,7 @@
   },
   "peerDependencies": {
     "asterism": ">= 1.0.0",
-    "asterism-plugin-library": ">= 2.0.0",
+    "asterism-plugin-library": ">= 2.0.1",
     "express": "4.16.x",
     "prop-types": "15.6.x",
     "react": "16.2.x",
