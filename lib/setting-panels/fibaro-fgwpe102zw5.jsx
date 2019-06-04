@@ -370,7 +370,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
             </StatesDropdown>
           </div>
 
-          {stateId && stateId.length > 0 && [
+          {!!stateId && (stateId.length > 0) && [
             <Input key={0} s={12} m={6} type='select' label='Choose bitmask state position behavior' ref={(c) => { this._stateBehavior = c }}
               onChange={this.stateBehaviorChange.bind(this)} value={stateBehavior}>
               <option value={1}>Set state position 1 (to 1) when ON</option>
