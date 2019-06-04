@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 import zwaveBinarySwitchSchema from './schema'
@@ -55,31 +55,31 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-          <Input key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} type='select' icon='power_off'
-            onChange={this.nodeChanged.bind(this, idx)} defaultValue={nodeId}>
+          <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
+            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
             <option key={uuid.v4()} value='0'>(Remove it)</option>
-          </Input>
+          </Select>
         )) : (
           <div>Compatible devices not found on the network.</div>
         )}
-        <Input key={uuid.v4()} s={12} m={6} l={4}
-          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} type='select' icon='power_off'
-          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} defaultValue=''>
-          <option key={uuid.v4()} value='0'>(Choose one to add)</option>
+        <Select key={uuid.v4()} s={12} m={6} l={4}
+          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='power_off'
+          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
+          <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
             <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
-        </Input>
+        </Select>
 
-        <Input s={12} m={3} label='Action' type='select' icon='power_settings_new' onChange={this.controlModeChanged.bind(this)}
-          defaultValue={instance.data.controlMode || 'invert'}>
+        <Select s={12} m={3} label='Action' icon='power_settings_new' onChange={this.controlModeChanged.bind(this)}
+          value={instance.data.controlMode || 'invert'}>
           <option key='invert' value='invert'>Invert</option>
           <option key='force-on' value='force-on'>Force ON</option>
           <option key='force-off' value='force-off'>Force OFF</option>
-        </Input>
+        </Select>
       </Row>
     ) : (
       <div className='valign-wrapper centered-loader'>

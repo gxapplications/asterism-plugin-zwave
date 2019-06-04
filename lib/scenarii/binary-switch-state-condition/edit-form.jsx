@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 class ZwaveBinarySwitchStateConditionEditForm extends React.Component {
@@ -56,36 +56,36 @@ class ZwaveBinarySwitchStateConditionEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-          <Input key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} type='select' icon='power_off'
-            onChange={this.nodeChanged.bind(this, idx)} defaultValue={nodeId}>
+          <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
+            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
             <option key={uuid.v4()} value='0'>(Remove it)</option>
-          </Input>
+          </Select>
         )) : (
           <div>Compatible devices not found on the network.</div>
         )}
-        <Input key={uuid.v4()} s={12} m={6} l={4}
-          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} type='select' icon='power_off'
-          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} defaultValue=''>
-          <option key={uuid.v4()} value='0'>(Choose one to add)</option>
+        <Select key={uuid.v4()} s={12} m={6} l={4}
+          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='power_off'
+          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
+          <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
             <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
-        </Input>
+        </Select>
 
-        <Input s={12} m={4} label='Aggregation' type='select' icon='functions' onChange={this.aggregationChanged.bind(this)}
-          defaultValue={instance.data.aggregation || 'any'}>
+        <Select s={12} m={4} label='Aggregation' icon='functions' onChange={this.aggregationChanged.bind(this)}
+          value={instance.data.aggregation || 'any'}>
           <option key='any' value='any'>Any (one of them)</option>
           <option key='every' value='every'>Every (each of them)</option>
-        </Input>
+        </Select>
 
-        <Input s={12} m={4} label='State' type='select' icon='power_settings_new' onChange={this.stateChanged.bind(this)}
-          defaultValue={instance.data.state || 'on'}>
+        <Select s={12} m={4} label='State' icon='power_settings_new' onChange={this.stateChanged.bind(this)}
+          value={instance.data.state || 'on'}>
           <option key='on' value='on'>ON</option>
           <option key='off' value='off'>OFF</option>
-        </Input>
+        </Select>
 
         <div className='col s12'>Pass when {aggregation} switched {state}.</div>
 

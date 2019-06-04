@@ -54,6 +54,12 @@ class SensorMultiLevelItem extends Item {
         }
       })
     })
+
+    this._socket.on('controller-driver-scan-complete', () => {
+      if (this._mounted) {
+        this.receiveNewParams(this.state.params)
+      }
+    })
   }
 
   componentWillUnmount () {
@@ -83,7 +89,7 @@ class SensorMultiLevelItem extends Item {
     if (!this.state.productObjectProxy) {
       return
     }
-    // TODO !1: to implement at zwave third stage milestone
+    // TODO !1: to implement at zwave third stage milestone: opens a graph in popin?
   }
 }
 

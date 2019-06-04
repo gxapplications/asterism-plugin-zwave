@@ -4,7 +4,7 @@
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Row } from 'react-materialize'
+import { Select, Row } from 'react-materialize'
 
 class StandardProductChanger extends React.Component {
   constructor (props) {
@@ -35,12 +35,12 @@ class StandardProductChanger extends React.Component {
 
     return (
       <div>
-        <Input s={12} type='select' label='Change product support'
+        <Select s={12} label='Change product support'
           onChange={this.changeProductSupport.bind(this)} value={currentValue}>
           {this.standardProducts.map(({ value, name }, idx) => (
             <option key={idx} value={value}>{name}</option>
           ))}
-        </Input>
+        </Select>
       </div>
     )
   }

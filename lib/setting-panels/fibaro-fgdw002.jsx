@@ -4,7 +4,7 @@
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Input, Row, Preloader } from 'react-materialize'
+import { Button, Checkbox, Select, Row, Preloader } from 'react-materialize'
 
 import { Scenarii } from 'asterism-plugin-library'
 
@@ -379,7 +379,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
         isHeatAlarm, isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition } = this.state
     const configs = FibaroFgdw002SettingPanel.configurations
 
-    const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed'
+    const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
     let ledBehavior = configuration[configs.LED_BEHAVIOR]
     ledBehavior = [ledBehavior % 2 !== 0, [2, 3, 6, 7].includes(ledBehavior), [4, 5, 6, 7].includes(ledBehavior)]
     const tempMeasureInterval = configuration[configs.TEMPERATURE_MEASURE_INTERVAL]
@@ -443,7 +443,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
           </div>
 
           {stateId && stateId.length > 0 && [
-            <Input key={0} s={12} m={6} type='select' label='Choose bitmask state position behavior' ref={(c) => { this._stateBehavior = c }}
+            <Select key={0} s={12} m={6} label='Choose bitmask state position behavior'
               onChange={this.stateBehaviorChange.bind(this)} value={stateBehavior}>
               <option value={1}>Set state position 1 (to 1) when opened</option>
               <option value={-1}>Set state position 1 (to 1) when closed</option>
@@ -461,7 +461,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
               <option value={-64}>Set state position 7 (to 1) when closed</option>
               <option value={128}>Set state position 8 (to 1) when opened</option>
               <option value={-128}>Set state position 8 (to 1) when closed</option>
-            </Input>,
+            </Select>,
             <div key={1} className='col s12'>
                 <div className='switch'>
                   <label>
@@ -483,15 +483,15 @@ class FibaroFgdw002SettingPanel extends React.Component {
                Led behavior:
             </div>
             <div className='col s12 m6 l3'>
-              <Input name='led-behavior' type='checkbox' className='filled-in' value='1' label='On opening/closing status change'
+              <Checkbox name='led-behavior' className='filled-in' value='1' label='On opening/closing status change'
                 onChange={() => { this.changeLedBehavior(1, 0, !ledBehavior[0]) }} checked={ledBehavior[0]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Input name='led-behavior' type='checkbox' className='filled-in' value='2' label='On wake up (1 x click or periodical)'
+              <Checkbox name='led-behavior' className='filled-in' value='2' label='On wake up (1 x click or periodical)'
                 onChange={() => { this.changeLedBehavior(2, 1, !ledBehavior[1]) }} checked={ledBehavior[1]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Input name='led-behavior' type='checkbox' className='filled-in' value='4' label='On device tampering'
+              <Checkbox name='led-behavior' className='filled-in' value='4' label='On device tampering'
                 onChange={() => { this.changeLedBehavior(4, 2, !ledBehavior[2]) }} checked={ledBehavior[2]} />
             </div>
           </Row>
@@ -541,11 +541,11 @@ class FibaroFgdw002SettingPanel extends React.Component {
               Temperature alarm reports:
             </div>
             <div className='col s12 m6 l3'>
-              <Input name='temp-alarm-reports' type='checkbox' className='filled-in' value='1' label='High temperature alarm'
+              <Checkbox name='temp-alarm-reports' className='filled-in' value='1' label='High temperature alarm'
                 onChange={() => { this.changeTempAlarmReports(1, 0, !tempAlarmReports[0]) }} checked={tempAlarmReports[0]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Input name='temp-alarm-reports' type='checkbox' className='filled-in' value='2' label='Low temperature alarm'
+              <Checkbox name='temp-alarm-reports' className='filled-in' value='2' label='Low temperature alarm'
                 onChange={() => { this.changeTempAlarmReports(2, 1, !tempAlarmReports[1]) }} checked={tempAlarmReports[1]} />
             </div>
           </Row>

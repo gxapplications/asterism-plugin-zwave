@@ -242,7 +242,6 @@ ZwaveEditPanel.propTypes = {
 
 ZwaveEditPanel.label = 'Zwave network'
 ZwaveEditPanel.icon = 'zwave-on'
-ZwaveEditPanel.hideHeader = false
 
 ZwaveEditPanel.onReady = () => {
 

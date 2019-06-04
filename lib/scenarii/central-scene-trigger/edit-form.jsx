@@ -2,8 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
-import uuid from 'uuid'
+import { Preloader, Row } from 'react-materialize'
 
 import { CollectionSetting } from 'asterism-plugin-library'
 import ZwaveCentralSceneLearner from '../../central-scene-learner'
@@ -17,7 +16,8 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
     this.state = {
       compatibleNodes: [],
       ready: false,
-      nodes: []
+      nodes: [],
+      deleteConfirm: false
     }
 
     this._mounted = false
@@ -49,13 +49,23 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
 
   render () {
     const { theme, animationLevel } = this.props
-    const { ready, compatibleNodes, nodes } = this.state
+    const { ready, compatibleNodes, nodes, deleteConfirm } = this.state
 
-    const list = nodes.map((n) => ({
-        title: `${n.node.name} @ ${n.node.location}`,
-        icon: n.node.meta.icon,
-        details: n.centralSceneValue.toString()
-      }))
+    const list = nodes.map((n, idx) => ({
+      title: n.node.location ? `${n.node.name} @ ${n.node.location}` : n.node.name,
+      icon: n.node.meta.icon,
+      details: n.centralSceneValue.toString(),
+      css: 'remote-row',
+      secondary: {
+        icon: 'delete',
+        onClick: (event) => {
+          event.stopPropagation()
+          event.preventDefault()
+          this.deleteNode(n, idx)
+        },
+        css: deleteConfirm === idx ? `delete-confirm ${theme.actions.negative}` : null
+      }
+    }))
 
     return ready ? (
       <Row className='section central-scene-learner'>
@@ -69,7 +79,7 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
 
         {compatibleNodes.length > 0 ? (
           <ZwaveCentralSceneLearner theme={theme} animationLevel={animationLevel} zwaveService={this.zwaveService}
-            privateSocket={this.privateSocket} compatibleNodes={compatibleNodes} setSelection={this.setSelection.bind(this)} />
+            privateSocket={this.privateSocket} compatibleNodes={compatibleNodes} setSelection={this.addSelection.bind(this)} />
         ) : (
           <p>No compatible node available on the network.</p>
         )}
@@ -82,13 +92,13 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
     )
   }
 
-  setSelection (selecteds) {
-    this.props.instance.data.nodes = selecteds.map((s) => ({
+  addSelection (selecteds) {
+    this.props.instance.data.nodes = [...this.props.instance.data.nodes, ...selecteds.map((s) => ({
       nodeId: s.nodeId,
       centralSceneValue: s.centralSceneValue
-    }))
+    }))]
     this.setState({
-      nodes: selecteds
+      nodes: [...this.state.nodes, ...selecteds]
     })
 
     this.nameChange()
@@ -108,6 +118,25 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
 
     this.props.instance.data.name = `[${names.join(', ')}]`
     this.props.highlightCloseButton()
+  }
+
+  deleteNode (node, index) {
+    if (this.state.deleteConfirm === index) {
+      const nodes = this.state.nodes.filter((r, i) => i !== index)
+      this.props.instance.data.nodes = nodes.map((s) => ({
+        nodeId: s.nodeId,
+        centralSceneValue: s.centralSceneValue
+      }))
+      this.setState({ nodes, deleteConfirm: null })
+      return this.nameChange()
+    }
+    clearTimeout(this._deleteTimer)
+    this.setState({ deleteConfirm: index })
+    this._deleteTimer = setTimeout(() => {
+      if (this._mounted) {
+        this.setState({ deleteConfirm: false })
+      }
+    }, 3000)
   }
 }
 

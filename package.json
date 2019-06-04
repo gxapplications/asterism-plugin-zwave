@@ -1,6 +1,6 @@
 {
   "name": "asterism-plugin-zwave",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "An asterism plugin to add Z-wave support",
   "author": "Xavier Gouley <gxapplications@gmail.com>",
   "contributors": [],
@@ -30,16 +30,18 @@
     "domotics"
   ],
   "engines": {
-    "node": ">= 8.9.4",
-    "npm": ">= 5.6.0"
+    "node": ">= 8.11.1",
+    "npm": ">= 6.4.1"
   },
   "babel": {
     "presets": [
       [
         "env",
-        { "targets": {
-          "chrome": "71"
-        } }
+        {
+          "targets": {
+            "chrome": "71"
+          }
+        }
       ],
       "react"
     ],
@@ -80,12 +82,12 @@
     "debounce": "1.x",
     "joi": "13.x",
     "joi-browser": "13.x",
-    "openzwave-shared": ">= 1.4.6",
+    "openzwave-shared": "1.5.0",
     "os": "0.1.x",
     "path": "0.12.x"
   },
   "devDependencies": {
-    "asterism-plugin-library": ">= 2.0.1",
+    "asterism-plugin-library": ">= 2.2.0",
     "babel-cli": "6.26.x",
     "babel-core": "6.26.x",
     "babel-eslint": "6.1.x",
@@ -98,18 +100,18 @@
     "node-sass": "4.9.x",
     "prop-types": "15.6.x",
     "react": "16.2.x",
-    "react-materialize": "2.4.x",
+    "react-materialize": "3.3.3",
     "rimraf": "2.x",
     "snazzy": "7.x",
     "standard": "10.x"
   },
   "peerDependencies": {
-    "asterism": ">= 1.0.0",
-    "asterism-plugin-library": ">= 2.0.1",
+    "asterism": ">= 1.1.0",
+    "asterism-plugin-library": ">= 2.2.0",
     "express": "4.16.x",
     "prop-types": "15.6.x",
     "react": "16.2.x",
-    "react-materialize": "2.4.x"
+    "react-materialize": "3.3.3"
   },
   "directories": {
     "lib": "./lib",

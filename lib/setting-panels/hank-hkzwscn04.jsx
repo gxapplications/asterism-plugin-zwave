@@ -4,9 +4,7 @@
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Row, Preloader } from 'react-materialize'
-
-import { Scenarii } from 'asterism-plugin-library'
+import { Row, Preloader } from 'react-materialize'
 
 import NameLocation from './name-location'
 

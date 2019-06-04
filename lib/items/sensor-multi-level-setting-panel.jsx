@@ -2,7 +2,7 @@
 
 import cx from 'classnames'
 import React from 'react'
-import { Button, Input, Preloader, Row } from 'react-materialize'
+import { Button, TextInput, Select, Preloader, Row } from 'react-materialize'
 
 import { ItemSettingPanel, IconPicker, ActionColorSwitch } from 'asterism-plugin-library'
 
@@ -54,13 +54,6 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
     this._mounted = false
   }
 
-  componentWillUpdate (nextProps, nextState) {
-    // Because of react-materialize bad behaviors...
-    if (this.state.params.title !== nextState.params.title) {
-      this._title.setState({ value: nextState.params.title })
-    }
-  }
-
   render () {
     const { theme, mainState } = this.props.context
     const { compatibleNodes, panelReady } = this.state
@@ -68,23 +61,20 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
     const { animationLevel } = mainState()
 
     const waves = animationLevel >= 2 ? 'light' : undefined
-    const selectedNode = compatibleNodes.find((node) => node.nodeid == nodeId)
+    //const selectedNode = compatibleNodes.find((node) => node.nodeid == nodeId)
 
     return panelReady ? (
       <div className='clearing padded'>
         <Row className='padded card'>
-          <Input s={12} type='select' label='Choose a Z-wave device' icon='insert_chart_outlined'
+          <Select s={12} label='Choose a Z-wave device' icon='insert_chart_outlined'
             onChange={this.handleEventChange.bind(this, 'nodeId')} value={`${nodeId}`}>
             {compatibleNodes.map((node) => (
               <option key={node.nodeid} value={`${node.nodeid}`}>{node.name}{node.label && ` (${node.label} in ${node.units})`}</option>
             ))}
-          </Input>
-          <Input placeholder='Button title' s={12} label='Label' ref={(c) => { this._title = c }}
-            value={title} onChange={this.handleEventChange.bind(this, 'title')} className='iconPicker'>
-            <div>
-              <IconPicker theme={theme} animationLevel={animationLevel} defaultIcon={icon} onChange={this.handleValueChange.bind(this, 'icon')} />
-            </div>
-          </Input>
+          </Select>
+          <IconPicker theme={theme} animationLevel={animationLevel} defaultIcon={icon} onChange={this.handleValueChange.bind(this, 'icon')} />
+          <TextInput placeholder='Button title' s={12} m={10} l={10} label='Label'
+            value={title} onChange={this.handleEventChange.bind(this, 'title')} />
         </Row>
 
         <ActionColorSwitch theme={theme} animationLevel={animationLevel} defaultColor={color} onChange={this.handleValueChange.bind(this, 'color')} />

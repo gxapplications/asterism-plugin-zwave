@@ -3,7 +3,7 @@
 /* global $, noUiSlider, wNumb */
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 const displayWatts = (watts) => {
@@ -111,21 +111,21 @@ class ZwaveInstantEnergyLimitTriggerEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         {compatibleNodes.length > 0 ? (
-          <Input s={12} m={7} label='Z-wave device' type='select' icon='offline_bolt'
-            onChange={this.nodeChanged.bind(this)} defaultValue={instance.data.nodeId}>
+          <Select s={12} m={7} label='Z-wave device' icon='offline_bolt'
+            onChange={this.nodeChanged.bind(this)} value={instance.data.nodeId}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
-          </Input>
+          </Select>
         ) : (
           <div>Compatible devices not found on the network.</div>
         )}
 
-        <Input s={12} m={5} label='Way' type='select' icon='swap_vert' onChange={this.wayChanged.bind(this)}
-          defaultValue={instance.data.way || 'increasing'}>
+        <Select s={12} m={5} label='Way' icon='swap_vert' onChange={this.wayChanged.bind(this)}
+          value={instance.data.way || 'increasing'}>
           <option key='increasing' value='increasing'>Upward (increasing)</option>
           <option key='decreasing' value='decreasing'>Downward (decreasing)</option>
-        </Input>
+        </Select>
 
         <div className='col s12'>Triggers when device power crosses the limit {instance.data.way === 'increasing' ? 'upward' : 'downward'} of {limit}W:</div>
         <div className='col s12 slider'>

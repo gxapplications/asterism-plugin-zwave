@@ -3,7 +3,7 @@
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Icon, Input, Preloader, Row } from 'react-materialize'
+import { Button, Preloader, Row } from 'react-materialize'
 
 import NameLocation from './name-location'
 import StandardProductChanger from './standard-product-changer'
