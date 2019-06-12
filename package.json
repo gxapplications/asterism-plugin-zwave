@@ -37,9 +37,11 @@
     "presets": [
       [
         "env",
-        { "targets": {
-          "chrome": "71"
-        } }
+        {
+          "targets": {
+            "chrome": "71"
+          }
+        }
       ],
       "react"
     ],
@@ -80,7 +82,7 @@
     "debounce": "1.x",
     "joi": "13.x",
     "joi-browser": "13.x",
-    "openzwave-shared": ">= 1.4.6",
+    "openzwave-shared": "1.5.0",
     "os": "0.1.x",
     "path": "0.12.x"
   },

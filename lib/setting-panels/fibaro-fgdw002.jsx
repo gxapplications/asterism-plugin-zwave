@@ -379,7 +379,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
         isHeatAlarm, isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition } = this.state
     const configs = FibaroFgdw002SettingPanel.configurations
 
-    const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed'
+    const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
     let ledBehavior = configuration[configs.LED_BEHAVIOR]
     ledBehavior = [ledBehavior % 2 !== 0, [2, 3, 6, 7].includes(ledBehavior), [4, 5, 6, 7].includes(ledBehavior)]
     const tempMeasureInterval = configuration[configs.TEMPERATURE_MEASURE_INTERVAL]
