@@ -68,7 +68,7 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
               {Object.entries(casesData).filter(([casIdx]) => casIdx !== 'defaults').map(([casIdx, label]) => (
                 <div key={uuid.v4()} className='col'>
                   <input type='checkbox' value={casIdx} className='filled-in' id={`cases_${nodeId}_${type}_${casIdx}`}
-                    checked={!!cases.find((cas) => cas == casIdx)} onChange={this.casesChanged.bind(this, idx, nodeId, type, !cases.find((cas) => cas == casIdx))} />
+                    checked={cases.filter((cas) => cas == casIdx).length > 0} onChange={this.casesChanged.bind(this, idx, nodeId, type, cases.filter((cas) => cas == casIdx).length === 0, label)} />
                   <label className='active' htmlFor={`cases_${nodeId}_${type}_${casIdx}`}>{`${label} - `}</label>
                 </div>
               ))}
@@ -126,13 +126,14 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
     this.nameChange()
   }
 
-  casesChanged (index, nodeId, type, check, event) {
+  casesChanged (index, nodeId, type, check, label, event) {
     const caseToSet = event.currentTarget.value
     let cases = this.props.instance.data.events[index].cases
     if (check) {
       cases.push(caseToSet)
+      cases.push(label)
     } else {
-      cases = cases.filter((c) => c != caseToSet)
+      cases = cases.filter((c) => c != caseToSet && c != label)
     }
 
     this.props.instance.data.events[index].cases = cases

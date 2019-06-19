@@ -54,7 +54,7 @@ class UnknownSettingPanel extends React.Component {
       const zwaveService = this.props.services()['asterism-plugin-zwave']
       zwaveService.removeNode(this.props.nodeId)
       .then(() => {
-        console.log('##### SUCCESS ! Must rescan ?') // TODO !0
+        console.log('SUCCESS! Must rescan?') // TODO !9
         // zwaveService.rescan()
       })
     } else {

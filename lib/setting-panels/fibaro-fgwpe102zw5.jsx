@@ -575,7 +575,8 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
     const value = event.target.value
     switch (value) {
       case 'force':
-        return this.props.productObjectProxy.setForceBitmaskStatePosition(true)
+        return this.props.productObjectProxy.setControlledBitmaskStatePosition(false)
+        .then(() => this.props.productObjectProxy.setForceBitmaskStatePosition(true))
         .then(() => {
           this.setState({
             forceBitmaskStatePosition: true,
@@ -584,7 +585,8 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
         })
         .catch(console.error)
       case 'controlled':
-        return this.props.productObjectProxy.setControlledBitmaskStatePosition(true)
+        return this.props.productObjectProxy.setForceBitmaskStatePosition(false)
+        .then(() => this.props.productObjectProxy.setControlledBitmaskStatePosition(true))
         .then(() => {
           this.setState({
             forceBitmaskStatePosition: false,
