@@ -48,14 +48,15 @@ class ZwaveCentralSceneLearner extends React.Component {
 
     const list = events.map((ev) => {
       const node = compatibleNodes.find((cn) => cn.nodeid === ev.nodeId)
-      const selected = this.state.selecteds.find((n) => n.nodeId === ev.nodeId)
+      // FIXME: equality with .toString() is Bofbof... Maybe a deepequal is better...
+      const selected = this.state.selecteds.find((n) => (n.nodeId === ev.nodeId) && (n.centralSceneValue.toString() === ev.centralSceneValue.toString()))
       return {
         title: `${node.name} @ ${node.location}`,
         icon: node.meta.icon,
         onClick: () => {
           if (selected) {
             this.setState({
-              selecteds: this.state.selecteds.filter((n) => n.nodeId !== ev.nodeId)
+              selecteds: this.state.selecteds.filter((n) => (n.nodeId !== ev.nodeId) || (n.centralSceneValue.toString() !== ev.centralSceneValue.toString()))
             })
           } else {
             this.state.selecteds.push({ ...ev, node })

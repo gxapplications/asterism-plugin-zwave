@@ -1208,4 +1208,299 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
+	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Complete">
+		<Manufacturer id="208" name="HANK Electronics Ltd">
+			<Product type="200" id="b" name="HKZW-SCN04 Scene Controller">
+				<MetaData>
+					<MetaDataItem name="OzwInfoPage">http://www.openzwave.com/device-database/0208:000B:0201</MetaDataItem>
+					<MetaDataItem name="ProductPic">images/hank/scenecontroller4.png</MetaDataItem>
+					<MetaDataItem name="Description">The Scene Controller is a wireless, portable and rechargeable scene switch. It can control a Z-Wave device, such as smart plug, smart dimmer with a Z-Wave gateway. You can also activate a scene like sleep scene, movie scene and entertainment scene with it.</MetaDataItem>
+					<MetaDataItem name="ProductManual">https://Products.Z-WaveAlliance.org/ProductManual/File?folder=&amp;filename=Manuals/1968/HKZW-SCN04 Manual.pdf</MetaDataItem>
+					<MetaDataItem name="InclusionDescription">Included as non-secure device: 1. Insert the LIR2450 battery. 2. Set the Z-Wave network main controller into learning mode( see Z-Waave network controller operating manul). 3. Triple click a button. 4. If the inclusion is successful, the LED will blink in blue less than for 5 seconds and then keep on for 15 seconds. Included as a secure device: 1. Insert the LIR2450 battery. 2. Set the Z-Wave network main controller into learning mode( see Z-Wave network controller operating manual). 3. Pressing and holding a button for 3 seconds. 4. If the inclusion is successful, the LED will blink in green less than for 5 seconds and then keep on for 15 seconds.</MetaDataItem>
+					<MetaDataItem name="ExclusionDescription">To remove the Scene Controller from the Z-Wave network: (1) Insert the LIR2450 battery. (2) Set the Z-Wave network main controller into remove mode (see Z-Wave controller operating manual). (3) Triple click the a button, if the exclusion is successful, LED will blink in orange for less than 5 seconds and then keep on for 3 seconds.</MetaDataItem>
+					<MetaDataItem name="ResetDescription">Pressing and holding a button for 20 seconds. Release the button after 20 seconds, LED will keep in yellow for 3 seconds. Scene Controller will be reset to factory defaults if you short press the button within this 3 seconds. Using this procedure only in the event that the network primary controller is missing or otherwise inoperable.</MetaDataItem>
+					<MetaDataItem name="WakeupDescription">Pressing and holding a button for 3 seconds. Led will turn to green, which means Scene Controller has been woken up.</MetaDataItem>
+					<MetaDataItem name="Name">Scene Controller</MetaDataItem>
+					<ChangeLog>
+						<Entry author="Justin Hammond - Justin@dynam.ac" date="24 May 2019" revision="3">Initial Metadata Import from Z-Wave Alliance Database - https://products.z-wavealliance.org/products/1967/xml</Entry>
+						<Entry author="Justin Hammond - Justin@dynam.ac" date="24 May 2019" revision="4">Updated Metadata Import from Z-Wave Alliance Database - https://products.z-wavealliance.org/products/1968/xml</Entry>
+					</ChangeLog>
+				</MetaData>
+			</Product>
+		</Manufacturer>
+		<CommandClasses>
+			<CommandClass id="38" name="COMMAND_CLASS_SWITCH_MULTILEVEL">
+				<Compatibility />
+				<State>
+					<AfterMark>true</AfterMark>
+					<CCVersion>2</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>0</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>The Current Level of the Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Increase the Brightness of the Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Decrease the Brightness of the Device</Help>
+				</Value>
+				<Value type="bool" genre="system" instance="1" index="3" label="Ignore Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
+					<Help>Ignore the Start Level of the Device when increasing/decreasing brightness</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="4" label="Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Start Level when Changing the Brightness of a Device</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="90" name="COMMAND_CLASS_DEVICE_RESET_LOCALLY">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>4</StaticRequests>
+				</State>
+				<Instance index="1" />
+			</CommandClass>
+			<CommandClass id="91" name="COMMAND_CLASS_CENTRAL_SCENE">
+				<Compatibility />
+				<State>
+					<CCVersion>2</CCVersion>
+					<InNif>true</InNif>
+					<SceneCount>4</SceneCount>
+					<StaticRequests>2</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="list" genre="user" instance="1" index="1" label="Scene 1" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
+					<Help />
+					<Item label="Inactive" value="0" />
+					<Item label="Pressed 1 Time" value="1" />
+					<Item label="Key Released" value="2" />
+					<Item label="Key Held down" value="3" />
+				</Value>
+				<Value type="list" genre="user" instance="1" index="2" label="Scene 2" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
+					<Help />
+					<Item label="Inactive" value="0" />
+					<Item label="Pressed 1 Time" value="1" />
+					<Item label="Key Released" value="2" />
+					<Item label="Key Held down" value="3" />
+				</Value>
+				<Value type="list" genre="user" instance="1" index="3" label="Scene 3" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
+					<Help />
+					<Item label="Inactive" value="0" />
+					<Item label="Pressed 1 Time" value="1" />
+					<Item label="Key Released" value="2" />
+					<Item label="Key Held down" value="3" />
+				</Value>
+				<Value type="list" genre="user" instance="1" index="4" label="Scene 4" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
+					<Help />
+					<Item label="Inactive" value="0" />
+					<Item label="Pressed 1 Time" value="1" />
+					<Item label="Key Released" value="2" />
+					<Item label="Key Held down" value="3" />
+				</Value>
+				<Value type="int" genre="user" instance="1" index="256" label="Scene Count" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="4">
+					<Help />
+				</Value>
+				<Value type="int" genre="config" instance="1" index="257" label="Scene Reset Timeout" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="1000">
+					<Help />
+				</Value>
+			</CommandClass>
+			<CommandClass id="94" name="COMMAND_CLASS_ZWAVEPLUS_INFO">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>6</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="byte" genre="system" instance="1" index="0" label="ZWave+ Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
+					<Help>ZWave+ Version Supported on the Device</Help>
+				</Value>
+				<Value type="short" genre="system" instance="1" index="1" label="InstallerIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="5632">
+					<Help>Icon File to use for the Installer Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="1" index="2" label="UserIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="5632">
+					<Help>Icon File to use for the User Application</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="112" name="COMMAND_CLASS_CONFIGURATION">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>4</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="list" genre="config" instance="1" index="254" label="Configuration Command" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="0" size="1">
+					<Help>Lock/unlock all configuration parameters</Help>
+					<Item label="Unlock" value="0" />
+					<Item label="Lock" value="1" />
+				</Value>
+			</CommandClass>
+			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
+				<Compatibility />
+				<State>
+					<CCVersion>2</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>0</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="int" genre="system" instance="1" index="0" label="Loaded Config Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="4">
+					<Help>Revision of the Config file currently loaded</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="1" label="Config File Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="4">
+					<Help>Revision of the Config file on the File System</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="2" label="Latest Available Config File Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="4">
+					<Help>Latest Revision of the Config file available for download</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="3" label="Device ID" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="">
+					<Help>Manufacturer Specific Device ID/Model</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="4" label="Serial Number" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0108000200000000000000014800010001000000">
+					<Help>Device Serial Number</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="115" name="COMMAND_CLASS_POWERLEVEL">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>4</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="list" genre="system" instance="1" index="0" label="Powerlevel" units="dB" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>Output RF PowerLevel</Help>
+					<Item label="Normal" value="0" />
+					<Item label="-1dB" value="1" />
+					<Item label="-2dB" value="2" />
+					<Item label="-3dB" value="3" />
+					<Item label="-4dB" value="4" />
+					<Item label="-5dB" value="5" />
+					<Item label="-6dB" value="6" />
+					<Item label="-7dB" value="7" />
+					<Item label="-8dB" value="8" />
+					<Item label="-9dB" value="9" />
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="1" label="Timeout" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Timeout till the PowerLevel is reset to Normal</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="2" label="Set Powerlevel" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Apply the Output PowerLevel and Timeout Values</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="3" label="Test Node" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Node to Perform a test against</Help>
+				</Value>
+				<Value type="list" genre="system" instance="1" index="4" label="Test Powerlevel" units="dB" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>PowerLevel to use for the Test</Help>
+					<Item label="Normal" value="0" />
+					<Item label="-1dB" value="1" />
+					<Item label="-2dB" value="2" />
+					<Item label="-3dB" value="3" />
+					<Item label="-4dB" value="4" />
+					<Item label="-5dB" value="5" />
+					<Item label="-6dB" value="6" />
+					<Item label="-7dB" value="7" />
+					<Item label="-8dB" value="8" />
+					<Item label="-9dB" value="9" />
+				</Value>
+				<Value type="short" genre="system" instance="1" index="5" label="Frame Count" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="0">
+					<Help>How Many Messages to send to the Note for the Test</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="6" label="Test" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Perform a PowerLevel Test against the a Node</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="7" label="Report" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Get the results of the latest PowerLevel Test against a Node</Help>
+				</Value>
+				<Value type="list" genre="system" instance="1" index="8" label="Test Status" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>The Current Status of the last PowerNode Test Executed</Help>
+					<Item label="Failed" value="0" />
+					<Item label="Success" value="1" />
+					<Item label="In Progress" value="2" />
+				</Value>
+				<Value type="short" genre="system" instance="1" index="9" label="Acked Frames" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="0">
+					<Help>Number of Messages successfully Acked by the Target Node</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="128" name="COMMAND_CLASS_BATTERY">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>4</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="79">
+					<Help>Current Battery Level</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="132" name="COMMAND_CLASS_WAKE_UP">
+				<Compatibility />
+				<State>
+					<CCVersion>2</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>0</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="int" genre="system" instance="1" index="0" label="Wake-up Interval" units="Seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="0">
+					<Help>How often the Device will Wake up to check for pending commands</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="1" label="Minimum Wake-up Interval" units="Seconds" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="0">
+					<Help>Minimum Time in seconds the device will wake up</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="2" label="Maximum Wake-up Interval" units="Seconds" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="0">
+					<Help>Maximum Time in seconds the device will wake up</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="3" label="Default Wake-up Interval" units="Seconds" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="0">
+					<Help>The Default Wake-Up Interval the device will wake up</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="4" label="Wake-up Interval Step" units="Seconds" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="0">
+					<Help>Step Size on Wake-up interval</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="133" name="COMMAND_CLASS_ASSOCIATION">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>4</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Associations num_groups="9">
+					<Group index="1" max_associations="5" label="Lifeline" auto="true">
+						<Node id="1" />
+					</Group>
+					<Group index="2" max_associations="5" label="Basic Set button 1" auto="false" />
+					<Group index="3" max_associations="5" label="Multilevel Set button 1" auto="false" />
+					<Group index="4" max_associations="5" label="Basic Set button 2" auto="false" />
+					<Group index="5" max_associations="5" label="Multilevel Set button 2" auto="false" />
+					<Group index="6" max_associations="5" label="Basic Set button 3" auto="false" />
+					<Group index="7" max_associations="5" label="Multilevel Set button 3" auto="false" />
+					<Group index="8" max_associations="5" label="Basic Set button 4" auto="false" />
+					<Group index="9" max_associations="5" label="Multilevel Set button 4" auto="false" />
+				</Associations>
+			</CommandClass>
+			<CommandClass id="134" name="COMMAND_CLASS_VERSION">
+				<Compatibility />
+				<State>
+					<CCVersion>1</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>6</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="string" genre="system" instance="1" index="0" label="Library Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Library Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="1" label="Protocol Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Protocol Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="2" label="Application Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Application Version</Help>
+				</Value>
+			</CommandClass>
+		</CommandClasses>
+	</Node>
 </Driver>
