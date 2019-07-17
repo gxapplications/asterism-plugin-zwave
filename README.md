@@ -1,4 +1,4 @@
-![asterism-logo](https://raw.githubusercontent.com/gxapplications/asterism/master/doc/asterism-text.png)
+![asterism-logo](https://raw.githubusercontent.com/gxapplications/asterism/master/docs/asterism-text.png)
 
 # asterism-plugin-zwave
 
@@ -17,9 +17,9 @@ _[Roadmap available here (asterism and plugins)](https://github.com/gxapplicatio
 
 ## INSTALL PREREQUISITES
 
-You need to install 'V1.6' version of OpenZWave/open-zwave + Central scenes support (PR #1125). TODO !0: see if central scenes support is ok
-As this composed version is quite hard to get, I made a branch you can checkout on my open-zwave
-fork of official repository, from official V1.6 tag with central scenes support added.
+You need to install version 1.6 version of OpenZWave/open-zwave.
+As this specific version is the only one tested with asterism, I tagged a version on my fork of of official repository,
+named 'V1.6 used for asterism-plugin-zwave ^v1.0.3'.
 
 You need to run these commands:
 
@@ -46,7 +46,7 @@ Then you'll be able to install asterism (see asterism install guide).
 
 I add devices when I buy them, so there is the list of devices I managed today:
 - Aeotec Z-Stick Gen5 (but other USB Z-wave keys should work to control your network...)
-- Fibaro Door Opening Sensor 2 (FGDW-002) for door sensor and temperature
+- Fibaro Door Opening Sensor 2 (FGDW-002) for door sensor, temperature and burglar alarms
 - Fibaro Wall Plug (FGWPE-102 ZW5) with full features support (on/off, color ring, advanced configuration)
 - Hank 4 buttons Wall controller (HKZW-SCN04) through central scene support: allowing 8 actions
 - Standard binary switches SHOULD work too (for on/off feature only) on most models.

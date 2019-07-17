@@ -64,7 +64,7 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
           this.deleteNode(n, idx);
         }
       }
-    })) // TODO !0: add remove option !
+    })) // TODO !0: test remove option !
 
     return ready ? (
       <Row className='section central-scene-learner'>
