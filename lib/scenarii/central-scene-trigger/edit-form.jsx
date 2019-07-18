@@ -53,18 +53,20 @@ class ZwaveCentralSceneTriggerEditForm extends React.Component {
     const { ready, compatibleNodes, nodes, deleteConfirm } = this.state
 
     const list = nodes.map((n, idx) => ({
-      title: `${n.node.name} @ ${n.node.location || 'unknown'}`,
+      title: n.node.location ? `${n.node.name} @ ${n.node.location}` : n.node.name,
       icon: n.node.meta.icon,
       details: n.centralSceneValue.toString(),
-      css: deleteConfirm === idx ? `remote-row delete-confirm` : 'remote-row',
+      css: 'remote-row',
       secondary: {
         icon: 'delete',
         onClick: (event) => {
-          event.stopPropagation();
-          this.deleteNode(n, idx);
-        }
+          event.stopPropagation()
+          event.preventDefault()
+          this.deleteNode(n, idx)
+        },
+        css: deleteConfirm === idx ? `delete-confirm ${theme.actions.negative}` : null
       }
-    })) // TODO !0: test remove option !
+    }))
 
     return ready ? (
       <Row className='section central-scene-learner'>

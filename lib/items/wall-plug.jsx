@@ -113,6 +113,11 @@ class WallPlugItem extends Item {
         }
       }
     })
+    this._socket.on('controller-driver-scan-complete', () => {
+      if (this._mounted) {
+        this.receiveNewParams(this.state.params)
+      }
+    })
   }
 
   componentWillUnmount () {
