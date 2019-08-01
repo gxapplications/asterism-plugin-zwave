@@ -2,7 +2,7 @@
 
 import cx from 'classnames'
 import React from 'react'
-import { Button, Input, Preloader, Row } from 'react-materialize'
+import { Button, TextInput, Select, Preloader, Row } from 'react-materialize'
 
 import { ItemSettingPanel, IconPicker, ActionColorSwitch } from 'asterism-plugin-library'
 
@@ -75,18 +75,15 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
     return panelReady ? (
       <div className='clearing padded'>
         <Row className='padded card'>
-          <Input s={12} type='select' label='Choose a Z-wave device' icon='power'
+          <Select s={12} label='Choose a Z-wave device' icon='power'
             onChange={this.handleEventChange.bind(this, 'nodeId')} value={`${nodeId}`}>
             {compatibleNodes.map((node) => (
               <option key={node.nodeid} value={`${node.nodeid}`}>{node.name}</option>
             ))}
-          </Input>
-          <Input placeholder='Button title' s={12} label='Label' ref={(c) => { this._title = c }}
-            value={title} onChange={this.handleEventChange.bind(this, 'title')} className='iconPicker'>
-            <div>
-              <IconPicker theme={theme} animationLevel={animationLevel} defaultIcon={icon} onChange={this.handleValueChange.bind(this, 'icon')} />
-            </div>
-          </Input>
+          </Select>
+          <IconPicker theme={theme} animationLevel={animationLevel} defaultIcon={icon} onChange={this.handleValueChange.bind(this, 'icon')} />
+          <TextInput placeholder='Button title' s={12} m={10} l={10} label='Label'
+            value={title} onChange={this.handleEventChange.bind(this, 'title')} />
 
           {energyLevelCompatible ? (
             <div className='col s12'>

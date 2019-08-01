@@ -4,7 +4,6 @@ import Chart from 'chart.js'
 import cx from 'classnames'
 import React from 'react'
 import { Button, Icon } from 'react-materialize'
-import uuid from 'uuid'
 
 import { Item } from 'asterism-plugin-library'
 

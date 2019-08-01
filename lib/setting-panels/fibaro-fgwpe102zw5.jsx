@@ -5,7 +5,7 @@ import cx from 'classnames'
 import debounce from 'debounce'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Icon, Input, Preloader, Row } from 'react-materialize'
+import { Button, Icon, Select, Preloader, Row } from 'react-materialize'
 
 import { Scenarii } from 'asterism-plugin-library'
 
@@ -185,13 +185,6 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
     this._mounted = false
   }
 
-  componentWillUpdate (nextProps, nextState) {
-    // Because of react-materialize bad behaviors...
-    if (this._colorRingBehavior && (this.state.colorRingBehavior !== nextState.colorRingBehavior)) {
-      this._colorRingBehavior.setState({ value: nextState.colorRingBehavior })
-    }
-  }
-
   componentDidUpdate (prevProps, prevState) {
     this.plugWidgets()
   }
@@ -334,13 +327,12 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
 
         <h5>Color ring behavior</h5>
         <Row className='section card form'>
-          <Input s={12} m={colorRingBehavior === colors.STATUS_FROM_SCENARIO_STATE ? 6 : 12} type='select'
-            label='Choose lightning feature' ref={(c) => { this._colorRingBehavior = c }}
+          <Select s={12} m={colorRingBehavior === colors.STATUS_FROM_SCENARIO_STATE ? 6 : 12} label='Choose lightning feature'
             onChange={this.colorRingBehaviorChange.bind(this)} value={`${colorRingBehavior}`}>
             <option value={colors.DEVICE_DEFAULT}>Device default (depending on comsumption when ON, no light when OFF)</option>
             <option value={colors.NIGHT_LIGHT}>Use as night light when OFF (default behavior when ON)</option>
             <option value={colors.STATUS_FROM_SCENARIO_STATE}>Control colors through a scenarii state</option>
-          </Input>
+          </Select>
           {colorRingBehavior === colors.STATUS_FROM_SCENARIO_STATE ? (
             <div className='col s12 m6'>
               <StatesDropdown defaultStateId={colorRingLevelStateId} onChange={this.colorRingLevelStateIdChange.bind(this)}
@@ -371,7 +363,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
           </div>
 
           {!!stateId && (stateId.length > 0) && [
-            <Input key={0} s={12} m={6} type='select' label='Choose bitmask state position behavior' ref={(c) => { this._stateBehavior = c }}
+            <Select key={0} s={12} m={6} label='Choose bitmask state position behavior'
               onChange={this.stateBehaviorChange.bind(this)} value={stateBehavior}>
               <option value={1}>Set state position 1 (to 1) when ON</option>
               <option value={-1}>Set state position 1 (to 1) when closed</option>
@@ -389,13 +381,13 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
               <option value={-64}>Set state position 7 (to 1) when closed</option>
               <option value={128}>Set state position 8 (to 1) when ON</option>
               <option value={-128}>Set state position 8 (to 1) when closed</option>
-            </Input>,
-            <Input key={1} s={12} type='select' label='Choose bitmask state control behavior' ref={(c) => { this._stateControlBehavior = c }}
+            </Select>,
+            <Select key={1} s={12} label='Choose bitmask state control behavior'
               onChange={this.changeForceBitmaskStatePosition.bind(this)} value={forceBitmaskStatePosition ? 'force' : (controlledBitmaskStatePosition ? 'controlled' : 'none')}>
               <option value='force'>Force mode: Device will be the only one allowed to control the state</option>
               <option value='none'>No restriction mode</option>
               <option value='controlled'>Controlled mode: state and device can control each others (warning: avoid loops with scenario actions!)</option>
-            </Input>
+            </Select>
           ]}
 
         </Row>
