@@ -3,7 +3,7 @@
 /* global $, noUiSlider, wNumb */
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 class ZwaveAlarmTriggerEditForm extends React.Component {
@@ -51,19 +51,19 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
           const typeData = alarmSupportedLabels[type] || {}
           const casesData = typeData.cases
           return [
-            <Input key={uuid.v4()} s={12} m={6} l={6} label={`Z-wave device #${idx + 1}`} type='select' icon='notification_important'
-              onChange={this.nodeChanged.bind(this, idx)} defaultValue={nodeId}>
+            <Select key={uuid.v4()} s={12} m={6} l={6} label={`Z-wave device #${idx + 1}`} icon='notification_important'
+              onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
               {compatibleNodes.map((node, i) => (
                 <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
               <option key={uuid.v4()} value='0'>(Remove it)</option>
-            </Input>,
-            <Input key={uuid.v4()} s={12} m={6} l={6} label='Alarm type' type='select'
-              onChange={this.typeChanged.bind(this, idx, nodeId)} defaultValue={type}>
+            </Select>,
+            <Select key={uuid.v4()} s={12} m={6} l={6} label='Alarm type'
+              onChange={this.typeChanged.bind(this, idx, nodeId)} value={type}>
               {Object.entries(alarmSupportedLabels).filter(([i]) => i !== 'defaults').map(([i, data]) => (
                 <option key={uuid.v4()} value={i}>{data.label}</option>
               ))}
-            </Input>,
+            </Select>,
             <div key={uuid.v4()} className='col s12 m12 l12'>
               {Object.entries(casesData).filter(([casIdx]) => casIdx !== 'defaults').map(([casIdx, label]) => (
                 <div key={uuid.v4()} className='col'>
@@ -80,14 +80,14 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
           <div>Compatible devices not found on the network.</div>
         )}
 
-        <Input key={uuid.v4()} s={12} m={6} l={6}
-          label={`Z-wave device #${instance.data.events.length + 1}`} type='select' icon='notification_important'
-          onChange={this.nodeChanged.bind(this, instance.data.events.length)} defaultValue=''>
-          <option key={uuid.v4()} value='0'>(Choose one to add)</option>
+        <Select key={uuid.v4()} s={12} m={6} l={6}
+          label={`Z-wave device #${instance.data.events.length + 1}`} icon='notification_important'
+          onChange={this.nodeChanged.bind(this, instance.data.events.length)} value=''>
+          <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
             <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
-        </Input>
+        </Select>
       </Row>
     ) : (
       <div className='valign-wrapper centered-loader'>

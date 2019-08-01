@@ -3,7 +3,7 @@
 /* global $, noUiSlider, wNumb */
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 const displayPips = (v) => {
@@ -113,21 +113,21 @@ class ZwaveEnergyConsumptionLimitTriggerEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         {compatibleNodes.length > 0 ? (
-          <Input s={12} m={7} label='Z-wave device' type='select' icon='ev_station'
-            onChange={this.nodeChanged.bind(this)} defaultValue={instance.data.nodeId}>
+          <Select s={12} m={7} label='Z-wave device' icon='ev_station'
+            onChange={this.nodeChanged.bind(this)} value={instance.data.nodeId}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
-          </Input>
+          </Select>
         ) : (
           <div>Compatible devices not found on the network.</div>
         )}
 
-        <Input s={12} m={5} label='Unit' type='select' icon='euro_symbol' onChange={this.unitChanged.bind(this)}
-               defaultValue={instance.data.unit || 'kWh'}>
+        <Select s={12} m={5} label='Unit' icon='euro_symbol' onChange={this.unitChanged.bind(this)}
+          value={instance.data.unit || 'kWh'}>
           <option key='kWh' value='kWh'>kWh</option>
           <option key='cost' value='cost'>Cost (¤)</option>
-        </Input>
+        </Select>
 
         <div className='col s12'>Triggers when device energy consumption crosses the limit of {limit}{unit}:</div>
         <div className='col s12 slider'>

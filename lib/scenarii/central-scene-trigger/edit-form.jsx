@@ -2,8 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
-import uuid from 'uuid'
+import { Preloader, Row } from 'react-materialize'
 
 import { CollectionSetting } from 'asterism-plugin-library'
 import ZwaveCentralSceneLearner from '../../central-scene-learner'

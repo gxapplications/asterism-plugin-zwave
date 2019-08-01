@@ -3,7 +3,7 @@
 /* global $, noUiSlider, wNumb */
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Input, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row } from 'react-materialize'
 import uuid from 'uuid'
 
 class ZwaveBatteryLevelConditionEditForm extends React.Component {
@@ -127,31 +127,31 @@ class ZwaveBatteryLevelConditionEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-            <Input key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} type='select' icon='battery_full'
-                   onChange={this.nodeChanged.bind(this, idx)} defaultValue={nodeId}>
+            <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_full'
+                   onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
               {compatibleNodes.map((node, i) => (
                   <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
               <option key={uuid.v4()} value='0'>(Remove it)</option>
-            </Input>
+            </Select>
         )) : (
             <div>Compatible devices not found on the network.</div>
         )}
-        <Input key={uuid.v4()} s={12} m={6} l={4}
-               label={`Z-wave device #${instance.data.nodeIds.length + 1}`} type='select' icon='battery_full'
-               onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} defaultValue=''>
-          <option key={uuid.v4()} value='0'>(Choose one to add)</option>
+        <Select key={uuid.v4()} s={12} m={6} l={4}
+               label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='battery_full'
+               onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
+          <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
-        </Input>
+        </Select>
 
-        <Input s={12} m={5} label='Operator' type='select' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
-               defaultValue={instance.data.operator || 'below'}>
+        <Select s={12} m={5} label='Operator' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
+               value={instance.data.operator || 'below'}>
           <option key='below' value='below'>Below</option>
           <option key='above' value='above'>Above</option>
           <option key='between' value='between'>Between</option>
-        </Input>
+        </Select>
 
         {instance.data.operator === 'between' ? (
           <div className='col s12'>Pass when (one of) the device(s)' battery level is between {limit}% and {limit2}% :</div>
