@@ -91,6 +91,12 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
           this.setState({
             meterLastValue: value.value
           })
+          this.props.productObjectProxy.energyConsumptionMeterGetLastCost()
+          .then(costLastValue => {
+            if (this._mounted) {
+              this.setState({ costLastValue })
+            }
+          })
         }
       }
     })
