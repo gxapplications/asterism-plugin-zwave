@@ -89,7 +89,7 @@ class SensorMultiLevelItem extends Item {
     if (!this.state.productObjectProxy) {
       return
     }
-    // TODO !1: to implement at zwave third stage milestone: opens a graph in popin?
+    // TODO !5: to implement at zwave third stage milestone: opens a graph in popin?
   }
 }
 
