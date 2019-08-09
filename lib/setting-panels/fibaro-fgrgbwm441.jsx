@@ -93,6 +93,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         return
       }
       if (this._mounted) {
+        // TODO !0: to test, seems to be broken
         if (this.state.meterLastValue !== value.value) {
           this.setState({
             meterLastValue: value.value
@@ -111,6 +112,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         return
       }
       if (this._mounted) {
+        // TODO !0: to test, seems to be broken
         if (this.state.energyLevel !== value.value) {
           this.setState({
             energyLevel: value.value
@@ -270,6 +272,8 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         this._slider2.set(config[configs.TIME_BETWEEN_DIMMING_STEPS_MODE_1] || 10)
       }
     }
+
+    // TODO !1: brightness, red, green, blue, white levels, use logarithmic scale
   }
 
   render () {
@@ -277,7 +281,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
     const { levels, meterLastValue, energyLevel, costLastValue, configuration, panelReady } = this.state
     const configs = FibaroFgrgbwm441SettingPanel.configurations
 
-console.log('######## semblent pas bons:', energyLevel, costLastValue)
+console.log('TODO !0 : ######## semblent pas bons:', energyLevel, costLastValue)
 
     let enableAllOnOff = configuration[configs.ENABLE_ALL_ON_OFF]
     enableAllOnOff = enableAllOnOff === 'ALL ON disabled/ ALL OFF disabled' ? 0 : enableAllOnOff
@@ -295,24 +299,42 @@ console.log('######## semblent pas bons:', energyLevel, costLastValue)
       <div>
         <Row>
           <h4 className='col s12 m7 l7'>RGBW settings</h4>
-          {(enableAllOnOff >= 2) && (
-            <Button className={cx('col s6 m2 l2 fluid', theme.actions.secondary)} waves={waves}
-              onClick={this.switchAll.bind(this, true)}>All ON</Button>
-          )}
-          {((enableAllOnOff % 2) !== 0) && (
-            <Button className={cx('col s6 m2 l2 offset-l1 offset-m1', theme.actions.secondary)} waves={waves}
-              onClick={this.switchAll.bind(this, false)}>All OFF</Button>
-          )}
-          <div className='col s12 m8 l8'>R: {levels.red}, B: {levels.blue} ~  {energyLevel | '0.0'}W.</div>
+          <Button className={cx('col s6 m2 l2 offset-l1 offset-m1', theme.actions.secondary)} waves={waves}
+            onClick={() => productObjectProxy.multiLevelSwitchSetValue(0, 2)}>OFF</Button>
+          <div className='col s12 m8 l8'>TODO !0: energy as float ~  {energyLevel | '0.0'}W.</div>
 
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
         <hr />
 
+        <div className='section card form'>
+          TODO !1: levels in controls
+          <div className='col s12'><br />Main brightness</div>
+          <div className='col s12 slider'>
+            <div id={`brightness-slider-${nodeId}`} />
+          </div>
+          <div className='col s12'><br />Red</div>
+          <div className='col s12 slider'>
+            <div id={`red-slider-${nodeId}`} />
+          </div>
+          <div className='col s12'><br />Green</div>
+          <div className='col s12 slider'>
+            <div id={`green-slider-${nodeId}`} />
+          </div>
+          <div className='col s12'><br />Blue</div>
+          <div className='col s12 slider'>
+            <div id={`blue-slider-${nodeId}`} />
+          </div>
+          <div className='col s12'><br />White</div>
+          <div className='col s12 slider'>
+            <div id={`white-slider-${nodeId}`} />
+          </div>
+        </div>
+
         <h5>Transitions and controls</h5>
         <div className='section card form'>
           <Row>
-            <Select s={12} label='All ON / OFF feature'
+            <Select s={12} label='Network Switch ALL (ON / OFF feature)'
               onChange={this.changeConfiguration.bind(this, configs.ENABLE_ALL_ON_OFF)} value={`${enableAllOnOff}`}>
               <option value='0'>ALL ON disabled, ALL OFF disabled</option>
               <option value='1'>ALL ON disabled, ALL OFF active</option>
@@ -342,6 +364,7 @@ console.log('######## semblent pas bons:', energyLevel, costLastValue)
 
             {outputsStateChangeMode === 1 && (
               <div>
+                TODO !2
                 <div className='col s12'><br />Time to complete transition: actually {configuration[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2]}??.</div>
                 <div className='col s12 slider'>
                   <div id={`time-to-complete-transition-slider-${nodeId}`} />
@@ -354,15 +377,12 @@ console.log('######## semblent pas bons:', energyLevel, costLastValue)
 
 
           <Row>
-              TODO: display in the title Row:
-              class ID 51 for the #RRGGBBWW color, with listener
-              <br />
-              TODO: controls :
+              TODO !1: controls :
               - levels, knob 0-99% for each channel (x4), with a listener to update it.
               - On/Off All at once (if setting is activated)
               - meter counter with reset button, and {meterLastValue.v}, {costLastValue}
               <br />
-              TODO: configs :
+              TODO !2: configs :
               configuration[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2] knob, from XX to XX, only if Mode 2 selected,
               0 – immediate change
               1-63 – 20-126ms – value*20ms
@@ -374,7 +394,7 @@ console.log('######## semblent pas bons:', energyLevel, costLastValue)
               <br />
           </Row>
 
-        TODO: to remove:
+        TODO !2: to remove:
         <br />
         <button onClick={() => { this.props.productObjectProxy.multiLevelSwitchSetValue(0, 2) }}>0</button>
         <button onClick={() => { this.props.productObjectProxy.multiLevelSwitchSetValue(1, 2) }}>1</button>
@@ -416,10 +436,6 @@ console.log('######## semblent pas bons:', energyLevel, costLastValue)
         <Preloader size='big' />
       </div>
     )
-  }
-
-  switchAll (on) {
-      // TODO !0
   }
 
   changeConfiguration (confIndex, event) {
