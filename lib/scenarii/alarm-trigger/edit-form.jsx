@@ -51,34 +51,40 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
           const typeData = alarmSupportedLabels[type] || {}
           const casesData = typeData.cases
           return [
-            <Select key={uuid.v4()} s={12} m={6} l={6} label={`Z-wave device #${idx + 1}`} icon='notification_important'
-              onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            <br className='col s12 m12 l12' key={uuid.v4()} />,
+            <Select key={uuid.v4()} s={12} m={6} l={5} label={`Z-wave device #${idx + 1}`} icon='notification_important'
+              onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
               {compatibleNodes.map((node, i) => (
                 <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
               <option key={uuid.v4()} value='0'>(Remove it)</option>
             </Select>,
-            <Select key={uuid.v4()} s={12} m={6} l={6} label='Alarm type'
-              onChange={this.typeChanged.bind(this, idx, nodeId)} value={type}>
+            <Select key={uuid.v4()} s={12} m={6} l={5} label='Alarm type'
+              onChange={this.typeChanged.bind(this, idx, nodeId)} value={`${type}`}>
               {Object.entries(alarmSupportedLabels).filter(([i]) => i !== 'defaults').map(([i, data]) => (
                 <option key={uuid.v4()} value={i}>{data.label}</option>
               ))}
             </Select>,
+
             <div key={uuid.v4()} className='col s12 m12 l12'>
               {Object.entries(casesData).filter(([casIdx]) => casIdx !== 'defaults').map(([casIdx, label]) => (
-                <div key={uuid.v4()} className='col'>
-                  <input type='checkbox' value={casIdx} className='filled-in' id={`cases_${nodeId}_${type}_${casIdx}`}
-                    checked={cases.filter((cas) => cas == casIdx).length > 0} onChange={this.casesChanged.bind(this, idx, nodeId, type, cases.filter((cas) => cas == casIdx).length === 0, label)} />
-                  <label className='active' htmlFor={`cases_${nodeId}_${type}_${casIdx}`}>{`${label} - `}</label>
-                </div>
+                <label key={uuid.v4()} className='col'>
+                  <input type="checkbox" className="filled-in" value={casIdx}
+                    checked={cases.filter((cas) => cas == casIdx).length > 0}
+                    onChange={this.casesChanged.bind(this, idx, nodeId, type, cases.filter((cas) => cas == casIdx).length === 0, label)} />
+                  <span>{`${label} - `}</span>
+                </label>
               ))}
             </div>,
             <br className='col s12 m12 l12' key={uuid.v4()} />,
-            <hr className='col s12 m12 l12' key={uuid.v4()} />
+            <hr className='col s12 m12 l12' key={uuid.v4()} />,
+            <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
           ]
         }) : (
           <div>Compatible devices not found on the network.</div>
         )}
+
+        <br className='col s12 m12 l12' key={uuid.v4()} />
 
         <Select key={uuid.v4()} s={12} m={6} l={6}
           label={`Z-wave device #${instance.data.events.length + 1}`} icon='notification_important'

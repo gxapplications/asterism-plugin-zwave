@@ -21,10 +21,10 @@ const _displayMinutes = (seconds) => {
   }
   if (seconds < 3600) {
     const s = Math.round(seconds % 60)
-    return s ? `${Math.round(seconds / 60)}m${s}s` : `${Math.round(seconds / 60)}m`
+    return s ? `${Math.floor(seconds / 60)}m${s}s` : `${Math.round(seconds / 60)}m`
   }
   const m = Math.round(seconds % 3600) / 60
-  return m ? `${Math.round(seconds / 3600)}h${m}m` : `${Math.round(seconds / 3600)}h`
+  return m ? `${Math.floor(seconds / 3600)}h${m}m` : `${Math.round(seconds / 3600)}h`
 }
 
 class FibaroFgdw002SettingPanel extends React.Component {
@@ -170,20 +170,18 @@ class FibaroFgdw002SettingPanel extends React.Component {
           step: 1,
           animate: true,
           range: {
-            'min': [0, 5],
-            '4%': [5, 5],
-            '7%': [10, 10],
-            '23%': [60, 60],
-            '51%': [600, 300],
-            '79%': [3600, 3600],
-            '89%': [14400, 6000],
+            'min': [0, 30],
+            '9%': [60, 60],
+            '26%': [300, 300],
+            '48%': [1800, 600],
+            '64%': [3600, 3600],
             'max': [32400]
           },
           format: wNumb({  decimals: 1, edit: (v) => `${v}`.split('.')[0] }),
           pips: { // Show a scale with the slider
             mode: 'steps',
             stepped: true,
-            density: 3,
+            density: 4,
             format: wNumb({  decimals: 1, edit: _displayMinutes })
           },
           tooltips: wNumb({ decimals: 1, edit: _displayMinutes }),
@@ -206,12 +204,12 @@ class FibaroFgdw002SettingPanel extends React.Component {
           step: 1,
           animate: true,
           range: {
-            'min': [0, 1],
-            '4%': [1, 1],
-            '31%': [10, 5],
-            '57%': [50, 10],
-            '72%': [100, 20],
-            '91%': [200, 50],
+            'min': [0, 4],
+            '5%': [4, 2],
+            '20%': [10, 5],
+            '54%': [50, 10],
+            '73%': [100, 20],
+            '95%': [200, 100],
             'max': [300]
           },
           format: wNumb({
@@ -245,16 +243,16 @@ class FibaroFgdw002SettingPanel extends React.Component {
           step: 1,
           animate: true,
           range: {
-            'min': [0, 300],
-            '4%': [300, 300],
-            '51%': [3600, 1800],
+            'min': [0, 1200],
+            '7%': [1200, 600],
+            '28%': [3600, 1800],
             'max': [32400]
           },
           format: wNumb({ decimals: 1, edit: (v) => `${v}`.split('.')[0] }),
           pips: { // Show a scale with the slider
             mode: 'steps',
             stepped: true,
-            density: 4,
+            density: 5,
             format: wNumb({ decimals: 1, edit: _displayMinutes })
           },
           tooltips: wNumb({ decimals: 1, edit: _displayMinutes }),
@@ -277,15 +275,13 @@ class FibaroFgdw002SettingPanel extends React.Component {
           step: 1,
           animate: true,
           range: {
-            'min': [-1000, 100],
-            '8%':  [-300, 50],
-            '14%': [-100, 5],
+            'min':  [-300, 50],
+            '10%': [-100, 5],
             '31%': [-30, 2],
             '50%': [0, 2],
             '69%': [30, 5],
-            '86%': [100, 50],
-            '92%': [300, 100],
-            'max': [1000]
+            '90%': [100, 50],
+            'max': [300]
           },
           format: wNumb({
             decimals: 1, edit: (v) => `${v}`.split('.')[0]
@@ -444,23 +440,23 @@ class FibaroFgdw002SettingPanel extends React.Component {
 
           {stateId && stateId.length > 0 && [
             <Select key={0} s={12} m={6} label='Choose bitmask state position behavior'
-              onChange={this.stateBehaviorChange.bind(this)} value={stateBehavior}>
-              <option value={1}>Set state position 1 (to 1) when opened</option>
-              <option value={-1}>Set state position 1 (to 1) when closed</option>
-              <option value={2}>Set state position 2 (to 1) when opened</option>
-              <option value={-2}>Set state position 2 (to 1) when closed</option>
-              <option value={4}>Set state position 3 (to 1) when opened</option>
-              <option value={-4}>Set state position 3 (to 1) when closed</option>
-              <option value={8}>Set state position 4 (to 1) when opened</option>
-              <option value={-8}>Set state position 4 (to 1) when closed</option>
-              <option value={16}>Set state position 5 (to 1) when opened</option>
-              <option value={-16}>Set state position 5 (to 1) when closed</option>
-              <option value={32}>Set state position 6 (to 1) when opened</option>
-              <option value={-32}>Set state position 6 (to 1) when closed</option>
-              <option value={64}>Set state position 7 (to 1) when opened</option>
-              <option value={-64}>Set state position 7 (to 1) when closed</option>
-              <option value={128}>Set state position 8 (to 1) when opened</option>
-              <option value={-128}>Set state position 8 (to 1) when closed</option>
+              onChange={this.stateBehaviorChange.bind(this)} value={`${stateBehavior}`}>
+              <option value='1'>Set state position 1 (to 1) when opened</option>
+              <option value='-1'>Set state position 1 (to 1) when closed</option>
+              <option value='2'>Set state position 2 (to 1) when opened</option>
+              <option value='-2'>Set state position 2 (to 1) when closed</option>
+              <option value='4'>Set state position 3 (to 1) when opened</option>
+              <option value='-4'>Set state position 3 (to 1) when closed</option>
+              <option value='8'>Set state position 4 (to 1) when opened</option>
+              <option value='-8'>Set state position 4 (to 1) when closed</option>
+              <option value='16'>Set state position 5 (to 1) when opened</option>
+              <option value='-16'>Set state position 5 (to 1) when closed</option>
+              <option value='32'>Set state position 6 (to 1) when opened</option>
+              <option value='-32'>Set state position 6 (to 1) when closed</option>
+              <option value='64'>Set state position 7 (to 1) when opened</option>
+              <option value='-64'>Set state position 7 (to 1) when closed</option>
+              <option value='128'>Set state position 8 (to 1) when opened</option>
+              <option value='-128'>Set state position 8 (to 1) when closed</option>
             </Select>,
             <div key={1} className='col s12'>
                 <div className='switch'>
@@ -521,7 +517,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
           <Row>
             <div className='col s12'>
               Temperature forced reports interval: {tempForcedReportsInterval > 0 && _displayMinutes(tempForcedReportsInterval) || 'deactivated'}&nbsp;
-              {tempMeasureInterval < 3600 && '(Setting under 1 hour will affect battery lifetime)'}
+              {tempForcedReportsInterval < 3600 && '(Setting under 1 hour will affect battery lifetime)'}
               .
             </div>
             <div className='col s12 slider'>
@@ -694,7 +690,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
     .catch(console.error)
   }
 
-  stateBehaviorChange (event, value) {
+  stateBehaviorChange (event) {
+    const value = parseInt(event.currentTarget.value)
     this.props.productObjectProxy.setStateBehavior(value)
     .then(() => {
       this.setState({

@@ -54,9 +54,10 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
-            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
@@ -74,7 +75,8 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
           ))}
         </Select>
 
-        <Select s={12} m={3} label='Action' icon='power_settings_new' onChange={this.controlModeChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Action' icon='power_settings_new' onChange={this.controlModeChanged.bind(this)}
           value={instance.data.controlMode || 'invert'}>
           <option key='invert' value='invert'>Invert</option>
           <option key='force-on' value='force-on'>Force ON</option>
@@ -89,7 +91,7 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
   }
 
   nodeChanged (index, event) {
-    const newNodeId = event.currentTarget.value
+    const newNodeId = parseInt(event.currentTarget.value)
     if (newNodeId > 0) {
       this.props.instance.data.nodeIds[index] = newNodeId
     } else {
@@ -117,7 +119,7 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     const nodeNames = this.state.compatibleNodes
       .filter((node) => this.props.instance.data.nodeIds.includes(node.nodeid))
       .map((node) => `"${node.name}"`)
-    this.props.instance.data.name = nodeNames.join(', ')
+    this.props.instance.data.name = nodeNames.length > 1 ? `[${nodeNames.join(',')}]` : nodeNames[0]
     this.props.highlightCloseButton()
   }
 }

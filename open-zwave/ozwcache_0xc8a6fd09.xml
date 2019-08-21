@@ -478,7 +478,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="29.7">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="21.0">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -597,7 +597,7 @@
 					<StaticRequests>0</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="1" size="0">
+				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="0">
 					<Help>Heat Alerts</Help>
 					<Item label="Clear" value="0" />
 					<Item label="OverHeat at Unknown at Location" value="2" />
@@ -620,7 +620,7 @@
 					<Item label="Replace Battery Now" value="11" />
 				</Value>
 				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
-					<Help></Help>
+					<Help />
 				</Value>
 			</CommandClass>
 			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
@@ -715,7 +715,7 @@
 					<StaticRequests>4</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="90">
+				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="55">
 					<Help>Current Battery Level</Help>
 				</Value>
 			</CommandClass>
@@ -873,7 +873,7 @@
 					<StaticRequests>2</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.42">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.43">
 					<Help></Help>
 				</Value>
 				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
@@ -1000,7 +1000,7 @@
 				<Value type="short" genre="config" instance="1" index="40" label="Power load, which when exceeded, makes the LED ring flash violet." units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1000" max="30000" value="25000">
 					<Help>Function is active only when parameter 41 is set to 0 or 1. Available settings: 1000 - 30000 (100,0W - 3000,0W, step 0,1W). Default setting: 25000 (2500W)</Help>
 				</Value>
-				<Value type="list" genre="config" instance="1" index="41" label="LED ring illumination colour when controlled device is on" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+				<Value type="list" genre="config" instance="1" index="41" label="LED ring illumination colour when controlled device is on" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="5" size="1">
 					<Help>0 - Illumination turned off completely, 1 - LED ring illumination colour changes continuously depending on active power, 2 - LED ring illumination colour changes in steps, depending on active power, 3 - White illumination, 4 - Red illumination, 5 - Green illumination, 6 - Blue illumination, 7 - Yellow illumination, 8 - Cyan illumination, 9 - Magenta illumination. Default setting: 1</Help>
 					<Item label="illumination turned off completely" value="0" />
 					<Item label="Colour changes continuously depending on active power" value="1" />
@@ -1013,7 +1013,7 @@
 					<Item label="Cyan illumination" value="8" />
 					<Item label="Magenta illumination" value="9" />
 				</Value>
-				<Value type="list" genre="config" instance="1" index="42" label="LED ring illumination colour when controlled device is off" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+				<Value type="list" genre="config" instance="1" index="42" label="LED ring illumination colour when controlled device is off" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="4" size="1">
 					<Help>0 - Illumination turned off completely, 1 - LED ring is illuminated with a colour corresponding to the last measured power, before the controlled device was turned off, 3 - White illumination, 4 - Red illumination, 5 - Green illumination, 6 - Blue illumination, 7 - Yellow illumination, 8 - Cyan illumination, 9 - Magenta illumination. Default setting: 0</Help>
 					<Item label="illumination turned off completely" value="0" />
 					<Item label="LED ring is illuminated with a colour corresponding to the last measured power" value="1" />
@@ -1208,7 +1208,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Session">
+	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Associations">
 		<Manufacturer id="208" name="HANK Electronics Ltd">
 			<Product type="200" id="b" name="HKZW-SCN04 Scene Controller">
 				<MetaData>
@@ -1498,7 +1498,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="6" name="" location="" basic="4" generic="16" specific="1" roletype="5" devicetype="1792" nodetype="0" type="Binary Power Switch" listening="true" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="5" query_stage="Complete">
+	<Node id="6" name="Plug Catch" location="Lauren" basic="4" generic="16" specific="1" roletype="5" devicetype="1792" nodetype="0" type="Binary Power Switch" listening="true" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="5" query_stage="Complete">
 		<Manufacturer id="10f" name="FIBARO System">
 			<Product type="602" id="1003" name="FGWPE/F Wall Plug Gen5">
 				<MetaData>
@@ -1542,7 +1542,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
+				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
 					<Help>Turn On/Off Device</Help>
 				</Value>
 			</CommandClass>
@@ -1567,7 +1567,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -1579,10 +1579,10 @@
 					<StaticRequests>2</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.04">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.81">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
@@ -1636,7 +1636,7 @@
 					<Item label="Inactive" value="0" />
 					<Item label="Active" value="1" />
 				</Value>
-				<Value type="list" genre="config" instance="1" index="2" label="Remember device status after a power failure" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+				<Value type="list" genre="config" instance="1" index="2" label="Remember device status after a power failure" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="1" size="1">
 					<Help>This parameter determines how the Wall Plug will react in the event of power supply failure (e.g. taking out from the electrical outlet). After the power supply is back on, the Wall Plug can be restored to previous state or remain switched off. This parameter is ignored in Always On mode - the device automatically turns ON after plugging it into the socket. Default setting: 1</Help>
 					<Item label="Wall Plug does not memorize its state after a power failure" value="0" />
 					<Item label="Wall Plug memorizes its state after a power failure" value="1" />
@@ -1706,7 +1706,7 @@
 				<Value type="short" genre="config" instance="1" index="40" label="Power load, which when exceeded, makes the LED ring flash violet." units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1000" max="30000" value="1000">
 					<Help>Function is active only when parameter 41 is set to 0 or 1. Available settings: 1000 - 30000 (100,0W - 3000,0W, step 0,1W). Default setting: 25000 (2500W)</Help>
 				</Value>
-				<Value type="list" genre="config" instance="1" index="41" label="LED ring illumination colour when controlled device is on" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="1" size="1">
+				<Value type="list" genre="config" instance="1" index="41" label="LED ring illumination colour when controlled device is on" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="5" size="1">
 					<Help>0 - Illumination turned off completely, 1 - LED ring illumination colour changes continuously depending on active power, 2 - LED ring illumination colour changes in steps, depending on active power, 3 - White illumination, 4 - Red illumination, 5 - Green illumination, 6 - Blue illumination, 7 - Yellow illumination, 8 - Cyan illumination, 9 - Magenta illumination. Default setting: 1</Help>
 					<Item label="illumination turned off completely" value="0" />
 					<Item label="Colour changes continuously depending on active power" value="1" />
@@ -1719,7 +1719,7 @@
 					<Item label="Cyan illumination" value="8" />
 					<Item label="Magenta illumination" value="9" />
 				</Value>
-				<Value type="list" genre="config" instance="1" index="42" label="LED ring illumination colour when controlled device is off" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+				<Value type="list" genre="config" instance="1" index="42" label="LED ring illumination colour when controlled device is off" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="4" size="1">
 					<Help>0 - Illumination turned off completely, 1 - LED ring is illuminated with a colour corresponding to the last measured power, before the controlled device was turned off, 3 - White illumination, 4 - Red illumination, 5 - Green illumination, 6 - Blue illumination, 7 - Yellow illumination, 8 - Cyan illumination, 9 - Magenta illumination. Default setting: 0</Help>
 					<Item label="illumination turned off completely" value="0" />
 					<Item label="LED ring is illuminated with a colour corresponding to the last measured power" value="1" />
@@ -1957,13 +1957,13 @@
 				<Instance index="4" endpoint="3" />
 				<Instance index="5" endpoint="4" />
 				<Instance index="6" endpoint="5" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
@@ -2119,7 +2119,7 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.00">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.18">
 					<Help></Help>
 				</Value>
 				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
@@ -2188,7 +2188,7 @@
 				<Value type="byte" genre="config" instance="1" index="11" label="Time to complete the entire transition (for MODE 2)" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="67">
 					<Help>0 - immediate change; 1-&gt;63: 20ms-&gt;126ms (value*20ms); 65-&gt;127: 1s-&gt;63s (value-64)*1s; 129-&gt;191: 10s-&gt;630s (value-128)*10s; 193-&gt;255: 1min-&gt;63min (value-192)*1min. Default setting: 67 (3s)</Help>
 				</Value>
-				<Value type="byte" genre="config" instance="1" index="12" label="Maximum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="3" max="255" value="255">
+				<Value type="byte" genre="config" instance="1" index="12" label="Maximum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="3" max="255" value="190">
 					<Help>Maximum brightness level for the dimmer</Help>
 				</Value>
 				<Value type="byte" genre="config" instance="1" index="13" label="Minimum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="2" max="255" value="2">

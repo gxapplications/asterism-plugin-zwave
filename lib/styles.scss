@@ -215,6 +215,7 @@ i.material-icons.zwave-off.black-text,
   height: 4em;
   width: 4em;
   padding-top: 0.9em;
+  margin-right: 0.9em;
   text-shadow: 1px 1px 1px rgba(64, 64, 64, 0.5);
   box-shadow: 1px 1px 3px 1px rgba(64, 64, 64, 0.4), inset 1px 1px 3px 1px rgba(64, 64, 64, 0.4);
   position: relative;
@@ -372,4 +373,10 @@ i.material-icons.zwave-off.black-text,
       top: 0.8em;
     }
   }
+}
+
+div.section.form.brightnesses > div.slider {
+  padding-left: 3vw;
+  padding-top: 0.6rem;
+  padding-right: 3vw;
 }
