@@ -9,6 +9,18 @@ import { Button, Row, Select, Preloader } from 'react-materialize'
 
 import NameLocation from './name-location'
 
+const mode2SliderEdit = (v) => {
+  v = Math.round(v)
+  if (v === 0) return '0'
+  if (v <= 49) {
+    return `${v * 20}ms`
+  }
+  if (v <= 123) {
+    return `${v - 64}s`
+  }
+  return `${v - 192}m`
+}
+
 class FibaroFgrgbwm441SettingPanel extends React.Component {
   constructor (props) {
     super(props)
@@ -43,6 +55,13 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
     }, 1200, false)
     this.debouncedTimeBetweenDimmingStepsMode1Value = debounce((value) => {
       this.changeConfiguration(configs.TIME_BETWEEN_DIMMING_STEPS_MODE_1, value)
+    }, 1200, false)
+    this.debouncedTimeToCompleteTransitionMode2Value = debounce((value) => {
+      this.changeConfiguration(configs.TIME_TO_COMPLETE_TRANSITION_MODE_2, value)
+    }, 1200, false)
+    this.debouncedMinMaxDimmerLevel = debounce((min, max) => {
+      this.changeConfiguration(configs.MINIMUM_DIMMER_LEVEL, min)
+      this.changeConfiguration(configs.MAXIMUM_DIMMER_LEVEL, max)
     }, 1200, false)
   }
 
@@ -461,11 +480,110 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         this._slider7.set(levels.white || 0)
       }
     }
+
+    const domSlider8 = $(`#time-to-complete-transition-slider-${this.props.nodeId}`)[0]
+    if (domSlider8) {
+      if (!this._slider8 || !domSlider8.noUiSlider) {
+        this._slider8 = noUiSlider.create(domSlider8, {
+          start: config[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2] || 67, // 67 => 3s
+          connect: true,
+          step: 1,
+          animate: true,
+          range: {
+            'min': [0, 1], // => "immediate"
+            '1%': [1, 1], // => value*20ms
+            '32%': [49, 16], // => 980ms
+            '33%': [65, 1], // => [value-64]*1s
+            '65%': [123, 70], // => 59s
+            '66%': [193, 1], // => [value-192]*1min
+            'max': [252] // 60min
+          },
+          format: wNumb({
+            decimals: 1,
+            edit: (v) => Math.round(v)
+          }),
+          pips: { // Show a scale with the slider
+            mode: 'steps',
+            density: 3,
+            filter: (value) => {
+              if (value === 0 || value === 65 || value === 193 || value === 252) {
+                return 1
+              }
+              if (value === 25 || value === 94 || value === 222) {
+                return 2
+              }
+              return 0
+            },
+            format: wNumb({
+              decimals: 1,
+              edit: mode2SliderEdit
+            })
+          },
+          tooltips: wNumb({
+            decimals: 1,
+            edit: mode2SliderEdit
+          }), // decimals: 0 does not work...
+          behaviour: 'tap-drag',
+          orientation: 'horizontal'
+        })
+
+        this._slider8.on('change', this.changeTimeToCompleteTransitionMode2Value.bind(this))
+      } else {
+        this._slider8.set(config[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2] || 67) // 67 => 3s
+      }
+    }
+
+    const domSlider9 = $(`#min-max-slider-${this.props.nodeId}`)[0]
+    if (domSlider9) {
+      if (!this._slider9 || !domSlider9.noUiSlider) {
+        this._slider9 = noUiSlider.create(domSlider9, {
+          start: [config[configs.MINIMUM_DIMMER_LEVEL] || 2, config[configs.MAXIMUM_DIMMER_LEVEL] || 255],
+          connect: true,
+          step: 1,
+          animate: true,
+          range: {
+            'min': [2, 1],
+            '21%': [10, 5],
+            '48%': [50, 10],
+            '86%': [190, 15],
+            'max': [255]
+          },
+          format: wNumb({
+            decimals: 1,
+            edit: (v) => Math.round(v)
+          }),
+          pips: { // Show a scale with the slider
+            mode: 'steps',
+            density: 3,
+            format: wNumb({
+              decimals: 1,
+              edit: (v) => `${v}`.split('.')[0]
+            })
+          },
+          tooltips: [
+            wNumb({
+              decimals: 1,
+              edit: (v) => `${v}`.split('.')[0]
+            }), // decimals: 0 does not work...
+            wNumb({
+              decimals: 1,
+              edit: (v) => `${v}`.split('.')[0]
+            })
+          ],
+          behaviour: 'tap-drag',
+          orientation: 'horizontal'
+        })
+
+        this._slider9.on('change', this.changeMinMax.bind(this))
+      } else {
+        this._slider9.set([config[configs.MINIMUM_DIMMER_LEVEL] || 2, config[configs.MAXIMUM_DIMMER_LEVEL] || 255])
+      }
+    }
   }
 
   render () {
-    const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
-    const { levels, meterLastValue, energyLevel, costLastValue, configuration, panelReady } = this.state
+    const { nodeId, animationLevel, theme, productObjectProxy } = this.props
+    const { meterLastValue, energyLevel, costLastValue, configuration, panelReady } = this.state
     const configs = FibaroFgrgbwm441SettingPanel.configurations
 
     let enableAllOnOff = configuration[configs.ENABLE_ALL_ON_OFF]
@@ -477,7 +595,6 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
     let outputsStateChangeMode = configuration[configs.OUTPUTS_STATE_CHANGE_MODE]
     outputsStateChangeMode = outputsStateChangeMode === 'MODE 1 - Constant Speed (speed is defined by parameters 9 and 10)' ? 0 : outputsStateChangeMode
     outputsStateChangeMode = outputsStateChangeMode === 'MODE 2 - Constant Time (RGB/RBGW only. Time is defined by parameter 11)' ? 1 : outputsStateChangeMode
-
     const waves = animationLevel >= 2 ? 'light' : undefined
 
     return panelReady ? (
@@ -514,7 +631,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
           </div>
         </div>
 
-        <h5>Transitions</h5>
+        <h5>Levels transitions & bounds</h5>
         <div className='section card form'>
           <Row>
             <Select s={12} label='Behaviour of transitions between levels'
@@ -523,7 +640,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
               <option value='1'>MODE 2 - Constant Time (RGB/RBGW only)</option>
             </Select>
 
-            {outputsStateChangeMode === 0 && (
+            {outputsStateChangeMode == 0 && (
               <div>
                 <br />
                 <div className='col s12'><br />Dimming step value: actually {configuration[configs.DIMMING_STEP_VALUE_MODE_1]}%.</div>
@@ -537,15 +654,21 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
               </div>
             )}
 
-            {outputsStateChangeMode === 1 && (
+            {outputsStateChangeMode == 1 && (
               <div>
-                TODO !0
-                <div className='col s12'><br />Time to complete transition: actually {configuration[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2]}??.</div>
+                <div className='col s12'><br />Time to complete transition: actually {mode2SliderEdit(configuration[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2])}.</div>
                 <div className='col s12 slider'>
                   <div id={`time-to-complete-transition-slider-${nodeId}`} />
                 </div>
               </div>
             )}
+
+            <div>
+              <div className='col s12'><br />Max and min level values (from 2 to 255)</div>
+              <div className='col s12 slider'>
+                <div id={`min-max-slider-${nodeId}`} />
+              </div>
+            </div>
           </Row>
         </div>
 
@@ -559,39 +682,18 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
               <option value='2'>ALL ON active, ALL OFF disabled</option>
               <option value='3'>ALL ON active, ALL OFF active</option>
             </Select>
-
           </Row>
-        </div>
 
           <Row>
-              TODO !1: Advanced controls :
-              - meter counter with reset button, and {meterLastValue && meterLastValue.v}, {costLastValue}
-              <br />
-
-              TODO !0: config :
-              configuration[configs.TIME_TO_COMPLETE_TRANSITION_MODE_2] knob, from XX to XX, only if Mode 2 selected,
-              0 – immediate change
-              1-63 – 20-1260ms – value*20ms
-              65-127 – 1-63s – [value-64]*1s
-              129-191 – 10-630s – [value-128]*10s
-              193-255 – 1-63min – [value-192]*1min
-              Default setting: 67 (3s)
-
-              range:
-                'min': [0, 1], // => "immediate"
-                '10%': [1, 1], // => value*20ms
-                '40%': [49, 16], // => 980ms
-                '42%': [65, 1], // => [value-64]*1s
-                '60%': [113, 80], // => 59s
-                '62%': [193, 1], // => [value-192]*1min
-                'max': [252] // 60min
-              <br />
-
-              TODO !2: config :
-              configuration[configs.MINIMUM_DIMMER_LEVEL] - configuration[configs.MAXIMUM_DIMMER_LEVEL]: 2 knobs on 1 rail.
-              <br />
+            <Button className={cx('col s12 m6 l4 fluid', theme.actions.inconspicuous)} waves={waves}
+              onClick={() => { this.props.productObjectProxy.meterResetCounter() }}>Reset energy meter</Button>
+            <div className='col s12 m6 l8'>
+              Actually {(meterLastValue && Number.parseFloat(meterLastValue.v || 0).toFixed(2)) || '0.00'} kWh {costLastValue > 0 && (
+                <span>&nbsp;({Number.parseFloat(costLastValue).toFixed(2)} ¤)</span>
+              )}
+            </div>
           </Row>
-
+        </div>
       </div>
     ) : (
       <div className='valign-wrapper centered-loader'>
@@ -623,8 +725,26 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
     this.debouncedTimeBetweenDimmingStepsMode1Value(value[0])
   }
 
-  changeMultiLevelValue(instance, value) {
+  changeTimeToCompleteTransitionMode2Value (value) {
+    this.setState({
+      configuration: { ...this.state.configuration, [FibaroFgrgbwm441SettingPanel.configurations.TIME_TO_COMPLETE_TRANSITION_MODE_2]: value[0] }
+    })
+    this.debouncedTimeToCompleteTransitionMode2Value(value[0])
+  }
+
+  changeMultiLevelValue (instance, value) {
     this.props.productObjectProxy.multiLevelSwitchSetValue(value, instance)
+  }
+
+  changeMinMax ([min, max]) {
+    this.setState({
+      configuration: {
+        ...this.state.configuration,
+        [FibaroFgrgbwm441SettingPanel.configurations.MINIMUM_DIMMER_LEVEL]: min,
+        [FibaroFgrgbwm441SettingPanel.configurations.MAXIMUM_DIMMER_LEVEL]: max
+      }
+    })
+    this.debouncedMinMaxDimmerLevel(min, max)
   }
 }
 

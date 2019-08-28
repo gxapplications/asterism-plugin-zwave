@@ -51,19 +51,22 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
           const typeData = alarmSupportedLabels[type] || {}
           const casesData = typeData.cases
           return [
-            <Select key={uuid.v4()} s={12} m={6} l={6} label={`Z-wave device #${idx + 1}`} icon='notification_important'
+            <br className='col s12 m12 l12' key={uuid.v4()} />,
+            <Select key={uuid.v4()} s={12} m={6} l={5} label={`Z-wave device #${idx + 1}`} icon='notification_important'
               onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
               {compatibleNodes.map((node, i) => (
                 <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
               <option key={uuid.v4()} value='0'>(Remove it)</option>
             </Select>,
-            <Select key={uuid.v4()} s={12} m={6} l={6} label='Alarm type'
+            <Select key={uuid.v4()} s={12} m={6} l={5} label='Alarm type'
               onChange={this.typeChanged.bind(this, idx, nodeId)} value={type}>
               {Object.entries(alarmSupportedLabels).filter(([i]) => i !== 'defaults').map(([i, data]) => (
                 <option key={uuid.v4()} value={i}>{data.label}</option>
               ))}
             </Select>,
+
+            // TODO !0: refacto checkboxes ???
             <div key={uuid.v4()} className='col s12 m12 l12'>
               {Object.entries(casesData).filter(([casIdx]) => casIdx !== 'defaults').map(([casIdx, label]) => (
                 <div key={uuid.v4()} className='col'>
@@ -79,6 +82,8 @@ class ZwaveAlarmTriggerEditForm extends React.Component {
         }) : (
           <div>Compatible devices not found on the network.</div>
         )}
+
+        <br className='col s12 m12 l12' key={uuid.v4()} />
 
         <Select key={uuid.v4()} s={12} m={6} l={6}
           label={`Z-wave device #${instance.data.events.length + 1}`} icon='notification_important'

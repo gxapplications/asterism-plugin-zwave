@@ -50,40 +50,35 @@ class ZwaveAlarmConditionEditForm extends React.Component {
         {compatibleNodes.length > 0 ? instance.data.events.map(({ nodeId, type, state }, idx) => {
           const alarmSupportedLabels = compatibleNodes.find((n) => n.nodeid === nodeId).meta.alarmSupportedLabels
           return [
-            <Select key={uuid.v4()} s={12} m={6} l={6} label={`Z-wave device #${idx + 1}`} icon='notification_important'
-              onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            <br className='col s12 m12 l12' key={uuid.v4()} />,
+            <Select key={uuid.v4()} s={12} m={6} l={5} label={`Z-wave device #${idx + 1}`} icon='notification_important'
+              onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
               {compatibleNodes.map((node, i) => (
                 <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
               <option key={uuid.v4()} value='0'>(Remove it)</option>
             </Select>,
-            <Select key={uuid.v4()} s={12} m={6} l={6} label='Alarm type'
-              onChange={this.typeChanged.bind(this, idx, nodeId)} value={type}>
+            <Select key={uuid.v4()} s={12} m={6} l={5} label='Alarm type'
+              onChange={this.typeChanged.bind(this, idx, nodeId)} value={`${type}`}>
               {Object.entries(alarmSupportedLabels).filter(([i]) => i !== 'defaults').map(([i, data]) => (
                 <option key={uuid.v4()} value={i}>{data.label}</option>
               ))}
             </Select>,
-            <div key={uuid.v4()} className='col s4 offset-m1 m3 offset-l2 l2'>
-              <input name={`state_choice_${idx}`} type='radio' value={true} id={`state_choice_${idx}_on`}
-                onClick={this.stateChanged.bind(this, idx, true)} defaultChecked={state === true} />
-              <label htmlFor={`state_choice_${idx}_on`}>ON</label>
-            </div>,
-            <div key={uuid.v4()} className='col s4 m3 l2'>
-              <input name={`state_choice_${idx}`} type='radio' value={false} id={`state_choice_${idx}_off`}
-                onClick={this.stateChanged.bind(this, idx, false)} defaultChecked={state === false} />
-              <label htmlFor={`state_choice_${idx}_off`}>OFF</label>
-            </div>,
-            <div key={uuid.v4()} className='col s4 m3 l2'>
-                <input name={`state_choice_${idx}`} type='radio' value={null} id={`state_choice_${idx}_undef`}
-            onClick={this.stateChanged.bind(this, idx, null)} defaultChecked={state === null} />
-            <label htmlFor={`state_choice_${idx}_undef`}>Unknown</label>
-            </div>,
+            <Select key={uuid.v4()} s={12} m={6} l={2} label='Alarm state'
+              onChange={this.stateChanged.bind(this, idx)} value={(state === null) ? 'null' : (state ? 'true' : 'false')}>
+              <option key='on' value='true'>ON</option>
+              <option key='off' value='false'>OFF</option>
+              <option key='undef' value='null'>Unknown</option>
+            </Select>,
             <br className='col s12 m12 l12' key={uuid.v4()} />,
-            <hr className='col s12 m12 l12' key={uuid.v4()} />
+            <hr className='col s12 m12 l12' key={uuid.v4()} />,
+            <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
           ]
         }) : (
           <div>Compatible devices not found on the network.</div>
         )}
+
+        <br className='col s12 m12 l12' key={uuid.v4()} />
 
         <Select key={uuid.v4()} s={12} m={6} l={6}
           label={`Z-wave device #${instance.data.events.length + 1}`} icon='notification_important'
@@ -128,7 +123,7 @@ class ZwaveAlarmConditionEditForm extends React.Component {
   typeChanged (index, nodeId, event) {
     const newType = parseInt(event.currentTarget.value)
     const supportedLabels = this.state.compatibleNodes.find((n) => n.nodeid === nodeId).meta.alarmSupportedLabels
-
+    // TODO !0: pk j'ai calculé cela si je m'en sers pas ? a investiguer !
     this.props.instance.data.events[index].type = newType
     this.props.instance.data.events[index].state = true
     this.setState({
@@ -138,11 +133,11 @@ class ZwaveAlarmConditionEditForm extends React.Component {
   }
 
   stateChanged (index, value) {
-    this.props.instance.data.events[index].state = value
+    this.props.instance.data.events[index].state = (value === 'null') ? null : ((value === 'true') ? true : false)
     this.setState({
       events: this.props.instance.data.events
     })
-  this.nameChange()
+    this.nameChange()
   }
 
   aggregationChanged (event) {
