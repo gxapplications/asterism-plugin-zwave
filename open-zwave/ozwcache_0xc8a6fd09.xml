@@ -478,7 +478,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="24.4">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="26.6">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -620,7 +620,7 @@
 					<Item label="Replace Battery Now" value="11" />
 				</Value>
 				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
-					<Help />
+					<Help></Help>
 				</Value>
 			</CommandClass>
 			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
@@ -1579,7 +1579,7 @@
 					<StaticRequests>2</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.16">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.53">
 					<Help></Help>
 				</Value>
 				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
@@ -2188,7 +2188,7 @@
 				<Value type="byte" genre="config" instance="1" index="11" label="Time to complete the entire transition (for MODE 2)" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="67">
 					<Help>0 - immediate change; 1-&gt;63: 20ms-&gt;126ms (value*20ms); 65-&gt;127: 1s-&gt;63s (value-64)*1s; 129-&gt;191: 10s-&gt;630s (value-128)*10s; 193-&gt;255: 1min-&gt;63min (value-192)*1min. Default setting: 67 (3s)</Help>
 				</Value>
-				<Value type="byte" genre="config" instance="1" index="12" label="Maximum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="3" max="255" value="255">
+				<Value type="byte" genre="config" instance="1" index="12" label="Maximum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="3" max="255" value="190">
 					<Help>Maximum brightness level for the dimmer</Help>
 				</Value>
 				<Value type="byte" genre="config" instance="1" index="13" label="Minimum dimmer level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="2" max="255" value="2">

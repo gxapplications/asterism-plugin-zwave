@@ -126,9 +126,10 @@ class ZwaveBatteryLevelConditionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
             <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_full'
-                   onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+                   onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
               {compatibleNodes.map((node, i) => (
                   <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
               ))}
@@ -139,20 +140,22 @@ class ZwaveBatteryLevelConditionEditForm extends React.Component {
         )}
         <Select key={uuid.v4()} s={12} m={6} l={4}
                label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='battery_full'
-               onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
+               onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value={''}>
           <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
         </Select>
 
-        <Select s={12} m={5} label='Operator' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Operator' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
                value={instance.data.operator || 'below'}>
           <option key='below' value='below'>Below</option>
           <option key='above' value='above'>Above</option>
           <option key='between' value='between'>Between</option>
         </Select>
 
+        <hr className='col s12 m12 l12' key={uuid.v4()} />
         {instance.data.operator === 'between' ? (
           <div className='col s12'>Pass when (one of) the device(s)' battery level is between {limit}% and {limit2}% :</div>
         ) : (

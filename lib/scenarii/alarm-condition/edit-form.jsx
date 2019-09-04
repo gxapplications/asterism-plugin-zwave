@@ -122,8 +122,7 @@ class ZwaveAlarmConditionEditForm extends React.Component {
 
   typeChanged (index, nodeId, event) {
     const newType = parseInt(event.currentTarget.value)
-    const supportedLabels = this.state.compatibleNodes.find((n) => n.nodeid === nodeId).meta.alarmSupportedLabels
-    // TODO !0: pk j'ai calculé cela si je m'en sers pas ? a investiguer !
+    // const supportedLabels = this.state.compatibleNodes.find((n) => n.nodeid === nodeId).meta.alarmSupportedLabels
     this.props.instance.data.events[index].type = newType
     this.props.instance.data.events[index].state = true
     this.setState({

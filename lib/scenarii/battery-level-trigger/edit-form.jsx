@@ -92,9 +92,10 @@ class ZwaveBatteryLevelTriggerEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_full'
-            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
@@ -112,12 +113,14 @@ class ZwaveBatteryLevelTriggerEditForm extends React.Component {
           ))}
         </Select>
 
-        <Select s={12} m={5} label='Way' icon='swap_vert' onChange={this.wayChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Way' icon='swap_vert' onChange={this.wayChanged.bind(this)}
           value={instance.data.way || 'increasing'}>
           <option key='increasing' value='increasing'>Upward (increasing)</option>
           <option key='decreasing' value='decreasing'>Downward (decreasing)</option>
         </Select>
 
+        <hr className='col s12 m12 l12' key={uuid.v4()} />
         <div className='col s12'>Triggers when (one of) the device(s)' battery level crosses the limit {instance.data.way === 'increasing' ? 'upward' : 'downward'} of {limit}% :</div>
         <div className='col s12 slider'>
           <div id={`triggering-battery-level-slider-${instance.instanceId}`} />
@@ -170,7 +173,7 @@ class ZwaveBatteryLevelTriggerEditForm extends React.Component {
     const nodeNames = this.state.compatibleNodes
       .filter((node) => this.props.instance.data.nodeIds.includes(node.nodeid))
       .map((node) => `"${node.name}"`)
-    this.props.instance.data.name = nodeNames.join(', ')
+    this.props.instance.data.name = nodeNames.length > 1 ? `[${nodeNames.join('|')}]` : nodeNames[0]
     this.props.highlightCloseButton()
   }
 }

@@ -55,9 +55,10 @@ class ZwaveBinarySwitchStateConditionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
-            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
@@ -75,20 +76,22 @@ class ZwaveBinarySwitchStateConditionEditForm extends React.Component {
           ))}
         </Select>
 
-        <Select s={12} m={4} label='Aggregation' icon='functions' onChange={this.aggregationChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Aggregation' icon='functions' onChange={this.aggregationChanged.bind(this)}
           value={instance.data.aggregation || 'any'}>
           <option key='any' value='any'>Any (one of them)</option>
           <option key='every' value='every'>Every (each of them)</option>
         </Select>
 
-        <Select s={12} m={4} label='State' icon='power_settings_new' onChange={this.stateChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='State' icon='power_settings_new' onChange={this.stateChanged.bind(this)}
           value={instance.data.state || 'on'}>
           <option key='on' value='on'>ON</option>
           <option key='off' value='off'>OFF</option>
         </Select>
 
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
         <div className='col s12'>Pass when {aggregation} switched {state}.</div>
-
       </Row>
     ) : (
       <div className='valign-wrapper centered-loader'>
