@@ -110,9 +110,10 @@ class ZwaveInstantEnergyLimitTriggerEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? (
           <Select s={12} m={7} label='Z-wave device' icon='offline_bolt'
-            onChange={this.nodeChanged.bind(this)} value={instance.data.nodeId}>
+            onChange={this.nodeChanged.bind(this)} value={`${instance.data.nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
@@ -121,12 +122,14 @@ class ZwaveInstantEnergyLimitTriggerEditForm extends React.Component {
           <div>Compatible devices not found on the network.</div>
         )}
 
-        <Select s={12} m={5} label='Way' icon='swap_vert' onChange={this.wayChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Way' icon='swap_vert' onChange={this.wayChanged.bind(this)}
           value={instance.data.way || 'increasing'}>
           <option key='increasing' value='increasing'>Upward (increasing)</option>
           <option key='decreasing' value='decreasing'>Downward (decreasing)</option>
         </Select>
 
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
         <div className='col s12'>Triggers when device power crosses the limit {instance.data.way === 'increasing' ? 'upward' : 'downward'} of {limit}W:</div>
         <div className='col s12 slider'>
           <div id={`triggering-limit-power-slider-${instance.data.nodeId}`} />

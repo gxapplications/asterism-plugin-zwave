@@ -51,9 +51,10 @@ class ZwaveDeadNodeTriggerEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='blur_circular'
-            onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
+            onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}

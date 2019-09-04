@@ -155,40 +155,44 @@ class ZwaveInstantEnergyConditionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-            <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='offline_bolt'
-                   onChange={this.nodeChanged.bind(this, idx)} value={nodeId}>
-              {compatibleNodes.map((node, i) => (
-                  <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
-              ))}
-              <option key={uuid.v4()} value='0'>(Remove it)</option>
-            </Select>
+          <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='offline_bolt'
+            onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
+            {compatibleNodes.map((node, i) => (
+              <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
+            ))}
+            <option key={uuid.v4()} value='0'>(Remove it)</option>
+          </Select>
         )) : (
             <div>Compatible devices not found on the network.</div>
         )}
         <Select key={uuid.v4()} s={12} m={6} l={4}
-               label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='offline_bolt'
-               onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
+          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='offline_bolt'
+          onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value=''>
           <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
-              <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
+            <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
           ))}
         </Select>
 
-        <Select s={12} m={5} label='Aggregation' icon='functions' onChange={this.aggregationChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Aggregation' icon='functions' onChange={this.aggregationChanged.bind(this)}
           value={instance.data.aggregation || 'any'}>
           <option key='any' value='any'>Any (one of them)</option>
           <option key='every' value='every'>Every (each of them)</option>
           <option key='sum' value='sum'>Sum of each</option>
         </Select>
 
-        <Select s={12} m={5} label='Operator' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Operator' icon='swap_vert' onChange={this.operatorChanged.bind(this)}
           value={instance.data.operator || 'above'}>
           <option key='below' value='below'>Below</option>
           <option key='above' value='above'>Above</option>
           <option key='between' value='between'>Between</option>
         </Select>
 
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
         {instance.data.operator === 'between' ? (
           <div className='col s12'>Pass when {aggregation} instant energy level is between {limit2}W and {limit}W :</div>
         ) : (

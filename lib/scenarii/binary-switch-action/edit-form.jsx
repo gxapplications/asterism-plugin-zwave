@@ -119,7 +119,7 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     const nodeNames = this.state.compatibleNodes
       .filter((node) => this.props.instance.data.nodeIds.includes(node.nodeid))
       .map((node) => `"${node.name}"`)
-    this.props.instance.data.name = nodeNames.length > 1 ? `[${nodeNames.join('|')}]` : nodeNames[0]
+    this.props.instance.data.name = nodeNames.length > 1 ? `[${nodeNames.join(',')}]` : nodeNames[0]
     this.props.highlightCloseButton()
   }
 }

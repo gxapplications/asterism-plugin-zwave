@@ -112,9 +112,10 @@ class ZwaveEnergyConsumptionLimitTriggerEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
+        <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? (
           <Select s={12} m={7} label='Z-wave device' icon='ev_station'
-            onChange={this.nodeChanged.bind(this)} value={instance.data.nodeId}>
+            onChange={this.nodeChanged.bind(this)} value={`${instance.data.nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
             ))}
@@ -123,12 +124,14 @@ class ZwaveEnergyConsumptionLimitTriggerEditForm extends React.Component {
           <div>Compatible devices not found on the network.</div>
         )}
 
-        <Select s={12} m={5} label='Unit' icon='euro_symbol' onChange={this.unitChanged.bind(this)}
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
+        <Select s={12} label='Unit' icon='euro_symbol' onChange={this.unitChanged.bind(this)}
           value={instance.data.unit || 'kWh'}>
           <option key='kWh' value='kWh'>kWh</option>
           <option key='cost' value='cost'>Cost (¤)</option>
         </Select>
 
+        <div className='col s12 m12 l12' key={uuid.v4()}>&nbsp;</div>
         <div className='col s12'>Triggers when device energy consumption crosses the limit of {limit}{unit}:</div>
         <div className='col s12 slider'>
           <div id={`triggering-limit-consumption-slider-${instance.data.nodeId}`} />
