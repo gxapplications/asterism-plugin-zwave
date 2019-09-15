@@ -5,7 +5,7 @@ import cx from 'classnames'
 import debounce from 'debounce'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Icon, Select, Preloader, Row } from 'react-materialize'
+import { Button, Select, Preloader, Row } from 'react-materialize'
 
 import { Scenarii } from 'asterism-plugin-library'
 
@@ -329,7 +329,6 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
           <div className='col s12 m9 l5'>Plug #{nodeId} switch actually "{(alwaysOn || switchState) ? 'ON' : 'OFF'}" at {energyLevel | '0.0'}W.</div>
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
-        <hr />
 
         <h5>Color ring behavior</h5>
         <Row className='section card form'>
@@ -347,7 +346,6 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
             </div>
           ) : null}
         </Row>
-        <hr />
 
         <h5>Safety</h5>
         <Row className='section card form'>
@@ -356,7 +354,6 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
             <div id={`overload-safety-value-slider-${nodeId}`} />
           </div>
         </Row>
-        <hr />
 
         <h5>Link to a scenarii bitmask state</h5>
         <Row className='section card form'>
@@ -370,23 +367,23 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
 
           {!!stateId && (stateId.length > 0) && [
             <Select key={0} s={12} m={6} label='Choose bitmask state position behavior'
-              onChange={this.stateBehaviorChange.bind(this)} value={stateBehavior}>
-              <option value={1}>Set state position 1 (to 1) when ON</option>
-              <option value={-1}>Set state position 1 (to 1) when closed</option>
-              <option value={2}>Set state position 2 (to 1) when ON</option>
-              <option value={-2}>Set state position 2 (to 1) when closed</option>
-              <option value={4}>Set state position 3 (to 1) when ON</option>
-              <option value={-4}>Set state position 3 (to 1) when closed</option>
-              <option value={8}>Set state position 4 (to 1) when ON</option>
-              <option value={-8}>Set state position 4 (to 1) when closed</option>
-              <option value={16}>Set state position 5 (to 1) when ON</option>
-              <option value={-16}>Set state position 5 (to 1) when closed</option>
-              <option value={32}>Set state position 6 (to 1) when ON</option>
-              <option value={-32}>Set state position 6 (to 1) when closed</option>
-              <option value={64}>Set state position 7 (to 1) when ON</option>
-              <option value={-64}>Set state position 7 (to 1) when closed</option>
-              <option value={128}>Set state position 8 (to 1) when ON</option>
-              <option value={-128}>Set state position 8 (to 1) when closed</option>
+              onChange={this.stateBehaviorChange.bind(this)} value={`${stateBehavior}`}>
+              <option value='1'>Set state position 1 (to 1) when ON</option>
+              <option value='-1'>Set state position 1 (to 1) when closed</option>
+              <option value='2'>Set state position 2 (to 1) when ON</option>
+              <option value='-2'>Set state position 2 (to 1) when closed</option>
+              <option value='4'>Set state position 3 (to 1) when ON</option>
+              <option value='-4'>Set state position 3 (to 1) when closed</option>
+              <option value='8'>Set state position 4 (to 1) when ON</option>
+              <option value='-8'>Set state position 4 (to 1) when closed</option>
+              <option value='16'>Set state position 5 (to 1) when ON</option>
+              <option value='-16'>Set state position 5 (to 1) when closed</option>
+              <option value='32'>Set state position 6 (to 1) when ON</option>
+              <option value='-32'>Set state position 6 (to 1) when closed</option>
+              <option value='64'>Set state position 7 (to 1) when ON</option>
+              <option value='-64'>Set state position 7 (to 1) when closed</option>
+              <option value='128'>Set state position 8 (to 1) when ON</option>
+              <option value='-128'>Set state position 8 (to 1) when closed</option>
             </Select>,
             <Select key={1} s={12} label='Choose bitmask state control behavior'
               onChange={this.changeForceBitmaskStatePosition.bind(this)} value={forceBitmaskStatePosition ? 'force' : (controlledBitmaskStatePosition ? 'controlled' : 'none')}>
@@ -397,7 +394,6 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
           ]}
 
         </Row>
-        <hr />
 
         <h5>Advanced</h5>
         <div className='section card form'>
@@ -529,7 +525,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
   }
 
   colorRingBehaviorChange (event) {
-    const value = parseInt(event.target.value)
+    const value = parseInt(event.currentTarget.value)
     this.props.productObjectProxy.setColorRingBehavior(value)
     .then(() => {
       this.setState({
@@ -559,7 +555,8 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
     .catch(console.error)
   }
 
-  stateBehaviorChange (event, value) {
+  stateBehaviorChange (event) {
+    const value = parseInt(event.currentTarget.value)
     this.props.productObjectProxy.setStateBehavior(value)
     .then(() => {
       this.setState({
@@ -570,7 +567,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
   }
 
   changeForceBitmaskStatePosition (event) {
-    const value = event.target.value
+    const value = event.currentTarget.value
     switch (value) {
       case 'force':
         return this.props.productObjectProxy.setControlledBitmaskStatePosition(false)

@@ -26,12 +26,9 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
     .then((nodes) => {
       if (this._mounted) {
         this.setState({
-          compatibleNodes: nodes.length ? nodes : [{ nodeid: 0, name: 'No compatible device available' }],
+          compatibleNodes: nodes,
           panelReady: true
         })
-        if (nodes.length === 1) {
-          this.handleValueChange('nodeId', nodes[0].nodeid)
-        }
       }
     })
     .catch(console.error)
@@ -39,13 +36,6 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
 
   componentWillUnmount () {
     this._mounted = false
-  }
-
-  componentWillUpdate (nextProps, nextState) {
-    // Because of react-materialize bad behaviors...
-    if (this.state.params.title !== nextState.params.title) {
-      this._title.setState({ value: nextState.params.title })
-    }
   }
 
   render () {
@@ -75,8 +65,9 @@ class WallPlugItemSettingPanel extends ItemSettingPanel {
     return panelReady ? (
       <div className='clearing padded'>
         <Row className='padded card'>
-          <Select s={12} label='Choose a Z-wave device' icon='power'
+          <Select s={12} label='Z-wave device' icon='power'
             onChange={this.handleEventChange.bind(this, 'nodeId')} value={`${nodeId}`}>
+            <option value='' disabled>{compatibleNodes.length ? 'Choose a device' : 'No compatible device available'}</option>
             {compatibleNodes.map((node) => (
               <option key={node.nodeid} value={`${node.nodeid}`}>{node.name}</option>
             ))}

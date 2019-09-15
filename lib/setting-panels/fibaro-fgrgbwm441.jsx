@@ -7,7 +7,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Button, Row, Select, Preloader } from 'react-materialize'
 
+import { Scenarii } from 'asterism-plugin-library'
+
 import NameLocation from './name-location'
+
+const { StatesDropdown } = Scenarii
 
 const mode2SliderEdit = (v) => {
   v = Math.round(v)
@@ -44,7 +48,11 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         [configs.MAXIMUM_DIMMER_LEVEL]: null,
         [configs.MINIMUM_DIMMER_LEVEL]: null
       },
-      panelReady: false
+      panelReady: false,
+      colorLevelStateId: null,
+      brightnessLevelState: -1,
+      autoDimmAmount: -1,
+      autoDimmTime: 5 * 60 * 1000 // 5 mins
     }
 
     this._socket = props.privateSocket
@@ -62,6 +70,9 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
     this.debouncedMinMaxDimmerLevel = debounce((min, max) => {
       this.changeConfiguration(configs.MINIMUM_DIMMER_LEVEL, min)
       this.changeConfiguration(configs.MAXIMUM_DIMMER_LEVEL, max)
+    }, 1200, false)
+    this.debouncedAutoDimmTimeValueValue = debounce((value) => {
+      // TODO !0
     }, 1200, false)
   }
 
@@ -155,11 +166,16 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
       o.getConfiguration(configs.TIME_TO_COMPLETE_TRANSITION_MODE_2),
       o.getConfiguration(configs.MAXIMUM_DIMMER_LEVEL),
       o.getConfiguration(configs.MINIMUM_DIMMER_LEVEL),
+      o.getColorLevelStateId(),
+      o.getBrightnessLevelState(),
+      o.getAutoDimmAmount(),
+      o.getAutoDimmTime()
     ])
     .then(([brightnessLevel, redLevel, greenLevel, blueLevel, whiteLevel,
       meterLastValue, energyLevel, costLastValue,
       enableAllOnOff, outputStateChangeMode, dimmingStepValueMode1, timeBetweenDimmingStepsMode1,
-      timeToCompleteTransitionMode2, maxDimmerLevel, minDimmerLevel]) => {
+      timeToCompleteTransitionMode2, maxDimmerLevel, minDimmerLevel, colorLevelStateId, brightnessLevelState,
+      autoDimmAmount, autoDimmTime]) => {
       this.setState({
         levels: {
           brightness: brightnessLevel,
@@ -180,7 +196,11 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
           [configs.MAXIMUM_DIMMER_LEVEL]: maxDimmerLevel,
           [configs.MINIMUM_DIMMER_LEVEL]: minDimmerLevel
         },
-        panelReady: true
+        panelReady: true,
+        colorLevelStateId,
+        brightnessLevelState,
+        autoDimmAmount,
+        autoDimmTime
       })
       this.plugWidgets()
     })
@@ -579,11 +599,86 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
         this._slider9.set([config[configs.MINIMUM_DIMMER_LEVEL] || 2, config[configs.MAXIMUM_DIMMER_LEVEL] || 255])
       }
     }
+
+    const domSlider10 = $(`#auto-dimm-time-slider-${this.props.nodeId}`)[0]
+    if (domSlider10) {
+      if (!this._slider10 || !domSlider10.noUiSlider) {
+        this._slider10 = noUiSlider.create(domSlider10, {
+          start: this.state.autoDimmTime || ( 5 * 60 * 1000),
+          connect: true,
+          step: 1,
+          animate: true,
+          range: { // TODO !0: ajuster
+            'min': [500, 250],
+            '5%': [1000, 1000],
+            '12%': [5000, 5000],
+            '19%': [20000, 10000],
+            '22%': [30000, 15000],
+            '27%': [60000, 60000],
+            '37%': [5 * 60000, 5 * 60000],
+            '46%': [20 * 60000, 10 * 60000],
+            '50%': [30 * 60000, 15 * 60000],
+            '56%': [60 * 60000, 30 * 60000],
+            '86%': [6 * 60 * 60000, 60 * 60000],
+            'max': [12 * 60 * 60000]
+          },
+          format: wNumb({
+            decimals: 1,
+            edit: (v) => Math.round(v)
+          }),
+          pips: { // Show a scale with the slider
+            mode: 'steps',
+            stepped: true,
+            density: 3,
+            format: wNumb({
+              decimals: 1,
+              edit: (v) => {
+                if (v < 999) return `${v / 1000}`.substr(0, 4)
+
+                const secs = Math.floor(v / 1000)
+                if (secs < 60) return `${secs}s`
+
+                let mins = Math.floor(v / 60000)
+                if (mins < 60) return `${mins}m`
+
+                mins = mins % 60
+                mins = mins ? `${mins}` : ''
+                const hours = Math.floor(v / 3600000)
+                return `${hours}h${mins}`
+              }
+            })
+          },
+          tooltips: wNumb({
+            decimals: 1,
+            edit: (v) => {
+              if (v < 999) return `${v}`.split('.')[0] + 'ms'
+
+              const secs = Math.floor(v / 1000)
+              if (secs < 60) return `${secs}s`
+
+              let mins = Math.floor(v / 60000)
+              if (mins < 60) return `${mins}m`
+
+              mins = mins % 60
+              mins = mins ? `${mins}` : ''
+              const hours = Math.floor(v / 3600000)
+              return `${hours}hr${mins}`
+            }
+          }),
+          behaviour: 'tap-drag',
+          orientation: 'horizontal'
+        })
+
+        this._slider10.on('change', this.changeAutoDimmTimeValue.bind(this))
+      } else {
+        this._slider10.set(this.state.autoDimmTime || ( 5 * 60 * 1000))
+      }
+    }
   }
 
   render () {
-    const { nodeId, animationLevel, theme, productObjectProxy } = this.props
-    const { meterLastValue, energyLevel, costLastValue, configuration, panelReady } = this.state
+    const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
+    const { meterLastValue, energyLevel, costLastValue, configuration, panelReady, colorLevelStateId, brightnessLevelState, autoDimmAmount, autoDimmTime } = this.state
     const configs = FibaroFgrgbwm441SettingPanel.configurations
 
     let enableAllOnOff = configuration[configs.ENABLE_ALL_ON_OFF]
@@ -670,6 +765,53 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
               </div>
             </div>
           </Row>
+
+          <Row>
+            <Select s={12} label='Auto dimm when color left unchanged'
+              onChange={this.autoDimmAmountChange.bind(this)} value={`${autoDimmAmount}`}>
+              <option value='-1'>Never (No dimm)</option>
+              <option value='0'>Dimm to 0% (Turn off)</option>
+              <option value='2'>Dimm to 2%</option>
+              <option value='5'>Dimm to 5%</option>
+              <option value='10'>Dimm to 10%</option>
+              <option value='20'>Dimm to 20%</option>
+              <option value='30'>Dimm to 30%</option>
+              <option value='50'>Dimm to 50%</option>
+              <option value='75'>Dimm to 75%</option>
+            </Select>
+            {autoDimmAmount >= 0 && (
+              <div>
+                <div className='col s12 slider'>
+                  <div id={`auto-dimm-time-slider-${nodeId}`} />
+                </div>
+              </div>
+            )}
+          </Row>
+        </div>
+
+        <h5>Color control from a state</h5>
+        <div className='section card form'>
+          <Row>
+            <StatesDropdown defaultStateId={colorLevelStateId} onChange={this.colorLevelStateIdChange.bind(this)}
+              theme={theme} animationLevel={animationLevel} services={services}
+              typeFilter={(e) => e.id === 'level-state'} instanceFilter={(e) => e.typeId === 'level-state'}>
+              <option key='no-state-option' value=''>Do not link color to a state</option>
+            </StatesDropdown>
+          </Row>
+          <Row>
+            <Select s={12} label='Brightness when state changes'
+              onChange={this.brightnessLevelStateChange.bind(this)} value={`${brightnessLevelState}`}>
+              <option value='-1'>Keep previous brightness</option>
+              <option value='2'>Dimm to 2%</option>
+              <option value='5'>Dimm to 5%</option>
+              <option value='10'>Dimm to 10%</option>
+              <option value='20'>Dimm to 20%</option>
+              <option value='30'>Dimm to 30%</option>
+              <option value='50'>Dimm to 50%</option>
+              <option value='75'>Dimm to 75%</option>
+              <option value='99'>Dimm to 100%</option>
+            </Select>
+          </Row>
         </div>
 
         <h5>Advanced controls</h5>
@@ -745,6 +887,38 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
       }
     })
     this.debouncedMinMaxDimmerLevel(min, max)
+  }
+
+  colorLevelStateIdChange (value) {
+    this.props.productObjectProxy.setColorLevelStateId(value)
+    .then(() => {
+      this.setState({
+        colorLevelStateId: value
+      })
+    })
+    .catch(console.error)
+  }
+
+  brightnessLevelStateChange (event) {
+    const value = parseInt(event.currentTarget.value)
+    this.props.productObjectProxy.setBrightnessLevelState(value)
+    .then(() => {
+      this.setState({
+        brightnessLevelState: value
+      })
+    })
+    .catch(console.error)
+  }
+
+  autoDimmAmountChange (event) {
+    // TODO !0: use product.setAutoDimmAmount([-1 à 75])
+  }
+
+  changeAutoDimmTimeValue (value) {
+    this.setState({
+      // TODO !0
+    })
+    this.debouncedAutoDimmTimeValueValue(value[0])
   }
 }
 
