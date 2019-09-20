@@ -1957,22 +1957,22 @@
 				<Instance index="4" endpoint="3" />
 				<Instance index="5" endpoint="4" />
 				<Instance index="6" endpoint="5" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="20">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="20">
+				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="14">
+				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="5" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="20">
+				<Value type="byte" genre="user" instance="5" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="6" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="6" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="button" genre="user" instance="1" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
@@ -2107,7 +2107,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="2.2">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -2119,10 +2119,10 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.06">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.08">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="2.2">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">

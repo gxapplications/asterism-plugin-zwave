@@ -72,7 +72,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
       this.changeConfiguration(configs.MAXIMUM_DIMMER_LEVEL, max)
     }, 1200, false)
     this.debouncedAutoDimmTimeValueValue = debounce((value) => {
-      // TODO !0
+      this.props.productObjectProxy.setAutoDimmTime(value)
     }, 1200, false)
   }
 
@@ -608,7 +608,7 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
           connect: true,
           step: 1,
           animate: true,
-          range: { // TODO !0: ajuster
+          range: {
             'min': [500, 250],
             '5%': [1000, 1000],
             '12%': [5000, 5000],
@@ -911,12 +911,19 @@ class FibaroFgrgbwm441SettingPanel extends React.Component {
   }
 
   autoDimmAmountChange (event) {
-    // TODO !0: use product.setAutoDimmAmount([-1 à 75])
+    const value = parseInt(event.currentTarget.value)
+    this.props.productObjectProxy.setAutoDimmAmount(value)
+    .then(() => {
+      this.setState({
+        autoDimmAmount: value
+      })
+    })
+    .catch(console.error)
   }
 
   changeAutoDimmTimeValue (value) {
     this.setState({
-      // TODO !0
+      autoDimmTime: value[0]
     })
     this.debouncedAutoDimmTimeValueValue(value[0])
   }
