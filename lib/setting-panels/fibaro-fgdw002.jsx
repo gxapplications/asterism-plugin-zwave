@@ -479,15 +479,15 @@ class FibaroFgdw002SettingPanel extends React.Component {
                Led behavior:
             </div>
             <div className='col s12 m6 l3'>
-              <Checkbox name='led-behavior' className='filled-in' value='1' label='On opening/closing status change'
+              <Checkbox className='filled-in' value='1' label='On opening/closing status change'
                 onChange={() => { this.changeLedBehavior(1, 0, !ledBehavior[0]) }} checked={ledBehavior[0]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Checkbox name='led-behavior' className='filled-in' value='2' label='On wake up (1 x click or periodical)'
+              <Checkbox className='filled-in' value='2' label='On wake up (1 x click or periodical)'
                 onChange={() => { this.changeLedBehavior(2, 1, !ledBehavior[1]) }} checked={ledBehavior[1]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Checkbox name='led-behavior' className='filled-in' value='4' label='On device tampering'
+              <Checkbox className='filled-in' value='4' label='On device tampering'
                 onChange={() => { this.changeLedBehavior(4, 2, !ledBehavior[2]) }} checked={ledBehavior[2]} />
             </div>
           </Row>
@@ -537,11 +537,11 @@ class FibaroFgdw002SettingPanel extends React.Component {
               Temperature alarm reports:
             </div>
             <div className='col s12 m6 l3'>
-              <Checkbox name='temp-alarm-reports' className='filled-in' value='1' label='High temperature alarm'
+              <Checkbox className='filled-in' value='1' label='High temperature alarm'
                 onChange={() => { this.changeTempAlarmReports(1, 0, !tempAlarmReports[0]) }} checked={tempAlarmReports[0]} />
             </div>
             <div className='col s12 m6 l3'>
-              <Checkbox name='temp-alarm-reports' className='filled-in' value='2' label='Low temperature alarm'
+              <Checkbox className='filled-in' value='2' label='Low temperature alarm'
                 onChange={() => { this.changeTempAlarmReports(2, 1, !tempAlarmReports[1]) }} checked={tempAlarmReports[1]} />
             </div>
           </Row>

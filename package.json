@@ -1,6 +1,6 @@
 {
   "name": "asterism-plugin-zwave",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "An asterism plugin to add Z-wave support",
   "author": "Xavier Gouley <gxapplications@gmail.com>",
   "contributors": [],
@@ -87,7 +87,7 @@
     "path": "0.12.x"
   },
   "devDependencies": {
-    "asterism-plugin-library": ">= 2.2.31",
+    "asterism-plugin-library": ">= 2.2.33",
     "babel-cli": "6.26.x",
     "babel-core": "6.26.x",
     "babel-eslint": "6.1.x",
@@ -106,8 +106,8 @@
     "standard": "10.x"
   },
   "peerDependencies": {
-    "asterism": ">= 1.1.4",
-    "asterism-plugin-library": ">= 2.2.31",
+    "asterism": ">= 1.1.8",
+    "asterism-plugin-library": ">= 2.2.33",
     "express": "4.16.x",
     "prop-types": "15.6.x",
     "react": "16.2.x",
