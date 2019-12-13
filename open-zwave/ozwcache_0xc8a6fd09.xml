@@ -129,7 +129,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="24.7">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="18.5">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -214,16 +214,16 @@
 					<Item label="Do not send tamper cancellation report" value="0" />
 					<Item label="Send tamper cancellation report" value="1" />
 				</Value>
-				<Value type="short" genre="config" instance="1" index="50" label="Interval of temperature measurements" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="300">
+				<Value type="short" genre="config" instance="1" index="50" label="Interval of temperature measurements" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="600">
 					<Help>This parameter defines how often the temperature will be measured. The shorter the time, the more frequently the temperature will be measured, but the battery life will shorten. 0 - temperature measurements disabled 5-32400 - time in seconds</Help>
 				</Value>
-				<Value type="short" genre="config" instance="1" index="51" label="Temperature reports threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="300" value="7">
+				<Value type="short" genre="config" instance="1" index="51" label="Temperature reports threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="300" value="10">
 					<Help>This parameter defines the change of temperature in comparison with last reported, resulting in temperature report being sent to the main controller. 0 - temperature reports based on threshold disabled 1-300 - temperature threshold (0.1-30C, 0.1C step)</Help>
 				</Value>
 				<Value type="short" genre="config" instance="1" index="52" label="Interval of temperature reports" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="3600">
 					<Help>This parameter determines how often the temperature reports will be sent to the main controller. 0 - periodic temperature reports disabled 5-32400 - time in seconds</Help>
 				</Value>
-				<Value type="short" genre="config" instance="1" index="53" label="Temperature offset" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-1000" max="1000" value="0">
+				<Value type="short" genre="config" instance="1" index="53" label="Temperature offset" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-1000" max="1000" value="-20">
 					<Help>The value to be added to the actual temperature, measured by the sensor (temperature compensation). (0.1C steps)</Help>
 				</Value>
 				<Value type="list" genre="config" instance="1" index="54" label="Temperature alarm reports" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="3" size="1">
@@ -233,7 +233,7 @@
 					<Item label="Low temperature" value="2" />
 					<Item label="High and low temperature" value="3" />
 				</Value>
-				<Value type="short" genre="config" instance="1" index="55" label="High temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="600" value="300">
+				<Value type="short" genre="config" instance="1" index="55" label="High temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="600" value="320">
 					<Help>If temperature is higher than set value, overheat notification will be sent and high temperature scene will be triggered (if activated). 0-600 (0-60C, 0.1C step).</Help>
 				</Value>
 				<Value type="short" genre="config" instance="1" index="56" label="Low temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="599" value="140">
@@ -254,7 +254,7 @@
 					<Item label="OverHeat at Unknown at Location" value="2" />
 					<Item label="UnderHeat at Unknown Location" value="6" />
 				</Value>
-				<Value type="list" genre="user" instance="1" index="6" label="Access Control" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="1" size="0">
+				<Value type="list" genre="user" instance="1" index="6" label="Access Control" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="2" size="0">
 					<Help>Access Control Alerts</Help>
 					<Item label="Clear" value="0" />
 					<Item label="Door/Window Open" value="22" />
@@ -366,7 +366,7 @@
 					<StaticRequests>4</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="65">
+				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="100">
 					<Help>Current Battery Level</Help>
 				</Value>
 			</CommandClass>
@@ -478,7 +478,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="21.0">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="13.8">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -597,7 +597,7 @@
 					<StaticRequests>0</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="0">
+				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="2" size="0">
 					<Help>Heat Alerts</Help>
 					<Item label="Clear" value="0" />
 					<Item label="OverHeat at Unknown at Location" value="2" />
@@ -620,7 +620,7 @@
 					<Item label="Replace Battery Now" value="11" />
 				</Value>
 				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
-					<Help />
+					<Help></Help>
 				</Value>
 			</CommandClass>
 			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
@@ -715,7 +715,7 @@
 					<StaticRequests>4</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="55">
+				<Value type="byte" genre="user" instance="1" index="0" label="Battery Level" units="%" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="100">
 					<Help>Current Battery Level</Help>
 				</Value>
 			</CommandClass>
@@ -1208,7 +1208,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Associations">
+	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Dynamic">
 		<Manufacturer id="208" name="HANK Electronics Ltd">
 			<Product type="200" id="b" name="HKZW-SCN04 Scene Controller">
 				<MetaData>
@@ -1240,10 +1240,10 @@
 				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="1" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="1" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="1" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
 				<Value type="bool" genre="system" instance="1" index="3" label="Ignore Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
@@ -1542,7 +1542,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
+				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
 					<Help>Turn On/Off Device</Help>
 				</Value>
 			</CommandClass>
@@ -1567,7 +1567,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -1579,10 +1579,10 @@
 					<StaticRequests>2</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.81">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.08">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
@@ -1975,40 +1975,40 @@
 				<Value type="byte" genre="user" instance="6" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="1" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="2" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="2" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="3" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="3" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="4" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="4" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="5" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="5" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="6" index="1" label="Bright" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="6" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Increase the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="1" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="1" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="2" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="2" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="3" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="3" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="4" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="4" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="5" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="5" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
-				<Value type="button" genre="user" instance="6" index="2" label="Dim" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+				<Value type="button" genre="user" instance="6" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
 					<Help>Decrease the Brightness of the Device</Help>
 				</Value>
 				<Value type="bool" genre="system" instance="1" index="3" label="Ignore Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
@@ -2119,7 +2119,7 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.18">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.03">
 					<Help></Help>
 				</Value>
 				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
@@ -2174,7 +2174,7 @@
 					<Item label="Brightness - BASIC SET/SWITCH_MULTILEVEL_START/STOP" value="3" />
 					<Item label="Rainbow (RGBW) - COLOR_CONTROL_SET" value="4" />
 				</Value>
-				<Value type="list" genre="config" instance="1" index="8" label="Outputs state change mode" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+				<Value type="list" genre="config" instance="1" index="8" label="Outputs state change mode" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="1" size="1">
 					<Help>Choose the behaviour of transitions between different levels.</Help>
 					<Item label="MODE 1 - Constant Speed (speed is defined by parameters 9 and 10)" value="0" />
 					<Item label="MODE 2 - Constant Time (RGB/RBGW only. Time is defined by parameter 11)" value="1" />
@@ -2304,6 +2304,415 @@
 				<Value type="string" genre="system" instance="1" index="2" label="Application Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="25.25">
 					<Help>Application Version</Help>
 				</Value>
+			</CommandClass>
+		</CommandClasses>
+	</Node>
+	<Node id="8" name="" location="" basic="4" generic="17" specific="1" roletype="5" devicetype="7168" nodetype="0" type="Multilevel Power Switch" listening="true" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="3" query_stage="Complete">
+		<Manufacturer id="159" name="Qubino (Goap)">
+			<Product type="4" id="51" name="ZMNHJD1 Flush Dimmer Pilot Wire">
+				<MetaData />
+			</Product>
+		</Manufacturer>
+		<CommandClasses>
+			<CommandClass id="32" name="COMMAND_CLASS_BASIC">
+				<Compatibility />
+				<State>
+					<AfterMark>true</AfterMark>
+				</State>
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Value type="byte" genre="basic" instance="1" index="0" label="Basic" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Basic status of the node</Help>
+				</Value>
+				<Value type="byte" genre="basic" instance="2" index="0" label="Basic" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Basic status of the node</Help>
+				</Value>
+				<Value type="byte" genre="basic" instance="3" index="0" label="Basic" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Basic status of the node</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="37" name="COMMAND_CLASS_SWITCH_BINARY">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>1</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
+					<Help>Turn On/Off Device</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="38" name="COMMAND_CLASS_SWITCH_MULTILEVEL">
+				<Compatibility />
+				<State>
+					<CCVersion>3</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>1</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="20">
+					<Help>The Current Level of the Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Increase the Brightness of the Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="2" label="Down" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Decrease the Brightness of the Device</Help>
+				</Value>
+				<Value type="bool" genre="system" instance="1" index="3" label="Ignore Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
+					<Help>Ignore the Start Level of the Device when increasing/decreasing brightness</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="4" label="Start Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Start Level when Changing the Brightness of a Device</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="5" label="Dimming Duration" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="255">
+					<Help>Duration taken when changing the Level of a Device</Help>
+				</Value>
+				<Value type="byte" genre="user" instance="1" index="6" label="Step Size" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>How Many Percent Change when incrementing/decrementing the Level of a Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="7" label="Inc" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Increment the Level of a Device</Help>
+				</Value>
+				<Value type="button" genre="user" instance="1" index="8" label="Dec" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Decrement the Level of a Device</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="39" name="COMMAND_CLASS_SWITCH_ALL">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="list" genre="system" instance="1" index="0" label="Switch All" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="3" size="1">
+					<Help>Switch All Devices On/Off</Help>
+					<Item label="Disabled" value="0" />
+					<Item label="Off Enabled" value="1" />
+					<Item label="On Enabled" value="2" />
+					<Item label="On and Off Enabled" value="255" />
+				</Value>
+			</CommandClass>
+			<CommandClass id="48" name="COMMAND_CLASS_SENSOR_BINARY">
+				<Compatibility />
+				<State />
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Value type="bool" genre="user" instance="1" index="0" label="Sensor" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
+					<Help>Binary Sensor State</Help>
+				</Value>
+				<Value type="bool" genre="user" instance="2" index="0" label="Sensor" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
+					<Help>Binary Sensor State</Help>
+				</Value>
+				<Value type="bool" genre="user" instance="3" index="0" label="Sensor" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
+					<Help>Binary Sensor State</Help>
+				</Value>
+				<SensorMap index="0" type="164" />
+				<SensorMap index="0" type="165" />
+				<SensorMap index="0" type="167" />
+			</CommandClass>
+			<CommandClass id="49" name="COMMAND_CLASS_SENSOR_MULTILEVEL">
+				<Compatibility />
+				<State>
+					<CCVersion>3</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>1</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="-999.9">
+					<Help>Temperature Sensor Value</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="90" name="COMMAND_CLASS_DEVICE_RESET_LOCALLY">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" />
+			</CommandClass>
+			<CommandClass id="94" name="COMMAND_CLASS_ZWAVEPLUS_INFO">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>7</StaticRequests>
+				</State>
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Value type="byte" genre="system" instance="1" index="0" label="ZWave+ Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
+					<Help>ZWave+ Version Supported on the Device</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="2" index="0" label="ZWave+ Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
+					<Help>ZWave+ Version Supported on the Device</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="3" index="0" label="ZWave+ Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
+					<Help>ZWave+ Version Supported on the Device</Help>
+				</Value>
+				<Value type="short" genre="system" instance="1" index="1" label="InstallerIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the Installer Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="2" index="1" label="InstallerIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the Installer Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="3" index="1" label="InstallerIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the Installer Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="1" index="2" label="UserIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the User Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="2" index="2" label="UserIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the User Application</Help>
+				</Value>
+				<Value type="short" genre="system" instance="3" index="2" label="UserIcon" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="3072">
+					<Help>Icon File to use for the User Application</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="96" name="COMMAND_CLASS_MULTI_INSTANCE/CHANNEL">
+				<Compatibility>
+					<MapRootToEndpoint>true</MapRootToEndpoint>
+				</Compatibility>
+				<State>
+					<CCVersion>4</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>1</StaticRequests>
+				</State>
+			</CommandClass>
+			<CommandClass id="112" name="COMMAND_CLASS_CONFIGURATION">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Value type="list" genre="config" instance="1" index="1" label="Input 1 switch type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="1" size="1">
+					<Help></Help>
+					<Item label="Mono-stable switch type (push button)" value="0" />
+					<Item label="Bi-stable switch type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="2" label="Input 2 switch type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="1" size="1">
+					<Help></Help>
+					<Item label="Mono-stable switch type (push button)" value="0" />
+					<Item label="Bi-stable switch type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="3" label="Input 3 switch type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="1" size="1">
+					<Help></Help>
+					<Item label="Mono-stable switch type (push button)" value="0" />
+					<Item label="Bi-stable switch type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="4" label="Input 1 contact type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="0" size="1">
+					<Help></Help>
+					<Item label="NO (normally open) input type" value="0" />
+					<Item label="NC (normally close) input type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="5" label="Input 2 contact type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="0" size="1">
+					<Help></Help>
+					<Item label="NO (normally open) input type" value="0" />
+					<Item label="NC (normally close) input type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="6" label="Input 3 contact type" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="0" size="1">
+					<Help></Help>
+					<Item label="NO (normally open) input type" value="0" />
+					<Item label="NC (normally close) input type" value="1" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="11" label="Input 1 Functionality selection" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="6" vindex="1" size="1">
+					<Help></Help>
+					<Item label="Nothing" value="0" />
+					<Item label="Confort" value="1" />
+					<Item label="Confort -1" value="2" />
+					<Item label="Confort -2" value="3" />
+					<Item label="Eco" value="4" />
+					<Item label="Hors-Gel" value="5" />
+					<Item label="STOP" value="6" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="12" label="Input 2 Functionality selection" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="6" vindex="4" size="1">
+					<Help></Help>
+					<Item label="Nothing" value="0" />
+					<Item label="Confort" value="1" />
+					<Item label="Confort -1" value="2" />
+					<Item label="Confort -2" value="3" />
+					<Item label="Eco" value="4" />
+					<Item label="Hors-Gel" value="5" />
+					<Item label="STOP" value="6" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="13" label="Input 3 Functionality selection" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="6" vindex="5" size="1">
+					<Help></Help>
+					<Item label="Nothing" value="0" />
+					<Item label="Confort" value="1" />
+					<Item label="Confort -1" value="2" />
+					<Item label="Confort -2" value="3" />
+					<Item label="Eco" value="4" />
+					<Item label="Hors-Gel" value="5" />
+					<Item label="STOP" value="6" />
+				</Value>
+				<Value type="list" genre="config" instance="1" index="30" label="Saving the state of the relay after a power failure" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="1" vindex="0" size="1">
+					<Help></Help>
+					<Item label="Flush dimmer module saves its state before power failure (it returns to the last position saved before a power failure)" value="0" />
+					<Item label="Flush dimmer module does not save the state after a power failure, it returns to off position" value="1" />
+				</Value>
+			</CommandClass>
+			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
+				<Compatibility />
+				<State>
+					<CCVersion>2</CCVersion>
+					<InNif>true</InNif>
+					<StaticRequests>1</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="int" genre="system" instance="1" index="0" label="Loaded Config Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="3">
+					<Help>Revision of the Config file currently loaded</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="1" label="Config File Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="3">
+					<Help>Revision of the Config file on the File System</Help>
+				</Value>
+				<Value type="int" genre="system" instance="1" index="2" label="Latest Available Config File Revision" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="3">
+					<Help>Latest Revision of the Config file available for download</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="3" label="Device ID" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="">
+					<Help>Manufacturer Specific Device ID/Model</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="4" label="Serial Number" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="ZMNHJD1 H1S1P5">
+					<Help>Device Serial Number</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="115" name="COMMAND_CLASS_POWERLEVEL">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" />
+				<Value type="list" genre="system" instance="1" index="0" label="Powerlevel" units="dB" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>Output RF PowerLevel</Help>
+					<Item label="Normal" value="0" />
+					<Item label="-1dB" value="1" />
+					<Item label="-2dB" value="2" />
+					<Item label="-3dB" value="3" />
+					<Item label="-4dB" value="4" />
+					<Item label="-5dB" value="5" />
+					<Item label="-6dB" value="6" />
+					<Item label="-7dB" value="7" />
+					<Item label="-8dB" value="8" />
+					<Item label="-9dB" value="9" />
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="1" label="Timeout" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Timeout till the PowerLevel is reset to Normal</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="2" label="Set Powerlevel" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Apply the Output PowerLevel and Timeout Values</Help>
+				</Value>
+				<Value type="byte" genre="system" instance="1" index="3" label="Test Node" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+					<Help>Node to Perform a test against</Help>
+				</Value>
+				<Value type="list" genre="system" instance="1" index="4" label="Test Powerlevel" units="dB" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>PowerLevel to use for the Test</Help>
+					<Item label="Normal" value="0" />
+					<Item label="-1dB" value="1" />
+					<Item label="-2dB" value="2" />
+					<Item label="-3dB" value="3" />
+					<Item label="-4dB" value="4" />
+					<Item label="-5dB" value="5" />
+					<Item label="-6dB" value="6" />
+					<Item label="-7dB" value="7" />
+					<Item label="-8dB" value="8" />
+					<Item label="-9dB" value="9" />
+				</Value>
+				<Value type="short" genre="system" instance="1" index="5" label="Frame Count" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="0">
+					<Help>How Many Messages to send to the Note for the Test</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="6" label="Test" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Perform a PowerLevel Test against the a Node</Help>
+				</Value>
+				<Value type="button" genre="system" instance="1" index="7" label="Report" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
+					<Help>Get the results of the latest PowerLevel Test against a Node</Help>
+				</Value>
+				<Value type="list" genre="system" instance="1" index="8" label="Test Status" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="1">
+					<Help>The Current Status of the last PowerNode Test Executed</Help>
+					<Item label="Failed" value="0" />
+					<Item label="Success" value="1" />
+					<Item label="In Progress" value="2" />
+				</Value>
+				<Value type="short" genre="system" instance="1" index="9" label="Acked Frames" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-32768" max="32767" value="0">
+					<Help>Number of Messages successfully Acked by the Target Node</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="133" name="COMMAND_CLASS_ASSOCIATION">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Associations num_groups="122">
+					<Group index="1" max_associations="1" label="Lifeline" auto="true" multiInstance="true">
+						<Node id="1" />
+					</Group>
+					<Group index="2" max_associations="5" label="Multilevel" auto="false" multiInstance="true" />
+					<Group index="3" max_associations="5" label="Input I1 state" auto="false" multiInstance="true" />
+					<Group index="4" max_associations="5" label="Input I2 state" auto="false" multiInstance="true" />
+					<Group index="5" max_associations="5" label="Input I3 state" auto="false" multiInstance="true" />
+					<Group index="6" max_associations="16" label="Group 6" auto="false" multiInstance="true" />
+				</Associations>
+			</CommandClass>
+			<CommandClass id="134" name="COMMAND_CLASS_VERSION">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Value type="string" genre="system" instance="1" index="0" label="Library Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="3">
+					<Help>Z-Wave Library Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="2" index="0" label="Library Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Library Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="3" index="0" label="Library Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Library Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="1" label="Protocol Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="5.03">
+					<Help>Z-Wave Protocol Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="2" index="1" label="Protocol Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Protocol Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="3" index="1" label="Protocol Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Z-Wave Protocol Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="1" index="2" label="Application Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="2.00">
+					<Help>Application Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="2" index="2" label="Application Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Application Version</Help>
+				</Value>
+				<Value type="string" genre="system" instance="3" index="2" label="Application Version" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="Unknown">
+					<Help>Application Version</Help>
+				</Value>
+			</CommandClass>
+			<CommandClass id="142" name="COMMAND_CLASS_MULTI_CHANNEL_ASSOCIATION">
+				<Compatibility />
+				<State>
+					<InNif>true</InNif>
+					<StaticRequests>5</StaticRequests>
+				</State>
+				<Instance index="1" endpoint="1" />
+				<Instance index="2" endpoint="2" />
+				<Instance index="3" endpoint="3" />
+				<Associations num_groups="6">
+					<Group index="1" max_associations="1" label="Lifeline" auto="true" multiInstance="true">
+						<Node id="1" />
+					</Group>
+					<Group index="2" max_associations="5" label="Multilevel" auto="false" multiInstance="true" />
+					<Group index="3" max_associations="5" label="Input I1 state" auto="false" multiInstance="true" />
+					<Group index="4" max_associations="5" label="Input I2 state" auto="false" multiInstance="true" />
+					<Group index="5" max_associations="5" label="Input I3 state" auto="false" multiInstance="true" />
+					<Group index="6" max_associations="16" label="Group 6" auto="false" multiInstance="true" />
+				</Associations>
 			</CommandClass>
 		</CommandClasses>
 	</Node>
