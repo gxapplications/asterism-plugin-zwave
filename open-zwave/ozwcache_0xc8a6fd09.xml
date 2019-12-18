@@ -478,7 +478,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="13.8">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="17.9">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -620,7 +620,7 @@
 					<Item label="Replace Battery Now" value="11" />
 				</Value>
 				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
-					<Help></Help>
+					<Help />
 				</Value>
 			</CommandClass>
 			<CommandClass id="114" name="COMMAND_CLASS_MANUFACTURER_SPECIFIC">
@@ -1208,7 +1208,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Dynamic">
+	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Session">
 		<Manufacturer id="208" name="HANK Electronics Ltd">
 			<Product type="200" id="b" name="HKZW-SCN04 Scene Controller">
 				<MetaData>
@@ -1274,38 +1274,38 @@
 				</State>
 				<Instance index="1" />
 				<Value type="list" genre="user" instance="1" index="1" label="Scene 1" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
-					<Help />
+					<Help></Help>
 					<Item label="Inactive" value="0" />
 					<Item label="Pressed 1 Time" value="1" />
 					<Item label="Key Released" value="2" />
 					<Item label="Key Held down" value="3" />
 				</Value>
 				<Value type="list" genre="user" instance="1" index="2" label="Scene 2" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
-					<Help />
+					<Help></Help>
 					<Item label="Inactive" value="0" />
 					<Item label="Pressed 1 Time" value="1" />
 					<Item label="Key Released" value="2" />
 					<Item label="Key Held down" value="3" />
 				</Value>
 				<Value type="list" genre="user" instance="1" index="3" label="Scene 3" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
-					<Help />
+					<Help></Help>
 					<Item label="Inactive" value="0" />
 					<Item label="Pressed 1 Time" value="1" />
 					<Item label="Key Released" value="2" />
 					<Item label="Key Held down" value="3" />
 				</Value>
 				<Value type="list" genre="user" instance="1" index="4" label="Scene 4" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="4">
-					<Help />
+					<Help></Help>
 					<Item label="Inactive" value="0" />
 					<Item label="Pressed 1 Time" value="1" />
 					<Item label="Key Released" value="2" />
 					<Item label="Key Held down" value="3" />
 				</Value>
 				<Value type="int" genre="user" instance="1" index="256" label="Scene Count" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="4">
-					<Help />
+					<Help></Help>
 				</Value>
 				<Value type="int" genre="config" instance="1" index="257" label="Scene Reset Timeout" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-2147483648" max="2147483647" value="1000">
-					<Help />
+					<Help></Help>
 				</Value>
 			</CommandClass>
 			<CommandClass id="94" name="COMMAND_CLASS_ZWAVEPLUS_INFO">
@@ -1957,13 +1957,13 @@
 				<Instance index="4" endpoint="3" />
 				<Instance index="5" endpoint="4" />
 				<Instance index="6" endpoint="5" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
@@ -2107,7 +2107,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.1">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -2119,10 +2119,10 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.03">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.04">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.1">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
@@ -2351,7 +2351,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="20">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="25">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
