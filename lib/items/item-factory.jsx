@@ -42,11 +42,13 @@ const builder = new ItemFactoryBuilder()
   .newInstanceFromInitialSetting(2, 2, PilotWireItemSettingPanel)
   .existingInstance(PilotWireItem, PilotWireItemSettingPanel)
   .acceptDimensions([
-    { w: 1, h: 1 },
-    { w: 2, h: 1 },
-    { w: 1, h: 2 },
     { w: 2, h: 2 },
-    { w: 3, h: 2 }
+    { w: 3, h: 2 },
+    { w: 1, h: 3 },
+    { w: 2, h: 3 },
+    { w: 3, h: 3 },
+    { w: 1, h: 4 },
+    { w: 1, h: 5 }
   ])
   .build()
 

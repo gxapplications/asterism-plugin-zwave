@@ -387,6 +387,49 @@ i.material-icons.zwave-off.black-text,
   }
 }
 
+.PilotWireItem {
+  width: 100%;
+
+  & > .mainTitle {
+    margin-top: 0.6rem;
+    margin-bottom: 0.9rem;
+  }
+  & > .switches.row.col.s12 {
+    margin-left: 0;
+    margin-right: 0;
+    overflow-y: auto;
+    height: calc(100% - 2.9rem);
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  .PilotWireItem {
+    & > .switches.row.col.s12 {
+      padding: 0 0 0 0.75rem;
+
+      & > .m12, & > .l12 {
+        padding-right: 1.5rem;
+      }
+    }
+  }
+}
+
+// PilotWireItem: For 1 column width, special case
+.rg-item-wrapper.w-fixer-1 > .PilotWireItem > .switches {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  & > .m6, & > .l6 {
+    width: 100%;
+    padding-right: 1.5rem;
+    flex-grow: 1;
+    padding-left: 0;
+  }
+}
+
 div.section.form.brightnesses > div.slider {
   padding-left: 3vw;
   padding-top: 0.6rem;

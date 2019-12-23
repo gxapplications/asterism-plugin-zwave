@@ -4,7 +4,7 @@
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Preloader, Row, Button, Icon } from 'react-materialize'
+import { Preloader, Row, Button, Icon, Select } from 'react-materialize'
 import NameLocation from './name-location'
 
 import { Scenarii } from 'asterism-plugin-library'
@@ -21,6 +21,8 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     this.state = {
       panelReady: false,
       levelPercent: 20,
+      stateId: null,
+      levelStateControlBehavior: 'follow',
       configuration: {}
     }
 
@@ -45,13 +47,17 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     })
 
     Promise.all([
-      o.multiLevelSwitchGetPercent()
+      o.multiLevelSwitchGetPercent(),
+      o.getStateId(),
+      o.getStateBehavior(),
       //o.getConfiguration(configs.TEMPERATURE_ALARM_THRESHOLD_LOW),
     ])
-    .then(([levelPercent]) => {
+    .then(([levelPercent, stateId, levelStateControlBehavior]) => {
       this.setState({
         panelReady: true,
         levelPercent,
+        stateId,
+        levelStateControlBehavior,
         configuration: {}
       })
     })
@@ -100,7 +106,7 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
         </Row>
 
         <Row className='section card form'>
-          <h5 className='col s12'>Link to a scenarii level state</h5>
+          <h5 className='col s12'>Link to a scenarii level state (6 levels minimum)</h5>
 
           <div className='col s12 m6'>
             <StatesDropdown defaultStateId={stateId} onChange={this.stateIdChange.bind(this)}
@@ -110,16 +116,14 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
             </StatesDropdown>
           </div>
 
-          {!!stateId && (stateId.length > 0) && [
-            <Select key={0} s={12} label='Choose level state control behavior'
+          {!!stateId && (stateId.length > 0) && (
+            <Select s={12} label='Choose level state control behavior' icon='sync_alt'
                     onChange={this.changeLevelStateControlBehavior.bind(this)} value={levelStateControlBehavior}>
               <option value='force'>Force mode: Device will be the only one allowed to control the state</option>
               <option value='follow'>Follow mode: Device will follow level state but can be controlled anyway</option>
               <option value='controlled'>Controlled mode: state and device can control each others (warning: avoid loops with scenario actions!)</option>
             </Select>
-          ]}
-
-          TODO !0: sync its level with a 4/6 levels state (1. controlled mode = both ways ; 2. soft mode to follow level state, like fibaro wall plug !)
+          )}
         </Row>
       </div>
     ) : (
@@ -136,12 +140,25 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     })
   }
 
-  stateIdChange (a) {
-    // TODO !0
+  stateIdChange (value) {
+    this.props.productObjectProxy.setStateId(value)
+    .then(() => {
+      this.setState({
+        stateId: value
+      })
+    })
+    .catch(console.error)
   }
 
-  changeLevelStateControlBehavior (a) {
-    // TODO !0
+  changeLevelStateControlBehavior (event) {
+    const value = event.currentTarget.value
+    this.props.productObjectProxy.setStateBehavior(value)
+    .then(() => {
+      this.setState({
+        levelStateControlBehavior: value
+      })
+    })
+    .catch(console.error)
   }
 }
 
