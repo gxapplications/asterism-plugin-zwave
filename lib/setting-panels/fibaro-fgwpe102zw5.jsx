@@ -385,10 +385,10 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
               <option value='128'>Set state position 8 (to 1) when ON</option>
               <option value='-128'>Set state position 8 (to 1) when closed</option>
             </Select>,
-            <Select key={1} s={12} label='Choose bitmask state control behavior'
+            <Select key={1} s={12} label='Choose bitmask state control behavior' icon='sync_alt'
               onChange={this.changeForceBitmaskStatePosition.bind(this)} value={forceBitmaskStatePosition ? 'force' : (controlledBitmaskStatePosition ? 'controlled' : 'none')}>
               <option value='force'>Force mode: Device will be the only one allowed to control the state</option>
-              <option value='none'>No restriction mode</option>
+              <option value='none'>Follow mode: Device will follow any state change but can be controlled anyway</option>
               <option value='controlled'>Controlled mode: state and device can control each others (warning: avoid loops with scenario actions!)</option>
             </Select>
           ]}

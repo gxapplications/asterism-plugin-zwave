@@ -129,7 +129,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="18.5">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="19.7">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -214,16 +214,16 @@
 					<Item label="Do not send tamper cancellation report" value="0" />
 					<Item label="Send tamper cancellation report" value="1" />
 				</Value>
-				<Value type="short" genre="config" instance="1" index="50" label="Interval of temperature measurements" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="600">
+				<Value type="short" genre="config" instance="1" index="50" label="Interval of temperature measurements" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="900">
 					<Help>This parameter defines how often the temperature will be measured. The shorter the time, the more frequently the temperature will be measured, but the battery life will shorten. 0 - temperature measurements disabled 5-32400 - time in seconds</Help>
 				</Value>
-				<Value type="short" genre="config" instance="1" index="51" label="Temperature reports threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="300" value="10">
+				<Value type="short" genre="config" instance="1" index="51" label="Temperature reports threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="300" value="8">
 					<Help>This parameter defines the change of temperature in comparison with last reported, resulting in temperature report being sent to the main controller. 0 - temperature reports based on threshold disabled 1-300 - temperature threshold (0.1-30C, 0.1C step)</Help>
 				</Value>
 				<Value type="short" genre="config" instance="1" index="52" label="Interval of temperature reports" units="seconds" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="32400" value="3600">
 					<Help>This parameter determines how often the temperature reports will be sent to the main controller. 0 - periodic temperature reports disabled 5-32400 - time in seconds</Help>
 				</Value>
-				<Value type="short" genre="config" instance="1" index="53" label="Temperature offset" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-1000" max="1000" value="-20">
+				<Value type="short" genre="config" instance="1" index="53" label="Temperature offset" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="-1000" max="1000" value="0">
 					<Help>The value to be added to the actual temperature, measured by the sensor (temperature compensation). (0.1C steps)</Help>
 				</Value>
 				<Value type="list" genre="config" instance="1" index="54" label="Temperature alarm reports" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="3" size="1">
@@ -236,7 +236,7 @@
 				<Value type="short" genre="config" instance="1" index="55" label="High temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="600" value="320">
 					<Help>If temperature is higher than set value, overheat notification will be sent and high temperature scene will be triggered (if activated). 0-600 (0-60C, 0.1C step).</Help>
 				</Value>
-				<Value type="short" genre="config" instance="1" index="56" label="Low temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="599" value="140">
+				<Value type="short" genre="config" instance="1" index="56" label="Low temperature alarm threshold" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="599" value="150">
 					<Help>If temperature is lower than the set value, underheat notification will be sent and low temperature scene will be triggered (if activated). 0-599 (0-59.9C, 0.1C step)</Help>
 				</Value>
 			</CommandClass>
@@ -478,7 +478,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="17.9">
+				<Value type="decimal" genre="user" instance="1" index="1" label="Temperature" units="C" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="16.7">
 					<Help>Temperature Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -597,7 +597,7 @@
 					<StaticRequests>0</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="2" size="0">
+				<Value type="list" genre="user" instance="1" index="4" label="Heat" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" vindex="0" size="0">
 					<Help>Heat Alerts</Help>
 					<Item label="Clear" value="0" />
 					<Item label="OverHeat at Unknown at Location" value="2" />
@@ -1208,7 +1208,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Session">
+	<Node id="5" name="" location="" basic="4" generic="24" specific="1" roletype="4" devicetype="5632" nodetype="0" type="" listening="false" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="4" query_stage="Associations">
 		<Manufacturer id="208" name="HANK Electronics Ltd">
 			<Product type="200" id="b" name="HKZW-SCN04 Scene Controller">
 				<MetaData>
@@ -1542,7 +1542,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
+				<Value type="bool" genre="user" instance="1" index="0" label="Switch" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="True">
 					<Help>Turn On/Off Device</Help>
 				</Value>
 			</CommandClass>
@@ -1567,7 +1567,7 @@
 					<InNif>true</InNif>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -1579,10 +1579,10 @@
 					<StaticRequests>2</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.08">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.10">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.3">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
@@ -2119,7 +2119,7 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.04">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.05">
 					<Help></Help>
 				</Value>
 				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.1">
@@ -2351,7 +2351,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="25">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="99">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
