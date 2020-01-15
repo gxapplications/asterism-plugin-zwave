@@ -73,12 +73,13 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     const { panelReady, levelPercent, stateId, levelStateControlBehavior } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
-
+    const currentlies = { '0': 'Off', '15': 'Frost free', '25': 'Economic', '35': 'Comfort -2°C', '45': 'Comfort -1°C', '100': 'Comfort'}
+// TODO !0: test currently display
     return panelReady ? (
       <div>
         <Row>
           <h4 className='col s12 m7 l7'>Pilot Wire settings</h4>
-          <div className='col s12 m3 l3'>Currently {levelPercent}.</div>
+          <div className='col s12 m3 l3'>Currently {currentlies[`${levelPercent}`]}.</div>
 
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
