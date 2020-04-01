@@ -91,6 +91,12 @@ class SensorMultiLevelItem extends Item {
     }
     // TODO !5: to implement at zwave third stage milestone: opens a graph in popin?
   }
+
+  refresh () {
+    if (this._mounted) {
+      this.receiveNewParams(this.state.params)
+    }
+  }
 }
 
 export default SensorMultiLevelItem

@@ -145,6 +145,12 @@ class PilotWireItem extends Item {
 
     this.state.productObjectProxy.multiLevelSwitchSetPercent(value, 1)
   }
+
+  refresh () {
+    if (this._mounted) {
+      this.receiveNewParams(this.state.params)
+    }
+  }
 }
 
 export default PilotWireItem

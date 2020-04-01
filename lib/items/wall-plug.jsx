@@ -274,6 +274,12 @@ class WallPlugItem extends Item {
       this.setState({ process: error })
     })
   }
+
+  refresh () {
+    if (this._mounted) {
+      this.receiveNewParams(this.state.params)
+    }
+  }
 }
 
 export default WallPlugItem
