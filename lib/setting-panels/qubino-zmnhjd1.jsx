@@ -74,7 +74,7 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
 
     const waves = animationLevel >= 2 ? 'light' : undefined
     const currentlies = { '0': 'Off', '15': 'Frost free', '25': 'Economic', '35': 'Comfort -2°C', '45': 'Comfort -1°C', '100': 'Comfort'}
-// TODO !0: test currently display
+
     return panelReady ? (
       <div>
         <Row>
