@@ -26,7 +26,7 @@ const builder = new ItemFactoryBuilder()
 .newItemType('zwave-sensor-multi-level', AdditionalItem.categories.DOMOTICS)
   .withDescription('Z-wave Sensor level', 'Show a Z-wave sensor level data.')
   .settingPanelWithHeader('Sensor level settings', 'bar_chart') // optional override, but always before *Instance*() calls...
-  .newInstanceFromInitialSetting(2, 2, SensorMultiLevelItemSettingPanel)
+  .newInstanceFromInitialSetting(1, 2, SensorMultiLevelItemSettingPanel)
   .existingInstance(SensorMultiLevelItem, SensorMultiLevelItemSettingPanel)
   .acceptDimensions([
     { w: 1, h: 1 },

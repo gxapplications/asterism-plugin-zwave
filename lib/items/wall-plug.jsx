@@ -146,25 +146,25 @@ class WallPlugItem extends Item {
         className={cx(buttonClass, 'truncate fluid WallPlug')} onClick={this.click.bind(this)}
       >
 
-        {node ? (
+        {node && (
           <div className={cx('PowerRing', energyClass)}>
             {energyLevelCompatible ? (<span>{energyLevel}<br />w</span>) : null}
           </div>
-        ) : null}
+        )}
 
-        {meterCompatible && meterLastValue ? (
+        {meterCompatible && meterLastValue && (
           <div className='energyGraph'>
-            {energyHistory.length ? (
-              <canvas id={`wall-plug-chart-${this.props.id}`} className='chart'></canvas>
-            ) : null}
-            <div className='meterLasValue'>
+            {energyHistory.length && (
+              <canvas id={`wall-plug-chart-${this.props.id}`} className='chart' />
+            )}
+            <div className='meterLastValue'>
               {meterLastValue} kWh
-              {costCompatible ? (
+              {costCompatible && (
                 <span>&nbsp;({Number.parseFloat(costLastValue).toFixed(2)} ¤)</span>
-              ) : null}
+              )}
             </div>
           </div>
-        ) : null}
+        )}
 
         <Icon left>{icon}</Icon>
         <span>{title}</span>
@@ -198,26 +198,26 @@ class WallPlugItem extends Item {
   }
 
   updateChart (data) {
-    if (!data || !data.length || data.length <= 2) {
+    if (!data || !data.length || data.length <= 2) {
       return
     }
     // http://www.chartjs.org/docs/latest
 
     const element = document.getElementById(`wall-plug-chart-${this.props.id}`)
-    if (data.length && element) {
+    if (element) {
       const ctx = element.getContext('2d')
       new Chart(ctx, {
         type: 'line',
         data: {
           datasets: [{
             data: data.map((d) => ({ t: d.t, y: d.v })).slice(0, 128),
-            pointRadius: 0
+            pointRadius: 1,
+            fill: 'origin'
           }]
         },
         options: {
-          fill: 'start',
           legend: {
-            display: false,
+            display: false
           },
           scales: {
             yAxes: [{
@@ -234,16 +234,11 @@ class WallPlugItem extends Item {
           },
           elements: {
             line: {
-              tension: 1
+              tension: 0
             }
           },
           layout: {
-            padding: {
-              left: 0,
-              right: 0,
-              top: 10,
-              bottom: -26
-            }
+            padding: 5
           },
           animation: {
             duration: 0
