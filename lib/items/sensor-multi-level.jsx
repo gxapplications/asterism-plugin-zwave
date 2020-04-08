@@ -1,6 +1,6 @@
 'use strict'
 
-/* global $, M */
+/* global $ */
 import Chart from 'chart.js'
 import cx from 'classnames'
 import React from 'react'
@@ -17,13 +17,7 @@ class SensorMultiLevelItem extends Item {
     this.state.productObjectProxy = null
     this.state.sensorFormattedValue = '...'
     this.state.modalOpened = false
-    this.state.sensorHistory = [
-      { t: 1609320150000, v: 3.666667, i: 1, m: 1, M: 5 },
-      { t: 1609403010000, v: 3, i: 1, m: 2, M: 6 },
-      { t: 1609404170000, v: 2, i: 1, m: 1.5, M: 2 },
-      { t: 1609417380000, v: 10, i: 1, m: 10, M: 10 },
-      { t: 1609417440000, v: 10, i: 1, m: 10, M: 10 }
-    ] // TODO !0: remove this
+    this.state.sensorHistory = null
 
     this._id = uuid.v4()
     this._bigChart = null
@@ -39,18 +33,18 @@ class SensorMultiLevelItem extends Item {
       Promise.all([
         this.zwaveService.getNodeById(params.nodeId),
         productObjectProxy.sensorMultiLevelGetFormatted ? productObjectProxy.sensorMultiLevelGetFormatted() : null,
-        productObjectProxy.sensorMultiLevelGetHistory ? productObjectProxy.sensorMultiLevelGetHistory() : null
+        productObjectProxy.sensorMultiLevelGetHistory ? productObjectProxy.sensorMultiLevelGetHistory() : null,
+        productObjectProxy.sensorMultiLevelGetLabel ? productObjectProxy.sensorMultiLevelGetLabel() : null,
+        productObjectProxy.sensorMultiLevelGetUnits ? productObjectProxy.sensorMultiLevelGetUnits() : null
       ])
-      .then(([node, sensorFormattedValue, sensorHistory]) => {
+      .then(([node, sensorFormattedValue, sensorHistory, label, units]) => {
         this.setState({
-          params, node, productObjectProxy, sensorFormattedValue, //sensorHistory // TODO !0: uncomment this
+          params, node, productObjectProxy, sensorFormattedValue, sensorHistory, label, units
         })
         this.updateChart(sensorHistory)
       })
       .catch(console.error)
     })
-
-    this.updateChart(this.state.sensorHistory) // TODO !0: remove this
   }
 
   componentDidMount () {
@@ -116,13 +110,14 @@ class SensorMultiLevelItem extends Item {
         </span>
 
         <Modal id={`sensor-multi-level-popup-${this._id}`}
-          header={title} fixedFooter={true}
+          header={title || 'Sensor history'} fixedFooter={true}
+          className='very-large-modal thin-scrollable modal-thin-padding'
           options={{
             dismissible: true,
             inDuration: animationLevel >= 2 ? 300 : 0,
             outDuration: animationLevel >= 2 ? 300 : 0,
-            // startingTop: '2%', // TODO !0: wider, more tall. 96% screen ?
-            // endingTop: '6%',
+            startingTop: '10%',
+            endingTop: '4%',
             opacity: 0.5,
             preventScrolling: true,
             onOpenStart: () => {
@@ -151,14 +146,12 @@ class SensorMultiLevelItem extends Item {
 
   click () {
     if (!this.state.productObjectProxy) {
-      // return // TODO !0: uncomment
+      return
     }
-
     const modal = $(`#sensor-multi-level-popup-${this._id}`)
     if (this.state.modalOpened) {
       return
     }
-
     modal.modal('open')
   }
 
@@ -235,6 +228,12 @@ class SensorMultiLevelItem extends Item {
     const element = document.getElementById(`sensor-big-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
+      const drawWhite = $(element).closest('.modal').hasClass('white-text')
+      let labelString = this.state.label
+      if (this.state.units && labelString) {
+        labelString += ` (in ${this.state.units}`
+      }
+
       this._bigChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -244,41 +243,59 @@ class SensorMultiLevelItem extends Item {
               pointRadius: 4,
               fill: false,
               borderWidth: 2,
-              borderColor: 'red' // TODO !0: dynamic, selon la couleur du theme...
-              // TODO !0: legend/label for popins
+              borderColor: drawWhite ? '#fff' : '#000',
+              label: 'Mean value'
             },
             {
               data: data.map((d) => ({ t: d.t, y: d.M })),
               pointRadius: 0,
               fill: false,
               borderWidth: 1,
-              borderColor: 'yellow' // TODO !0: dynamic, selon la couleur du theme...
-              // TODO !0: legend/label for popins
+              borderColor: drawWhite ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
+              label: 'Maximum'
             },
             {
               data: data.map((d) => ({ t: d.t, y: d.m })),
               pointRadius: 0,
               fill: 1,
               borderWidth: 1,
-              borderColor: 'pink', // TODO !0: dynamic, selon la couleur du theme...
-              backgroundColor: 'blue' // TODO !0: dynamic
-              // TODO !0: legend/label for popins
+              borderColor: drawWhite ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
+              backgroundColor: drawWhite ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
+              label: 'Minimum'
             }
           ]
         },
+
         options: {
           legend: { display: false },
           scales: {
             yAxes: [{
               display: true,
               ticks: {
-                suggestedMax: 1 // min amplitude for y
+                fontColor: drawWhite ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+                suggestedMax: 1, // min amplitude for y
+                padding: 3
+              },
+              gridLines: {
+                color: drawWhite ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
+                zeroLineWidth: 2
+              },
+              scaleLabel: {
+                display: true,
+                labelString: labelString || this.state.params.title,
+                fontColor: drawWhite ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)'
               }
-              // TODO !0: legend, scales, etc...
             }],
             xAxes: [{
               type: 'time',
-              display: true
+              display: true,
+              ticks: {
+                fontColor: drawWhite ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
+                padding: 3
+              },
+              gridLines: {
+                color: drawWhite ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'
+              }
             }]
           },
           elements: {
