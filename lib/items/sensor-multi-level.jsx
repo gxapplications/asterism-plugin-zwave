@@ -38,6 +38,7 @@ class SensorMultiLevelItem extends Item {
         productObjectProxy.sensorMultiLevelGetUnits ? productObjectProxy.sensorMultiLevelGetUnits() : null
       ])
       .then(([node, sensorFormattedValue, sensorHistory, label, units]) => {
+        console.log('###', productObjectProxy, sensorHistory)
         this.setState({
           params, node, productObjectProxy, sensorFormattedValue, sensorHistory, label, units
         })
@@ -145,7 +146,9 @@ class SensorMultiLevelItem extends Item {
   }
 
   click () {
-    if (!this.state.productObjectProxy) {
+    console.log('####', this.state.productObjectProxy, this.state.sensorHistory)
+    if (!this.state.productObjectProxy || !this.state.sensorHistory ||
+      !this.state.sensorHistory.length || this.state.sensorHistory.length <= 2) {
       return
     }
     const modal = $(`#sensor-multi-level-popup-${this._id}`)
@@ -156,7 +159,7 @@ class SensorMultiLevelItem extends Item {
   }
 
   updateChart (data) {
-    if (!data || !data.length || data.length <= 2) {
+    if (!data || !data.length || (data.length <= 2)) {
       return
     }
     // http://www.chartjs.org/docs/latest
@@ -220,6 +223,7 @@ class SensorMultiLevelItem extends Item {
   }
 
   updateBigChart (data) {
+    console.log('#####', data)
     if (!data || !data.length || data.length <= 2) {
       return
     }
