@@ -11,7 +11,7 @@
     "start": "cd ../asterism/ && cross-env ASTERISM_PLUGINS=asterism-plugin-zwave npm start",
     "start:debug": "cd ../asterism/ && cross-env ASTERISM_PLUGINS=asterism-plugin-zwave npm run start:debug",
     "lint": "standard --verbose | snazzy",
-    "test": "npm ls && npm run test:rerun",
+    "test": "npm run test:rerun",
     "release": "npm run release:patch",
     "release:patch": "npm version patch -m \"Release new bugfix version %s\" && npm publish",
     "release:minor": "npm version minor -m \"Release new minor version %s\" && npm publish",
