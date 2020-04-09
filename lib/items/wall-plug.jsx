@@ -201,6 +201,10 @@ class WallPlugItem extends Item {
     if (!data || !data.length || data.length <= 2) {
       return
     }
+
+    const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
+    data = data.slice(-128).filter((e) => e.t >= timeStart)
+
     // http://www.chartjs.org/docs/latest
 
     const element = document.getElementById(`wall-plug-chart-${this.props.id}`)
