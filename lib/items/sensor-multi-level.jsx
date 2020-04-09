@@ -38,7 +38,6 @@ class SensorMultiLevelItem extends Item {
         productObjectProxy.sensorMultiLevelGetUnits ? productObjectProxy.sensorMultiLevelGetUnits() : null
       ])
       .then(([node, sensorFormattedValue, sensorHistory, label, units]) => {
-        console.log('###', productObjectProxy, sensorHistory)
         this.setState({
           params, node, productObjectProxy, sensorFormattedValue, sensorHistory, label, units
         })
@@ -125,8 +124,7 @@ class SensorMultiLevelItem extends Item {
               this.setState({ modalOpened: true })
             },
             onOpenEnd: () => {
-              console.log('######', this.state.sensorHistory, sensorHistory)
-              this.updateBigChart(sensorHistory)
+              this.updateBigChart(this.state.sensorHistory)
             },
             onCloseStart: () => {
               if (this._bigChart) {
@@ -147,7 +145,6 @@ class SensorMultiLevelItem extends Item {
   }
 
   click () {
-    console.log('####', this.state.productObjectProxy, this.state.sensorHistory)
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.sensorHistory.length || this.state.sensorHistory.length <= 2) {
       return
@@ -163,6 +160,9 @@ class SensorMultiLevelItem extends Item {
     if (!data || !data.length || (data.length <= 2)) {
       return
     }
+    const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
+    data = data.slice(-128).filter((e) => e.t >= timeStart)
+
     // http://www.chartjs.org/docs/latest
 
     const element = document.getElementById(`sensor-chart-${this._id}`)
@@ -224,7 +224,6 @@ class SensorMultiLevelItem extends Item {
   }
 
   updateBigChart (data) {
-    console.log('#########', data)
     if (!data || !data.length || data.length <= 2) {
       return
     }
