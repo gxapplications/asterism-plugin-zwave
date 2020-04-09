@@ -125,6 +125,7 @@ class SensorMultiLevelItem extends Item {
               this.setState({ modalOpened: true })
             },
             onOpenEnd: () => {
+              console.log('######', this.state.sensorHistory, sensorHistory)
               this.updateBigChart(sensorHistory)
             },
             onCloseStart: () => {
@@ -223,7 +224,7 @@ class SensorMultiLevelItem extends Item {
   }
 
   updateBigChart (data) {
-    console.log('#####', data)
+    console.log('#########', data)
     if (!data || !data.length || data.length <= 2) {
       return
     }
