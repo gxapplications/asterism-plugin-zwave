@@ -36,6 +36,7 @@ const builder = new ItemFactoryBuilder()
     { w: 3, h: 2 }
   ])
   .build()
+// TODO !0: add zwave-meter-level
 .newItemType('zwave-pilot-wire', AdditionalItem.categories.DOMOTICS)
   .withDescription('Z-wave Pilot wire control', 'Control a Z-wave pilot wire controller.')
   .settingPanelWithHeader('Pilot wire settings', 'brightness_4') // optional override, but always before *Instance*() calls...

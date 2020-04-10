@@ -18,6 +18,7 @@ class SensorMultiLevelItem extends Item {
     this.state.sensorFormattedValue = '...'
     this.state.modalOpened = false
     this.state.sensorHistory = null
+    this.state.chartPeriod = 'all'
 
     this._id = uuid.v4()
     this._bigChart = null
@@ -51,7 +52,7 @@ class SensorMultiLevelItem extends Item {
     this._mounted = true
 
     $(`#sensor-multi-level-popup-${this._id}`)
-      .addClass(this.props.context.theme.actions[this.state.params.color])
+      .addClass(this.props.context.theme.actions[this.state.params.color || 'secondary'])
 
     this._socket.on('node-event-sensor-multi-level-changed', (nodeId, value) => {
       if (this.state.params.nodeId != nodeId) { // eslint-disable-line eqeqeq
@@ -88,13 +89,14 @@ class SensorMultiLevelItem extends Item {
   }
 
   render () {
-    const { sensorFormattedValue, sensorHistory } = this.state
+    const { sensorFormattedValue, sensorHistory, chartPeriod } = this.state
     const { title = '', icon = 'insert_chart_outlined', color = 'secondary' } = this.state.params
     const { mainState, theme } = this.props.context
     const { animationLevel } = mainState()
 
+    const waves = (animationLevel >= 2) ? 'light' : null
     return (
-      <Button key={this.props.id} waves={animationLevel >= 2 ? 'light' : null}
+      <Button key={this.props.id} waves={waves}
         className={cx(theme.actions[color], 'truncate fluid SensorMultiLevel')} onClick={this.click.bind(this)}>
 
         {sensorHistory !== null && (
@@ -135,6 +137,31 @@ class SensorMultiLevelItem extends Item {
               this.setState({ modalOpened: false })
             }
           }}
+          actions={[
+            <Button key={0} waves={waves} onClick={this.period.bind(this, 'all')}
+              className='modal-footer-switch first' flat={chartPeriod === 'all'}>
+              All
+            </Button>,
+            <Button key={4} waves={waves} onClick={this.period.bind(this, 'year')}
+              className='modal-footer-switch' flat={chartPeriod === 'year'}>
+              Year
+            </Button>,
+            <Button key={8} waves={waves} onClick={this.period.bind(this, 'month')}
+              className='modal-footer-switch' flat={chartPeriod === 'month'}>
+              Month
+            </Button>,
+            <Button key={12} waves={waves} onClick={this.period.bind(this, 'week')}
+              className='modal-footer-switch' flat={chartPeriod === 'week'}>
+              Week
+            </Button>,
+            <Button key={16} waves={waves}onClick={this.period.bind(this, '48h')}
+              className='modal-footer-switch last' flat={chartPeriod === '48h'}>
+              48hrs
+            </Button>,
+            <Button key={99} flat modal='close' waves={waves}>
+              Close
+            </Button>
+          ]}
         >
           <div className='SensorMultiLevelGraph'>
             <canvas id={`sensor-big-chart-${this._id}`} className='chart' />
@@ -156,6 +183,14 @@ class SensorMultiLevelItem extends Item {
     modal.modal('open')
   }
 
+  period (chartPeriod) {
+    this.setState({ chartPeriod })
+    if (this._bigChart) {
+      this._bigChart.destroy()
+    }
+    this.updateBigChart(this.state.sensorHistory)
+  }
+
   updateChart (data) {
     if (!data || !data.length || (data.length <= 2)) {
       return
@@ -174,7 +209,8 @@ class SensorMultiLevelItem extends Item {
           datasets: [
             {
               data: data.map((d) => ({ t: d.t, y: d.v })),
-              pointRadius: 1,
+              pointRadius: 0,
+              borderWidth: 1,
               fill: 'origin'
             }
           ]
@@ -227,6 +263,26 @@ class SensorMultiLevelItem extends Item {
     if (!data || !data.length || data.length <= 2) {
       return
     }
+
+    let timeStart = Date.now()
+    switch (this.state.chartPeriod) {
+      case 'year':
+        timeStart -= (366 * 24 * 3600000)
+        break
+      case 'month':
+        timeStart -= (31 * 24 * 3600000)
+        break
+      case 'week':
+        timeStart -= (7 * 24 * 3600000)
+        break
+      case '48h':
+        timeStart -= (48 * 3600000)
+        break
+      case 'all':
+      default:
+    }
+    data = data.filter((e) => e.t >= timeStart)
+
     // http://www.chartjs.org/docs/latest
 
     const element = document.getElementById(`sensor-big-chart-${this._id}`)
@@ -235,7 +291,7 @@ class SensorMultiLevelItem extends Item {
       const drawWhite = $(element).closest('.modal').hasClass('white-text')
       let labelString = this.state.label
       if (this.state.units && labelString) {
-        labelString += ` (in ${this.state.units}`
+        labelString += ` (in ${this.state.units})`
       }
 
       this._bigChart = new Chart(ctx, {
@@ -244,7 +300,7 @@ class SensorMultiLevelItem extends Item {
           datasets: [
             {
               data: data.map((d) => ({ t: d.t, y: d.v })),
-              pointRadius: 4,
+              pointRadius: 0,
               fill: false,
               borderWidth: 2,
               borderColor: drawWhite ? '#fff' : '#000',
