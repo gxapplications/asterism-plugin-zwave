@@ -90,7 +90,7 @@ class SensorMultiLevelItem extends Item {
 
   render () {
     const { sensorFormattedValue, sensorHistory, chartPeriod } = this.state
-    const { title = '', icon = 'insert_chart_outlined', color = 'secondary' } = this.state.params
+    const { title = '', icon = 'trending_up', color = 'secondary' } = this.state.params
     const { mainState, theme } = this.props.context
     const { animationLevel } = mainState()
 
@@ -154,7 +154,7 @@ class SensorMultiLevelItem extends Item {
               className='modal-footer-switch' flat={chartPeriod === 'week'}>
               Week
             </Button>,
-            <Button key={16} waves={waves}onClick={this.period.bind(this, '48h')}
+            <Button key={16} waves={waves} onClick={this.period.bind(this, '48h')}
               className='modal-footer-switch last' flat={chartPeriod === '48h'}>
               48hrs
             </Button>,
@@ -188,7 +188,7 @@ class SensorMultiLevelItem extends Item {
     if (this._bigChart) {
       this._bigChart.destroy()
     }
-    this.updateBigChart(this.state.sensorHistory)
+    this.updateBigChart(this.state.sensorHistory, chartPeriod)
   }
 
   updateChart (data) {
@@ -259,29 +259,43 @@ class SensorMultiLevelItem extends Item {
     }
   }
 
-  updateBigChart (data) {
-    if (!data || !data.length || data.length <= 2) {
+  updateBigChart (data, forceChartPeriod) {
+    data = data || []
+    if (!data.length || data.length <= 2) {
       return
     }
 
-    let timeStart = Date.now()
-    switch (this.state.chartPeriod) {
+    const timeEnd = Date.now()
+    let timeStart = 0
+    let forceTicks = undefined
+    let dayTickFormat = 'DD'
+    switch (forceChartPeriod || this.state.chartPeriod) {
       case 'year':
-        timeStart -= (366 * 24 * 3600000)
+        timeStart = timeEnd - (366 * 24 * 3600000)
+        forceTicks = 'month'
         break
       case 'month':
-        timeStart -= (31 * 24 * 3600000)
+        timeStart = timeEnd - (31 * 24 * 3600000)
+        forceTicks = 'day'
         break
       case 'week':
-        timeStart -= (7 * 24 * 3600000)
+        timeStart = timeEnd - (7 * 24 * 3600000)
+        forceTicks = 'day'
+        dayTickFormat = 'ddd'
         break
       case '48h':
-        timeStart -= (48 * 3600000)
+        timeStart = timeEnd - (48 * 3600000)
+        forceTicks = 'hour'
         break
       case 'all':
       default:
+        timeStart = null
+        forceTicks = 'day'
+        dayTickFormat = 'MMM DD'
     }
-    data = data.filter((e) => e.t >= timeStart)
+    if (timeStart) {
+      data = data.filter((e) => e.t >= timeStart)
+    }
 
     // http://www.chartjs.org/docs/latest
 
@@ -325,7 +339,6 @@ class SensorMultiLevelItem extends Item {
             }
           ]
         },
-
         options: {
           legend: { display: false },
           scales: {
@@ -351,10 +364,22 @@ class SensorMultiLevelItem extends Item {
               display: true,
               ticks: {
                 fontColor: drawWhite ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)',
-                padding: 3
+                padding: 3,
+                min: timeStart,
+                max: timeEnd
               },
               gridLines: {
                 color: drawWhite ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'
+              },
+              bounds: 'ticks',
+              time: {
+                isoWeekday: true,
+                minUnit: 'minute',
+                unit: forceTicks,
+                displayFormats: {
+                  day: dayTickFormat,
+                  month: 'MMM'
+                }
               }
             }]
           },
