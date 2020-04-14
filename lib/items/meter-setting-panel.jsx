@@ -6,9 +6,9 @@ import { Button, TextInput, Select, Preloader, Row } from 'react-materialize'
 
 import { ItemSettingPanel, IconPicker, ActionColorSwitch } from 'asterism-plugin-library'
 
-import SensorMultiLevelItem from './sensor-multi-level'
+import MeterItem from './meter'
 
-class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
+class MeterItemSettingPanel extends ItemSettingPanel {
   constructor (props) {
     super(props)
 
@@ -21,14 +21,14 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
   componentDidMount () {
     this._mounted = true
 
-    this.zwaveService.getNodesByProvidedFunctions(['sensorMultiLevelGetValue', 'sensorMultiLevelGetHistory',
-      'sensorMultiLevelGetLabel', 'sensorMultiLevelGetUnits', 'sensorMultiLevelGetFormatted'])
+    this.zwaveService.getNodesByProvidedFunctions(['meterGetLastValue', 'meterGetAllValues',
+      'meterGetUnits', 'meterGetLabel', 'meterGetFormatted'])
     .then((nodes) => Promise.all(nodes.map(
       (n) =>
         this.zwaveService.getProductObjectProxyForNodeId(n.nodeid, n.meta)
         .then((proxy) => Promise.all([
-          proxy.sensorMultiLevelGetLabel(),
-          proxy.sensorMultiLevelGetUnits()
+          proxy.meterGetLabel(),
+          proxy.meterGetUnits()
         ]))
         .then(([label, units]) => {
           n.label = label
@@ -57,7 +57,7 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
   render () {
     const { theme, mainState } = this.props.context
     const { compatibleNodes, panelReady } = this.state
-    const { title = '', nodeId = 0, color = 'secondary', icon = 'trending_up' } = this.state.params
+    const { title = '', nodeId = 0, color = 'secondary', icon = 'insert_chart_outlined' } = this.state.params
     const { animationLevel } = mainState()
 
     const waves = animationLevel >= 2 ? 'light' : undefined
@@ -66,7 +66,7 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
     return panelReady ? (
       <div className='clearing padded'>
         <Row className='padded card'>
-          <Select s={12} label='Choose a Z-wave device' icon='trending_up'
+          <Select s={12} label='Choose a Z-wave device' icon='insert_chart_outlined'
             onChange={this.handleEventChange.bind(this, 'nodeId')} value={`${nodeId}`}>
             {compatibleNodes.map((node) => (
               <option key={node.nodeid} value={`${node.nodeid}`}>{node.name}{node.label && ` (${node.label} in ${node.units})`}</option>
@@ -91,8 +91,8 @@ class SensorMultiLevelItemSettingPanel extends ItemSettingPanel {
   }
 
   save () {
-    this.next(SensorMultiLevelItem, this.state.params)
+    this.next(MeterItem, this.state.params)
   }
 }
 
-export default SensorMultiLevelItemSettingPanel
+export default MeterItemSettingPanel

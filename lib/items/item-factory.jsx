@@ -8,6 +8,8 @@ import SensorMultiLevelItem from './sensor-multi-level'
 import SensorMultiLevelItemSettingPanel from './sensor-multi-level-setting-panel'
 import PilotWireItem from './pilot-wire'
 import PilotWireItemSettingPanel from './pilot-wire-setting-panel'
+import MeterItem from './meter'
+import MeterItemSettingPanel from './meter-setting-panel'
 
 const builder = new ItemFactoryBuilder()
 .newItemType('zwave-wall-plug', AdditionalItem.categories.DOMOTICS)
@@ -25,7 +27,7 @@ const builder = new ItemFactoryBuilder()
   .build()
 .newItemType('zwave-sensor-multi-level', AdditionalItem.categories.DOMOTICS)
   .withDescription('Z-wave Sensor level', 'Show a Z-wave sensor level data.')
-  .settingPanelWithHeader('Sensor level settings', 'bar_chart') // optional override, but always before *Instance*() calls...
+  .settingPanelWithHeader('Sensor level settings', 'trending_up') // optional override, but always before *Instance*() calls...
   .newInstanceFromInitialSetting(1, 2, SensorMultiLevelItemSettingPanel)
   .existingInstance(SensorMultiLevelItem, SensorMultiLevelItemSettingPanel)
   .acceptDimensions([
@@ -36,7 +38,19 @@ const builder = new ItemFactoryBuilder()
     { w: 3, h: 2 }
   ])
   .build()
-// TODO !0: add zwave-meter-level
+.newItemType('zwave-meter', AdditionalItem.categories.DOMOTICS)
+  .withDescription('Z-wave Meter', 'Show a Z-wave meter data.')
+  .settingPanelWithHeader('Meter settings', 'bar_chart') // optional override, but always before *Instance*() calls...
+  .newInstanceFromInitialSetting(1, 2, MeterItemSettingPanel)
+  .existingInstance(MeterItem, MeterItemSettingPanel)
+  .acceptDimensions([
+    { w: 1, h: 1 },
+    { w: 2, h: 1 },
+    { w: 1, h: 2 },
+    { w: 2, h: 2 },
+    { w: 3, h: 2 }
+  ])
+  .build()
 .newItemType('zwave-pilot-wire', AdditionalItem.categories.DOMOTICS)
   .withDescription('Z-wave Pilot wire control', 'Control a Z-wave pilot wire controller.')
   .settingPanelWithHeader('Pilot wire settings', 'brightness_4') // optional override, but always before *Instance*() calls...
