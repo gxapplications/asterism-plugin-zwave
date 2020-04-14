@@ -435,6 +435,57 @@ i.material-icons.zwave-off.black-text,
   }
 }
 
+.Meter {
+  & .meterGraph {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0.7;
+
+    & .chart {
+      position: relative;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  & .twoLinesButtonTitle {
+    position: relative;
+    display: flex;
+
+    & > span {
+      position: absolute;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: -webkit-fill-available;
+    }
+
+    & > span:first-of-type {
+      top: -0.7em;
+    }
+    & > span:last-of-type {
+      top: 0.8em;
+    }
+  }
+}
+
+.MeterGraph {
+  position: relative;
+  height: calc(100% - 24px - 1.8rem);
+
+  & .chart {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
 .PilotWireItem {
   width: 100%;
 
