@@ -61,7 +61,6 @@ class MeterItemSettingPanel extends ItemSettingPanel {
     const { animationLevel } = mainState()
 
     const waves = animationLevel >= 2 ? 'light' : undefined
-    //const selectedNode = compatibleNodes.find((node) => node.nodeid == nodeId)
 
     return panelReady ? (
       <div className='clearing padded'>

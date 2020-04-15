@@ -19,6 +19,7 @@ class MeterItem extends Item {
     this.state.modalOpened = false
     this.state.meterHistory = null
     this.state.chartPeriod = 'all'
+    this.state.resetConfirm = false
 
     this._id = uuid.v4()
     this._bigChart = null
@@ -41,7 +42,8 @@ class MeterItem extends Item {
       .then(([node, meterFormattedValue, meterHistory, label, units]) => {
         this.setState({
           params, node, productObjectProxy, meterFormattedValue, meterHistory, label, units,
-          resetSupported: !!productObjectProxy.meterResetCounter
+          resetSupported: !!productObjectProxy.meterResetCounter,
+          resetConfirm: false
         })
         this.updateChart(meterHistory)
       })
@@ -90,15 +92,16 @@ class MeterItem extends Item {
   }
 
   render () {
-    const { meterFormattedValue, meterHistory, chartPeriod, resetSupported } = this.state
+    const { meterFormattedValue, meterHistory, chartPeriod, resetSupported, resetConfirm } = this.state
     const { title = '', icon = 'insert_chart_outlined', color = 'secondary' } = this.state.params
     const { mainState, theme } = this.props.context
     const { animationLevel } = mainState()
 
     const waves = (animationLevel >= 2) ? 'light' : null
+    const wavesDelete = (animationLevel >= 2) ? 'red' : null
     return (
-      <Button key={this.props.id} waves={waves}
-        className={cx(theme.actions[color], 'truncate fluid Meter')} onClick={this.click.bind(this)}>
+      <Button key={this.props.id} waves={waves} onClick={this.click.bind(this)}
+        className={cx(theme.actions[color], 'truncate fluid Meter')}>
 
         {meterHistory !== null && (
           <div className='meterGraph'>
@@ -139,7 +142,10 @@ class MeterItem extends Item {
             }
           }}
           actions={[
-            (resetSupported && <Button key={95} flat waves={waves} onClick={this.reset.bind(this)}>
+            (resetSupported && <Button key={95} flat={!resetConfirm}
+              waves={resetConfirm ? waves : wavesDelete}
+              className={resetConfirm ? theme.actions.negative : ''}
+              onClick={this.reset.bind(this)}>
               Reset
             </Button>),
             <Button key={0} waves={waves} onClick={this.period.bind(this, 'all')}
@@ -178,7 +184,7 @@ class MeterItem extends Item {
   click () {
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.meterHistory.length || this.state.meterHistory.length <= 2) {
-      return
+      //return // TODO !0: uncomment it
     }
     const modal = $(`#meter-popup-${this._id}`)
     if (this.state.modalOpened) {
@@ -196,7 +202,19 @@ class MeterItem extends Item {
   }
 
   reset () {
-    // TODO !0
+    if (!this.state.resetConfirm) {
+      this.setState({ resetConfirm: true })
+      clearTimeout(this._resetTimer)
+      this._resetTimer = setTimeout(() => {
+        if (this._mounted) {
+          this.setState({ resetConfirm: false })
+        }
+      }, 3000)
+      return
+    }
+
+    // TODO !0: do it ! call reset, THEN, force an item refresh ! or just a call to meterGetAllValues ?
+    this.setState({ resetConfirm: false })
   }
 
   updateChart (data) {
@@ -211,16 +229,16 @@ class MeterItem extends Item {
     const element = document.getElementById(`meter-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      // TODO
+      // TODO !0
     }
   }
 
   updateBigChart (data, forceChartPeriod) {
     data = data || []
     if (!data.length || data.length <= 2) {
-      return
+      //return
     }
-
+console.log('#### 1', data)
     const timeEnd = Date.now()
     let timeStart = 0
     let forceTicks = undefined
@@ -254,6 +272,7 @@ class MeterItem extends Item {
     }
 
     // http://www.chartjs.org/docs/latest
+console.log('#### 2', data)
 
     const element = document.getElementById(`meter-big-chart-${this._id}`)
     if (element) {
@@ -264,7 +283,8 @@ class MeterItem extends Item {
         labelString += ` (in ${this.state.units})`
       }
 
-      // TODO
+      console.log('#### 3')
+      // TODO !0
     }
   }
 
