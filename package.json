@@ -1,6 +1,6 @@
 {
   "name": "asterism-plugin-zwave",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "An asterism plugin to add Z-wave support",
   "author": "Xavier Gouley <gxapplications@gmail.com>",
   "contributors": [],
