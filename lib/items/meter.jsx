@@ -42,7 +42,6 @@ class MeterItem extends Item {
         productObjectProxy.meterGetUnits ? productObjectProxy.meterGetUnits() : null
       ])
       .then(([node, meterFormattedValue, meterHistory, label, units]) => {
-console.log('#### 0', meterFormattedValue, meterHistory, label, units)
         this.setState({
           params, node, productObjectProxy, meterFormattedValue, meterHistory, label, units,
           resetSupported: !productObjectProxy.meterResetCounter,
@@ -147,33 +146,39 @@ console.log('#### 0', meterFormattedValue, meterHistory, label, units)
           actions={[
             (resetSupported && <Button small key={95} flat={!resetConfirm}
               waves={resetConfirm ? waves : wavesDelete}
-              className={resetConfirm ? theme.actions.negative : 'transparent'}
+              className={resetConfirm ? theme.actions.negative : 'transparent hide-on-small-only'}
               onClick={this.reset.bind(this)}>
               Reset
             </Button>),
             <Button key={0} waves={waves} onClick={this.period.bind(this, 'all')}
               className='modal-footer-switch first' flat={chartPeriod === 'all'}>
-              4 years
+              <span className='hide-on-small-only'>4 Years</span>
+              <span className='hide-on-med-and-up'>4y</span>
             </Button>,
             <Button key={4} waves={waves} onClick={this.period.bind(this, 'year')}
-              className='modal-footer-switch first' flat={chartPeriod === 'year'}>
-              Year
+              className='modal-footer-switch' flat={chartPeriod === 'year'}>
+              <span className='hide-on-small-only'>1 Year</span>
+              <span className='hide-on-med-and-up'>1y</span>
             </Button>,
             <Button key={8} waves={waves} onClick={this.period.bind(this, 'month')}
               className='modal-footer-switch' flat={chartPeriod === 'month'}>
-              Month
+              <span className='hide-on-small-only'>1 Month</span>
+              <span className='hide-on-med-and-up'>1M</span>
             </Button>,
             <Button key={12} waves={waves} onClick={this.period.bind(this, 'week')}
               className='modal-footer-switch' flat={chartPeriod === 'week'}>
-              2 Weeks
+              <span className='hide-on-small-only'>2 Weeks</span>
+              <span className='hide-on-med-and-up'>2w</span>
             </Button>,
             <Button key={16} waves={waves} onClick={this.period.bind(this, 'day')}
               className='modal-footer-switch' flat={chartPeriod === 'day'}>
-              2 Days
+              <span className='hide-on-small-only'>2 Days</span>
+              <span className='hide-on-med-and-up'>2d</span>
             </Button>,
             <Button key={20} waves={waves} onClick={this.period.bind(this, 'hour')}
               className='modal-footer-switch last' flat={chartPeriod === 'hour'}>
-              Hour
+              <span className='hide-on-small-only'>1 Hour</span>
+              <span className='hide-on-med-and-up'>1hr</span>
             </Button>,
             <Button key={99} flat modal='close' waves={waves}>
               Close
@@ -191,7 +196,7 @@ console.log('#### 0', meterFormattedValue, meterHistory, label, units)
   click () {
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.meterHistory.length || this.state.meterHistory.length <= 2) {
-      //return // TODO !0: uncomment it
+      return
     }
     const modal = $(`#meter-popup-${this._id}`)
     if (this.state.modalOpened) {
@@ -228,83 +233,68 @@ console.log('#### 0', meterFormattedValue, meterHistory, label, units)
     if (!data || !data.length || (data.length <= 2)) {
       return
     }
-    const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
-    data = data.slice(-128).filter((e) => e.t >= timeStart)
+    const timeStart = Date.now() - (7 * 24 * 60 * 60 * 1000) // last week
+    const timeEnd = dayjs().startOf('day').valueOf()
+    data = roundTruncate(data.slice(-128), 'day').filter((e, i) =>
+      (e.t >= timeStart || (data[i + 1] && data[i + 1].t >= timeStart)) &&
+      ((e.t < timeEnd) || i === data.length - 1))
 
     // http://www.chartjs.org/docs/latest
 
     const element = document.getElementById(`meter-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      // TODO !0
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          datasets: [
+            {
+              data: data.map((d, i) => ({ t: d.t, y: i === 0 ? d.v : d.v - data[i - 1].v, v: d.v })).slice(1),
+              borderWidth: 1,
+              barThickness: 'flex',
+              barPercentage: 1,
+              categoryPercentage: 1
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          scales: {
+            yAxes: [{
+              display: false,
+              beginAtZero: true,
+              ticks: {
+                suggestedMax: 1 // min amplitude for y
+              }
+            }],
+            xAxes: [{
+              type: 'time',
+              display: false
+            }]
+          },
+          layout: {
+            padding: 5
+          },
+          animation: {
+            duration: 0
+          },
+          hover: {
+            animationDuration: 0
+          },
+          responsiveAnimationDuration: 0,
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      })
     }
   }
 
   updateBigChart (data, forceChartPeriod) {
-    const now = Date.now()
-    data = data || compileTruncate([ // TODO !0: empty array
-      { t: now - (13 * 31 * 24 * 3600 * 1000), v: 42, i: 1 },
-      { t: now - (8 * 31 * 24 * 3600 * 1000), v: 44, i: 1 },
-      { t: now - (7 * 31 * 24 * 3600 * 1000), v: 45, i: 1 },
-      { t: now - (6 * 31 * 24 * 3600 * 1000), v: 46, i: 1 },
-      { t: now - (5 * 31 * 24 * 3600 * 1000), v: 48, i: 1 },
-      { t: now - (4 * 31 * 24 * 3600 * 1000), v: 50, i: 1 },
-
-      { t: now - (3 * 31 * 24 * 3600 * 1000) - (7 * 3600 * 1000), v: 51, i: 1 },
-      { t: now - (3 * 31 * 24 * 3600 * 1000) - (3 * 3600 * 1000), v: 52, i: 1 },
-      { t: now - (3 * 31 * 24 * 3600 * 1000) - (1 * 3600 * 1000), v: 55, i: 1 },
-      { t: now - (3 * 31 * 24 * 3600 * 1000), v: 68, i: 1 },
-
-      { t: now - (13 * 24 * 3600 * 1000), v: 76, i: 1 },
-      { t: now - (12 * 24 * 3600 * 1000), v: 78, i: 1 },
-      { t: now - (9 * 24 * 3600 * 1000), v: 80, i: 1 },
-      { t: now - (8 * 24 * 3600 * 1000), v: 81, i: 1 },
-      { t: now - (6 * 24 * 3600 * 1000), v: 82, i: 1 },
-      { t: now - (5 * 24 * 3600 * 1000), v: 83, i: 1 },
-      { t: now - (4 * 24 * 3600 * 1000), v: 84, i: 1 },
-
-      { t: now - (3 * 24 * 3600 * 1000) - (7 * 3600 * 1000), v: 85, i: 1 },
-      { t: now - (3 * 24 * 3600 * 1000) - (3 * 3600 * 1000), v: 86, i: 1 },
-      { t: now - (3 * 24 * 3600 * 1000) - (1 * 3600 * 1000), v: 87, i: 1 },
-      { t: now - (3 * 24 * 3600 * 1000), v: 88, i: 1 },
-
-      { t: now - (16 * 3600 * 1000), v: 89, i: 1 },
-      { t: now - (15 * 3600 * 1000), v: 91, i: 1 },
-      { t: now - (14 * 3600 * 1000), v: 93, i: 1 },
-      { t: now - (12 * 3600 * 1000), v: 94, i: 1 },
-      { t: now - (9 * 3600 * 1000), v: 95, i: 1 },
-      { t: now - (8 * 3600 * 1000), v: 96, i: 1 },
-      { t: now - (6 * 3600 * 1000), v: 97, i: 1 },
-      { t: now - (5 * 3600 * 1000), v: 98, i: 1 },
-
-      { t: now - (4 * 3600 * 1000) - (45 * 60 * 1000), v: 100, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (35 * 60 * 1000), v: 101, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (25 * 60 * 1000), v: 103, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (5 * 60 * 1000), v: 105, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (4 * 60 * 1000), v: 108, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (3 * 60 * 1000), v: 110, i: 1 },
-      { t: now - (4 * 3600 * 1000) - (1 * 60 * 1000), v: 110, i: 1 },
-      { t: now - (4 * 3600 * 1000), v: 112, i: 1 },
-
-      { t: now - (55 * 60 * 1000), v: 132, i: 1 },
-      { t: now - (20 * 60 * 1000), v: 140, i: 1 },
-      { t: now - (5 * 60 * 1000), v: 144, i: 1 },
-      { t: now - (4 * 60 * 1000), v: 144, i: 1 },
-      { t: now - (3 * 60 * 1000), v: 145, i: 1 },
-      { t: now - (2 * 60 * 1000), v: 146, i: 1 },
-
-      { t: now - (48 * 1000), v: 147, i: 1 },
-      { t: now - (34 * 1000), v: 148, i: 1 },
-      { t: now - (20 * 1000), v: 149, i: 1 },
-      { t: now - (10 * 1000), v: 150, i: 1 },
-      { t: now - (5 * 1000), v: 152, i: 1 },
-      { t: now, v: 157, i: 1 }
-    ])
+    data = data || []
     if (!data.length || data.length <= 2) {
-      //return // TODO !0: uncomment
+      return
     }
 
-console.log('#### 1', data)
     let timeEnd = Date.now()
     const nowDayJs = dayjs()
     let timeStart = 0
@@ -355,7 +345,6 @@ console.log('#### 1', data)
     }
 
     // http://www.chartjs.org/docs/latest
-console.log('#### 2', data)
 
     const element = document.getElementById(`meter-big-chart-${this._id}`)
     if (element) {
@@ -371,11 +360,11 @@ console.log('#### 2', data)
         data: {
           datasets: [
             {
-              data: data.map((d, i) => ({ t: d.t, y: i === 0 ? d.v : d.v - data[i - 1].v, a: d.v })).slice(1),
+              data: data.map((d, i) => ({ t: d.t, y: i === 0 ? d.v : d.v - data[i - 1].v, v: d.v })).slice(1),
               borderWidth: 1,
               borderColor: drawWhite ? '#fff' : '#000',
               backgroundColor: drawWhite ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-              //barThickness: 'flex',
+              barThickness: 'flex',
               barPercentage: 1,
               categoryPercentage: 1
             }
@@ -428,8 +417,13 @@ console.log('#### 2', data)
           tooltips: {
             callbacks: {
               label: function (tooltipItem, data) {
-                const dataAcc = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].a
-                return `${dataAcc} (+${tooltipItem.yLabel})`
+                const dataAcc = Number.parseFloat(Number.parseFloat(
+                  data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].v
+                ).toFixed(4))
+                const delta = Number.parseFloat(Number.parseFloat(
+                  tooltipItem.yLabel
+                ).toFixed(4))
+                return `${dataAcc} (+${delta})`
               }
             }
           },
