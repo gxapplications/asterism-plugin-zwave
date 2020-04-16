@@ -144,19 +144,23 @@ class SensorMultiLevelItem extends Item {
             </Button>,
             <Button key={4} waves={waves} onClick={this.period.bind(this, 'year')}
               className='modal-footer-switch' flat={chartPeriod === 'year'}>
-              Year
+              <span className='hide-on-small-only'>1 Year</span>
+              <span className='hide-on-med-and-up'>1y</span>
             </Button>,
             <Button key={8} waves={waves} onClick={this.period.bind(this, 'month')}
               className='modal-footer-switch' flat={chartPeriod === 'month'}>
-              Month
+              <span className='hide-on-small-only'>1 Month</span>
+              <span className='hide-on-med-and-up'>1M</span>
             </Button>,
             <Button key={12} waves={waves} onClick={this.period.bind(this, 'week')}
               className='modal-footer-switch' flat={chartPeriod === 'week'}>
-              Week
+              <span className='hide-on-small-only'>1 Week</span>
+              <span className='hide-on-med-and-up'>1w</span>
             </Button>,
             <Button key={16} waves={waves} onClick={this.period.bind(this, '48h')}
               className='modal-footer-switch last' flat={chartPeriod === '48h'}>
-              48hrs
+              <span className='hide-on-small-only'>2 Days</span>
+              <span className='hide-on-med-and-up'>2d</span>
             </Button>,
             <Button key={99} flat modal='close' waves={waves}>
               Close
@@ -216,9 +220,7 @@ class SensorMultiLevelItem extends Item {
           ]
         },
         options: {
-          legend: {
-            display: false
-          },
+          legend: { display: false },
           scales: {
             yAxes: [{
               display: false,
