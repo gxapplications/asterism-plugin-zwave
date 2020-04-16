@@ -9,7 +9,7 @@ import uuid from 'uuid'
 import dayjs from 'dayjs'
 
 import { Item } from 'asterism-plugin-library'
-import { roundTruncate, compileTruncate } from '../tools'
+import { roundTruncate } from '../tools'
 
 class MeterItem extends Item {
   constructor (props) {
@@ -196,6 +196,7 @@ class MeterItem extends Item {
   click () {
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.meterHistory.length || this.state.meterHistory.length <= 2) {
+      console.log('#### 0', this.state.meterHistory)
       return
     }
     const modal = $(`#meter-popup-${this._id}`)
@@ -240,7 +241,7 @@ class MeterItem extends Item {
       ((e.t < timeEnd) || i === data.length - 1))
 
     // http://www.chartjs.org/docs/latest
-
+// TODO !0: no hover popin in the line of this chart
     const element = document.getElementById(`meter-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')

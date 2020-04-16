@@ -178,6 +178,7 @@ class SensorMultiLevelItem extends Item {
   click () {
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.sensorHistory.length || this.state.sensorHistory.length <= 2) {
+      console.log('#### 0', this.state.meterHistory)
       return
     }
     const modal = $(`#sensor-multi-level-popup-${this._id}`)
@@ -203,7 +204,7 @@ class SensorMultiLevelItem extends Item {
     data = data.slice(-128).filter((e) => e.t >= timeStart)
 
     // http://www.chartjs.org/docs/latest
-
+// TODO !0: no hover popin in the line of this chart
     const element = document.getElementById(`sensor-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
