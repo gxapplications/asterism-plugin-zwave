@@ -44,7 +44,7 @@ class MeterItem extends Item {
       .then(([node, meterFormattedValue, meterHistory, label, units]) => {
         this.setState({
           params, node, productObjectProxy, meterFormattedValue, meterHistory, label, units,
-          resetSupported: !productObjectProxy.meterResetCounter,
+          resetSupported: productObjectProxy.meterResetCounter,
           resetConfirm: false
         })
         this.updateChart(meterHistory)
@@ -194,9 +194,8 @@ class MeterItem extends Item {
   }
 
   click () {
-    if (!this.state.productObjectProxy || !this.state.sensorHistory ||
+    if (!this.state.productObjectProxy || !this.state.meterHistory ||
       !this.state.meterHistory.length || this.state.meterHistory.length <= 2) {
-      console.log('#### 0', this.state.meterHistory)
       return
     }
     const modal = $(`#meter-popup-${this._id}`)
@@ -226,8 +225,11 @@ class MeterItem extends Item {
       return
     }
 
-    // TODO !0: do it ! call reset, THEN, force an item refresh ! or just a call to meterGetAllValues ?
-    this.setState({ resetConfirm: false })
+    this.state.productObjectProxy.meterResetCounter()
+    .then(() => {
+      // TODO !0: THEN, force an item refresh ! or just a call to meterGetAllValues ? or nothing ?
+      this.setState({ resetConfirm: false })
+    })
   }
 
   updateChart (data) {
@@ -250,7 +252,11 @@ class MeterItem extends Item {
         data: {
           datasets: [
             {
-              data: data.map((d, i) => ({ t: d.t, y: i === 0 ? d.v : d.v - data[i - 1].v, v: d.v })).slice(1),
+              data: data.map((d, i) => ({
+                t: d.t,
+                y: i === 0 ? d.v : d.v - data[i - 1].v,
+                v: d.v
+              })).slice(1).filter(d => (d.y >= 0)),
               borderWidth: 1,
               barThickness: 'flex',
               barPercentage: 1,
@@ -260,6 +266,7 @@ class MeterItem extends Item {
         },
         options: {
           legend: { display: false },
+          tooltips: { enabled: false },
           scales: {
             yAxes: [{
               display: false,
@@ -361,7 +368,11 @@ class MeterItem extends Item {
         data: {
           datasets: [
             {
-              data: data.map((d, i) => ({ t: d.t, y: i === 0 ? d.v : d.v - data[i - 1].v, v: d.v })).slice(1),
+              data: data.map((d, i) => ({
+                t: d.t,
+                y: i === 0 ? d.v : d.v - data[i - 1].v,
+                v: d.v
+              })).slice(1).filter(d => (d.y >= 0)),
               borderWidth: 1,
               borderColor: drawWhite ? '#fff' : '#000',
               backgroundColor: drawWhite ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
