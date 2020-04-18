@@ -178,7 +178,6 @@ class SensorMultiLevelItem extends Item {
   click () {
     if (!this.state.productObjectProxy || !this.state.sensorHistory ||
       !this.state.sensorHistory.length || this.state.sensorHistory.length <= 2) {
-      console.log('#### 0', this.state.meterHistory)
       return
     }
     const modal = $(`#sensor-multi-level-popup-${this._id}`)
@@ -222,6 +221,7 @@ class SensorMultiLevelItem extends Item {
         },
         options: {
           legend: { display: false },
+          tooltips: { enabled: false },
           scales: {
             yAxes: [{
               display: false,
