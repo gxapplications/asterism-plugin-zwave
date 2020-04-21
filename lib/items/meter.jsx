@@ -226,9 +226,11 @@ class MeterItem extends Item {
     }
 
     this.state.productObjectProxy.meterResetCounter()
-    .then(() => {
-      // TODO !0: THEN, force an item refresh ! or just a call to meterGetAllValues ? or nothing ?
-      this.setState({ resetConfirm: false })
+    .then(this.state.productObjectProxy.meterGetAllValues())
+    .then((meterHistory) => {
+      const modal = $(`#meter-popup-${this._id}`)
+      modal.modal('close')
+      this.setState({ meterHistory, resetConfirm: false })
     })
   }
 
@@ -243,7 +245,7 @@ class MeterItem extends Item {
       ((e.t < timeEnd) || i === data.length - 1))
 
     // http://www.chartjs.org/docs/latest
-// TODO !0: no hover popin in the line of this chart
+
     const element = document.getElementById(`meter-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
@@ -272,7 +274,7 @@ class MeterItem extends Item {
               display: false,
               beginAtZero: true,
               ticks: {
-                suggestedMax: 1 // min amplitude for y
+                suggestedMax: 0.1 // min amplitude for y
               }
             }],
             xAxes: [{

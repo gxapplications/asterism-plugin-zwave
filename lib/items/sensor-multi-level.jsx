@@ -203,7 +203,7 @@ class SensorMultiLevelItem extends Item {
     data = data.slice(-128).filter((e) => e.t >= timeStart)
 
     // http://www.chartjs.org/docs/latest
-// TODO !0: no hover popin in the line of this chart
+
     const element = document.getElementById(`sensor-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
