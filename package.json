@@ -87,7 +87,7 @@
   },
   "dependencies": {
     "chart.js": "2.7.x",
-    "dayjs": "^1.8.23",
+    "dayjs": "1.8.x",
     "debounce": "1.x",
     "joi": "13.x",
     "joi-browser": "13.x",

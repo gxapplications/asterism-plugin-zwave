@@ -11,7 +11,7 @@ _This asterism plugin will add z-wave support to control Z-wave compatible devic
 [![npm downloads](https://img.shields.io/npm/dt/asterism-plugin-zwave.svg?logo=npm&label=npm%20downloads)](https://www.npmjs.com/package/asterism-plugin-zwave)
 [![Dependencies](https://david-dm.org/gxapplications/asterism-plugin-zwave/status.svg?logo=dependabot)](https://david-dm.org/gxapplications/asterism-plugin-zwave)
 
-_[Roadmap available here (asterism and plugins)](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open)_
+_[Roadmap available here (asterism and plugins)](https://github.com/users/gxapplications/projects/1)_
 
 ---
 
