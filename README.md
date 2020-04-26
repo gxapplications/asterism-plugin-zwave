@@ -48,14 +48,12 @@ I add devices when I buy them, so there is the list of devices I managed today:
 - Aeotec Z-Stick Gen5 (but other USB Z-wave keys should work to control your network...)
 - Fibaro Door Opening Sensor 2 (FGDW-002) for door sensor, temperature and burglar alarms
 - Fibaro Wall Plug (FGWPE-102 ZW5) with full features support (on/off, color ring, advanced configuration)
+- Fibaro RGBW module support (for controlling LEDs only, not input connectors)
 - Hank 4 buttons Wall controller (HKZW-SCN04) through central scene support: allowing 8 actions
 - Standard binary switches SHOULD work too (for on/off feature only) on most models.
-
-Coming soon:
-- Fibaro RGBW module support
 
 If you want more devices, you have choice:
 - Propose your support in a GitHub pull request, we can work together.
 - Send the device to me as a gift :) I will make it compatible as soon as possible.
 
-:copyright: 2017-2019 GXApplications. [ [Roadmap/Milestones](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open) | [License](https://github.com/gxapplications/asterism-plugin-zwave/blob/master/LICENSE.md) ]
+:copyright: 2017-2020 GXApplications. [ [Roadmap/Milestones](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open) | [License](https://github.com/gxapplications/asterism-plugin-zwave/blob/master/LICENSE.md) ]
