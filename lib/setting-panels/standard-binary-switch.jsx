@@ -54,7 +54,6 @@ class StandardBinarySwitchSettingPanel extends React.Component {
     this._mounted = false
   }
 
-
   render () {
     const { nodeId, animationLevel, theme, reconfigureElement, productObjectProxy } = this.props
     const { switchState, panelReady } = this.state
@@ -89,7 +88,6 @@ class StandardBinarySwitchSettingPanel extends React.Component {
     this.props.productObjectProxy.binarySwitchInvert()
     .catch(console.error)
   }
-
 }
 
 StandardBinarySwitchSettingPanel.propTypes = {

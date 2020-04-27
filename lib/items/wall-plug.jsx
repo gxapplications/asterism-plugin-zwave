@@ -1,6 +1,7 @@
 'use strict'
 
 import Chart from 'chart.js'
+import 'chartjs-plugin-crosshair'
 import cx from 'classnames'
 import React from 'react'
 import { Button, Icon } from 'react-materialize'
@@ -23,6 +24,7 @@ class WallPlugItem extends Item {
     this._socket = props.context.privateSocket
     this.zwaveService = props.context.services['asterism-plugin-zwave']
 
+    this._chart = null
     this.receiveNewParams(this.state.params)
   }
 
@@ -201,6 +203,9 @@ class WallPlugItem extends Item {
     if (!data || !data.length || data.length <= 2) {
       return
     }
+    if (this._chart) {
+      this._chart.destroy()
+    }
 
     const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
     data = data.slice(-128).filter((e) => e.t >= timeStart)
@@ -210,12 +215,13 @@ class WallPlugItem extends Item {
     const element = document.getElementById(`wall-plug-chart-${this.props.id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      new Chart(ctx, {
+      this._chart = new Chart(ctx, {
         type: 'line',
         data: {
           datasets: [{
             data: data.map((d) => ({ t: d.t, y: d.v })).slice(0, 128),
-            pointRadius: 1,
+            pointRadius: 0,
+            borderWidth: 1,
             fill: 'origin'
           }]
         },
@@ -236,11 +242,7 @@ class WallPlugItem extends Item {
               display: false
             }]
           },
-          elements: {
-            line: {
-              tension: 0
-            }
-          },
+          elements: { line: { tension: 0.4, cubicInterpolationMode: 'monotone' } },
           layout: {
             padding: 5
           },
@@ -252,7 +254,8 @@ class WallPlugItem extends Item {
           },
           responsiveAnimationDuration: 0,
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          plugins: { crosshair: false }
         }
       })
     }

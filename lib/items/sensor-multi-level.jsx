@@ -2,6 +2,7 @@
 
 /* global $ */
 import Chart from 'chart.js'
+import 'chartjs-plugin-crosshair'
 import cx from 'classnames'
 import React from 'react'
 import { Button, Icon, Modal } from 'react-materialize'
@@ -21,6 +22,7 @@ class SensorMultiLevelItem extends Item {
     this.state.chartPeriod = 'all'
 
     this._id = uuid.v4()
+    this._chart = null
     this._bigChart = null
     this._socket = props.context.privateSocket
     this.zwaveService = props.context.services['asterism-plugin-zwave']
@@ -199,6 +201,10 @@ class SensorMultiLevelItem extends Item {
     if (!data || !data.length || (data.length <= 2)) {
       return
     }
+    if (this._chart) {
+      this._chart.destroy()
+    }
+
     const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
     data = data.slice(-128).filter((e) => e.t >= timeStart)
 
@@ -207,7 +213,7 @@ class SensorMultiLevelItem extends Item {
     const element = document.getElementById(`sensor-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      new Chart(ctx, {
+      this._chart = new Chart(ctx, {
         type: 'line',
         data: {
           datasets: [
@@ -235,11 +241,7 @@ class SensorMultiLevelItem extends Item {
               display: false
             }]
           },
-          elements: {
-            line: {
-              tension: 0
-            }
-          },
+          elements: { line: { tension: 0.4, cubicInterpolationMode: 'monotone' } },
           layout: {
             padding: 5
           },
@@ -253,6 +255,7 @@ class SensorMultiLevelItem extends Item {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
+            crosshair: false,
             filler: {
               propagate: true
             }
@@ -344,6 +347,11 @@ class SensorMultiLevelItem extends Item {
         },
         options: {
           legend: { display: false },
+          tooltips: {
+            mode: 'interpolate',
+            intersect: false,
+            enabled: true
+          },
           scales: {
             yAxes: [{
               display: true,
@@ -386,26 +394,31 @@ class SensorMultiLevelItem extends Item {
               }
             }]
           },
-          elements: {
-            line: {
-              tension: 0
-            }
-          },
-          layout: {
-            padding: 5
-          },
-          animation: {
-            duration: 300
-          },
-          hover: {
-            animationDuration: 300
-          },
-          responsiveAnimationDuration: 300,
+          elements: { line: { tension: 0.4, cubicInterpolationMode: 'monotone' } },
+          layout: { padding: 5 },
+          animation: { duration: 0 },
+          hover: { animationDuration: 0, intersect: false },
+          responsiveAnimationDuration: 0,
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             filler: {
               propagate: true
+            },
+            crosshair: {
+              line: {
+                color: drawWhite ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                width: 2
+              },
+              sync: { enabled: false },
+              zoom: {
+                enabled: true,
+                zoomboxBackgroundColor: 'rgba(128, 128, 128, 0.3)',
+                zoomboxBorderColor: 'rgba(128, 128, 128, 0.6)',
+                zoomButtonText: 'Reset Zoom',
+                zoomButtonClass: 'reset-zoom btn waves-effect waves-light ' + this.props.context.theme.actions.primary,
+              },
+              snap: { enabled: true }
             }
           }
         }
