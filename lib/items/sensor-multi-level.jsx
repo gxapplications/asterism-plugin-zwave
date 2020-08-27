@@ -21,6 +21,7 @@ class SensorMultiLevelItem extends Item {
     this.state.chartPeriod = 'all'
 
     this._id = uuid.v4()
+    this._chart = null
     this._bigChart = null
     this._socket = props.context.privateSocket
     this.zwaveService = props.context.services['asterism-plugin-zwave']
@@ -199,6 +200,10 @@ class SensorMultiLevelItem extends Item {
     if (!data || !data.length || (data.length <= 2)) {
       return
     }
+    if (this._chart) {
+      this._chart.destroy()
+    }
+
     const timeStart = Date.now() - (24 * 60 * 60 * 1000) // 24 last hours
     data = data.slice(-128).filter((e) => e.t >= timeStart)
 
@@ -207,7 +212,7 @@ class SensorMultiLevelItem extends Item {
     const element = document.getElementById(`sensor-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      new Chart(ctx, {
+      this._chart = Chart(ctx, {
         type: 'line',
         data: {
           datasets: [
@@ -235,11 +240,7 @@ class SensorMultiLevelItem extends Item {
               display: false
             }]
           },
-          elements: {
-            line: {
-              tension: 0
-            }
-          },
+          elements: { line: { tension: 0.4, cubicInterpolationMode: 'monotone' } },
           layout: {
             padding: 5
           },
@@ -386,11 +387,7 @@ class SensorMultiLevelItem extends Item {
               }
             }]
           },
-          elements: {
-            line: {
-              tension: 0
-            }
-          },
+          elements: { line: { tension: 0.4, cubicInterpolationMode: 'monotone' } },
           layout: {
             padding: 5
           },

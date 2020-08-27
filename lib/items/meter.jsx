@@ -24,6 +24,7 @@ class MeterItem extends Item {
     this.state.resetConfirm = false
 
     this._id = uuid.v4()
+    this._chart = null
     this._bigChart = null
     this._socket = props.context.privateSocket
     this.zwaveService = props.context.services['asterism-plugin-zwave']
@@ -132,7 +133,7 @@ class MeterItem extends Item {
               this.setState({ modalOpened: true })
             },
             onOpenEnd: () => {
-              this.updateBigChart(this.state.meterHistory)
+              this.updateBigChart()
             },
             onCloseStart: () => {
               if (this._bigChart) {
@@ -238,6 +239,10 @@ class MeterItem extends Item {
     if (!data || !data.length || (data.length <= 2)) {
       return
     }
+    if (this._chart) {
+      this._chart.destroy()
+    }
+
     const timeStart = Date.now() - (7 * 24 * 60 * 60 * 1000) // last week
     const timeEnd = dayjs().startOf('day').valueOf()
     data = roundTruncate(data.slice(-128), 'day').filter((e, i) =>
@@ -249,7 +254,7 @@ class MeterItem extends Item {
     const element = document.getElementById(`meter-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      new Chart(ctx, {
+      this._chart = new Chart(ctx, {
         type: 'bar',
         data: {
           datasets: [
