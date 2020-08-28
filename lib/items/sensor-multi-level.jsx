@@ -212,7 +212,7 @@ class SensorMultiLevelItem extends Item {
     const element = document.getElementById(`sensor-chart-${this._id}`)
     if (element) {
       const ctx = element.getContext('2d')
-      this._chart = Chart(ctx, {
+      this._chart = new Chart(ctx, {
         type: 'line',
         data: {
           datasets: [
