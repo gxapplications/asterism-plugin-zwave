@@ -2,6 +2,7 @@
 
 /* global $ */
 import Chart from 'chart.js'
+import 'chartjs-plugin-crosshair'
 import cx from 'classnames'
 import React from 'react'
 import { Button, Icon, Modal } from 'react-materialize'
@@ -298,7 +299,8 @@ class MeterItem extends Item {
           },
           responsiveAnimationDuration: 0,
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          plugins: { crosshair: false }
         }
       })
     }
@@ -391,6 +393,22 @@ class MeterItem extends Item {
         },
         options: {
           legend: { display: false },
+          tooltips: {
+            mode: 'interpolate',
+            intersect: false,
+            enabled: true,
+            callbacks: {
+              label: function (tooltipItem, data) {
+                const dataAcc = Number.parseFloat(Number.parseFloat(
+                  data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].v
+                ).toFixed(4))
+                const delta = Number.parseFloat(Number.parseFloat(
+                  tooltipItem.yLabel
+                ).toFixed(4))
+                return `${dataAcc} (+${delta})`
+              }
+            }
+          },
           scales: {
             yAxes: [{
               display: true,
@@ -433,31 +451,31 @@ class MeterItem extends Item {
               }
             }]
           },
-          tooltips: {
-            callbacks: {
-              label: function (tooltipItem, data) {
-                const dataAcc = Number.parseFloat(Number.parseFloat(
-                  data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].v
-                ).toFixed(4))
-                const delta = Number.parseFloat(Number.parseFloat(
-                  tooltipItem.yLabel
-                ).toFixed(4))
-                return `${dataAcc} (+${delta})`
-              }
-            }
-          },
           layout: {
             padding: 5
           },
-          animation: {
-            duration: 300
-          },
-          hover: {
-            animationDuration: 300
-          },
-          responsiveAnimationDuration: 300,
+          animation: { duration: 0 },
+          hover: { animationDuration: 0, intersect: false },
+          responsiveAnimationDuration: 0,
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          plugins: {
+            crosshair: {
+              line: {
+                color: drawWhite ? 'rgba(255,255,255,0.8)' : 'rgba(0,0,0,0.8)',
+                width: 2
+              },
+              sync: { enabled: false },
+              zoom: {
+                enabled: true,
+                zoomboxBackgroundColor: 'rgba(128, 128, 128, 0.3)',
+                zoomboxBorderColor: 'rgba(128, 128, 128, 0.6)',
+                zoomButtonText: 'Reset Zoom',
+                zoomButtonClass: 'reset-zoom btn waves-effect waves-light ' + this.props.context.theme.actions.primary,
+              },
+              snap: { enabled: true }
+            }
+          }
         }
       })
     }

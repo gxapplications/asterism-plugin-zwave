@@ -434,6 +434,12 @@ i.material-icons.zwave-off.black-text,
     left: 0;
     right: 0;
   }
+
+  & .reset-zoom {
+    position: fixed;
+    z-index: 1;
+    bottom: 9px;
+  }
 }
 
 .Meter {
@@ -484,6 +490,12 @@ i.material-icons.zwave-off.black-text,
     bottom: 0;
     left: 0;
     right: 0;
+  }
+
+  & .reset-zoom {
+    position: fixed;
+    z-index: 1;
+    bottom: 9px;
   }
 }
 

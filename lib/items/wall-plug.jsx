@@ -1,6 +1,7 @@
 'use strict'
 
 import Chart from 'chart.js'
+import 'chartjs-plugin-crosshair'
 import cx from 'classnames'
 import React from 'react'
 import { Button, Icon } from 'react-materialize'
@@ -253,7 +254,8 @@ class WallPlugItem extends Item {
           },
           responsiveAnimationDuration: 0,
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: false,
+          plugins: { crosshair: false }
         }
       })
     }

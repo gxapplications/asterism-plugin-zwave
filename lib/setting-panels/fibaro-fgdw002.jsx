@@ -552,6 +552,18 @@ class FibaroFgdw002SettingPanel extends React.Component {
                 <div id={`temperature-alarm-thresholds-${nodeId}`} />
             </div>
           </Row>
+
+          <Row>
+            <div className='col s12'>Link temperature to floating state</div>
+            <div className='col s12 m6'>
+              // TODO !0
+              <!--StatesDropdown defaultStateId={stateId} onChange={this.stateIdChange.bind(this)}
+                              theme={theme} animationLevel={animationLevel} services={services}
+                              typeFilter={(e) => e.id === 'bitmask-state'} instanceFilter={(e) => e.typeId === 'bitmask-state'}>
+                <option key='no-state-option' value={''}>No link</option>
+              </StatesDropdown-->
+            </div>
+          </Row>
           <br />
           <Row>
             <h5>Notice: Settings update</h5>
