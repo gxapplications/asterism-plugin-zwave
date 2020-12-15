@@ -40,8 +40,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
       temperatureValue: 'N/A',
       temperatureUnit: '',
       isHeatAlarm: 'Unknown',
-      isAccessControlAlarm: 'Unknown',
-      isBurglarAlarm: 'Unknown',
+      isAccessControlAlarm: 'Unknown',
+      isBurglarAlarm: 'Unknown',
       panelReady: false,
       configuration: {
         [configs.NORMAL_STATE]: null,
@@ -56,7 +56,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
       },
       stateId: null,
       stateBehavior: 1,
-      forceBitmaskStatePosition: true
+      forceBitmaskStatePosition: true,
+      temperatureStateId: null
     }
 
     this._socket = props.privateSocket
@@ -114,11 +115,13 @@ class FibaroFgdw002SettingPanel extends React.Component {
       o.getConfiguration(configs.TEMPERATURE_ALARM_THRESHOLD_LOW),
       o.getStateId(),
       o.getStateBehavior(),
-      o.getForceBitmaskStatePosition()
+      o.getForceBitmaskStatePosition(),
+      o.sensorMultiLevelGetStateId()
     ])
-    .then(([batteryPercent, batteryIcon, temperatureValue, temperatureUnit, isHeatAlarm, isAccessControlAlarm, isBurglarAlarm,
-        normalState, ledBehavior, tempMeasureInterval, tempReportsThreshold, tempForcedReportsInterval, tempOffset,
-        tempAlarmReports, tempAlarmThresholdHigh, tempAlarmThresholdLow, stateId, stateBehavior, forceBitmaskStatePosition]) => {
+    .then(([batteryPercent, batteryIcon, temperatureValue, temperatureUnit, isHeatAlarm, isAccessControlAlarm,
+        isBurglarAlarm, normalState, ledBehavior, tempMeasureInterval, tempReportsThreshold, tempForcedReportsInterval,
+        tempOffset, tempAlarmReports, tempAlarmThresholdHigh, tempAlarmThresholdLow, stateId, stateBehavior,
+        forceBitmaskStatePosition, temperatureStateId]) => {
       this.setState({
         batteryPercent: (batteryPercent === 'N/A') ? 'N/A' : Math.round(batteryPercent),
         batteryIcon,
@@ -141,7 +144,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
         },
         stateId,
         stateBehavior,
-        forceBitmaskStatePosition
+        forceBitmaskStatePosition,
+        temperatureStateId
       })
 
       this.plugWidgets()
@@ -372,7 +376,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
   render () {
     const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
     const { batteryPercent, batteryIcon, temperatureValue, temperatureUnit, panelReady, configuration,
-        isHeatAlarm, isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition } = this.state
+        isHeatAlarm, isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition,
+        temperatureStateId } = this.state
     const configs = FibaroFgdw002SettingPanel.configurations
 
     const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
@@ -554,17 +559,18 @@ class FibaroFgdw002SettingPanel extends React.Component {
           </Row>
 
           <Row>
-            <div className='col s12'>Link temperature to floating state</div>
+            <div className='col s12'>Link temperature to a floating state to control</div>
             <div className='col s12 m6'>
-              // TODO !0
-              <!--StatesDropdown defaultStateId={stateId} onChange={this.stateIdChange.bind(this)}
-                              theme={theme} animationLevel={animationLevel} services={services}
-                              typeFilter={(e) => e.id === 'bitmask-state'} instanceFilter={(e) => e.typeId === 'bitmask-state'}>
+              <StatesDropdown defaultStateId={temperatureStateId} onChange={this.temperatureStateIdChange.bind(this)}
+                theme={theme} animationLevel={animationLevel} services={services}
+                typeFilter={(e) => e.id === 'floating-level-state'}
+                instanceFilter={(e) => e.typeId === 'floating-level-state'}>
                 <option key='no-state-option' value={''}>No link</option>
-              </StatesDropdown-->
+              </StatesDropdown>
             </div>
           </Row>
           <br />
+
           <Row>
             <h5>Notice: Settings update</h5>
             After you change any settings, you must wakeup the sensor to update its configuration. To do that, remove the
@@ -718,6 +724,16 @@ class FibaroFgdw002SettingPanel extends React.Component {
     .then(() => {
       this.setState({
         forceBitmaskStatePosition: value
+      })
+    })
+    .catch(console.error)
+  }
+
+  temperatureStateIdChange (value) {
+    this.props.productObjectProxy.sensorMultiLevelSetStateId(value)
+    .then(() => {
+      this.setState({
+        temperatureStateId: value
       })
     })
     .catch(console.error)

@@ -56,4 +56,13 @@ If you want more devices, you have choice:
 - Propose your support in a GitHub pull request, we can work together.
 - Send the device to me as a gift :) I will make it compatible as soon as possible.
 
+
+## Troubleshooting about USB Autosuspend mode
+
+Some systmes activates Autosuspend mode on USB devices. This mode will freeze some Z-wave
+controllers after few seconds. You need to deactivate Autosuspend mode for your USB controller
+key. It depends on your operating system. For Ubuntu 14 `lsusb` will display your controller ID
+(format 1234:5678) and thenyou can blacklist your device ID in file `/etc/default/tlp` at the
+USB_BLACKLIST option.
+
 :copyright: 2017-2020 GXApplications. [ [Roadmap/Milestones](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open) | [License](https://github.com/gxapplications/asterism-plugin-zwave/blob/master/LICENSE.md) ]
