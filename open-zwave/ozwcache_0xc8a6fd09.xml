@@ -792,7 +792,7 @@
 			</CommandClass>
 		</CommandClasses>
 	</Node>
-	<Node id="4" name="Plug test" location="Escaliers" basic="4" generic="16" specific="1" roletype="5" devicetype="1792" nodetype="0" type="Binary Power Switch" listening="true" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="5" query_stage="Complete">
+	<Node id="4" name="Plug test" location="Escaliers" basic="4" generic="16" specific="1" roletype="5" devicetype="1792" nodetype="0" type="Binary Power Switch" listening="true" frequentListening="false" beaming="true" routing="true" max_baud_rate="100000" version="4" configrevision="5" query_stage="Dynamic">
 		<Manufacturer id="10f" name="FIBARO System">
 			<Product type="602" id="1001" name="FGWPE/F Wall Plug Gen5">
 				<MetaData>
@@ -1957,19 +1957,19 @@
 				<Instance index="4" endpoint="3" />
 				<Instance index="5" endpoint="4" />
 				<Instance index="6" endpoint="5" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="2" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="byte" genre="user" instance="3" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="4" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
-				<Value type="byte" genre="user" instance="5" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="2">
+				<Value type="byte" genre="user" instance="5" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="byte" genre="user" instance="6" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
@@ -2107,7 +2107,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.2">
+				<Value type="decimal" genre="user" instance="1" index="4" label="Power" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help>Power Sensor Value</Help>
 				</Value>
 			</CommandClass>
@@ -2119,10 +2119,10 @@
 					<StaticRequests>3</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.28">
+				<Value type="decimal" genre="user" instance="1" index="0" label="Electric - kWh" units="kWh" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.29">
 					<Help></Help>
 				</Value>
-				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.2">
+				<Value type="decimal" genre="user" instance="1" index="2" label="Electric - W" units="W" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="0.0">
 					<Help></Help>
 				</Value>
 				<Value type="bool" genre="user" instance="1" index="256" label="Exporting" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="0" value="False">
@@ -2760,7 +2760,7 @@
 					<StaticRequests>1</StaticRequests>
 				</State>
 				<Instance index="1" />
-				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="99">
+				<Value type="byte" genre="user" instance="1" index="0" label="Level" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="15">
 					<Help>The Current Level of the Device</Help>
 				</Value>
 				<Value type="button" genre="user" instance="1" index="1" label="Up" units="" read_only="false" write_only="true" verify_changes="false" poll_intensity="0" min="0" max="0">
@@ -3196,13 +3196,13 @@
 					<InNif>true</InNif>
 					<StaticRequests>4</StaticRequests>
 				</State>
-				<Value type="list" genre="config" instance="1" index="1" label="Alarm Music Volume" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1" max="3" vindex="2" size="1">
+				<Value type="list" genre="config" instance="1" index="1" label="Alarm Music Volume" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1" max="3" vindex="0" size="1">
 					<Help>This parameter defines the output volume when siren plays door bell music. Door Bell music volume is divided into 3 stages</Help>
 					<Item label="Low" value="1" />
 					<Item label="Middle" value="2" />
 					<Item label="High" value="3" />
 				</Value>
-				<Value type="list" genre="config" instance="1" index="2" label="Alarm Music Duration Time" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1" max="255" vindex="2" size="1">
+				<Value type="list" genre="config" instance="1" index="2" label="Alarm Music Duration Time" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1" max="255" vindex="1" size="1">
 					<Help>This Parameter defines the alarm music duration time when siren receive an alarm sensor notification report or an alarm command from controller. The duration time is divided into 5 stages.</Help>
 					<Item label="Off" value="0" />
 					<Item label="30 second" value="1" />
@@ -3210,7 +3210,7 @@
 					<Item label="5 minute" value="3" />
 					<Item label="Always on" value="255" />
 				</Value>
-				<Value type="byte" genre="config" instance="1" index="3" label="Door Bell Music Duration Time" units="minute" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="255">
+				<Value type="byte" genre="config" instance="1" index="3" label="Door Bell Music Duration Time" units="minute" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
 					<Help>This parameter defines the door bell music duration time when siren receives a door/window sensor notification report or an alarm command (BASIC_SET = 0x02) from controller. The door bell music will be played always if this parameter is set to 255. The door bell music will not be played if this parameter is set to 0. Other values are the door bell music playing duration time.</Help>
 				</Value>
 				<Value type="list" genre="config" instance="1" index="4" label="Door Bell Music Volume" units="" read_only="false" write_only="false" verify_changes="false" poll_intensity="0" min="1" max="3" vindex="0" size="1">
@@ -3274,7 +3274,7 @@
 					<Item label="Clear" value="0" />
 					<Item label="Active" value="1" />
 				</Value>
-				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="0">
+				<Value type="byte" genre="user" instance="1" index="256" label="Previous Event Cleared" units="" read_only="true" write_only="false" verify_changes="false" poll_intensity="0" min="0" max="255" value="1">
 					<Help></Help>
 				</Value>
 			</CommandClass>
