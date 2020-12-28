@@ -1,10 +1,10 @@
 'use strict'
 
-/* global $ */
+/* global $, noUiSlider, wNumb */
 import cx from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Checkbox, Select, Row, Preloader } from 'react-materialize'
+import { Checkbox, Select, Row, Preloader } from 'react-materialize'
 
 import { Scenarii } from 'asterism-plugin-library'
 

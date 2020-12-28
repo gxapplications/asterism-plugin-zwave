@@ -12,7 +12,6 @@ class HankHkzwscn04SettingPanel extends React.Component {
   constructor (props) {
     super(props)
 
-    const configs = HankHkzwscn04SettingPanel.configurations
     this.zwaveService = props.services()['asterism-plugin-zwave']
 
     this.state = {
@@ -27,7 +26,6 @@ class HankHkzwscn04SettingPanel extends React.Component {
   }
 
   componentDidMount () {
-    const configs = HankHkzwscn04SettingPanel.configurations
     this._mounted = true
 
     this._socket.on('node-event-battery-level-changed', (nodeId, confIndex, value) => {
@@ -66,11 +64,8 @@ class HankHkzwscn04SettingPanel extends React.Component {
   }
 
   render () {
-    const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
-    const { batteryPercent, batteryIcon, associations, panelReady } = this.state
-    const configs = HankHkzwscn04SettingPanel.configurations
-
-    const waves = animationLevel >= 2 ? 'light' : undefined
+    const { animationLevel, theme, productObjectProxy } = this.props
+    const { batteryPercent, batteryIcon, panelReady } = this.state
 
     return panelReady ? (
       <div>
@@ -111,10 +106,6 @@ HankHkzwscn04SettingPanel.propTypes = {
   productObjectProxy: PropTypes.object.isRequired,
   nodeId: PropTypes.number.isRequired,
   reconfigureElement: PropTypes.func.isRequired
-}
-
-HankHkzwscn04SettingPanel.configurations = {
-
 }
 
 export default HankHkzwscn04SettingPanel
