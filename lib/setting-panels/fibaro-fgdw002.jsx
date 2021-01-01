@@ -27,6 +27,7 @@ const _displayMinutes = (seconds) => {
   return m ? `${Math.floor(seconds / 3600)}h${m}m` : `${Math.round(seconds / 3600)}h`
 }
 
+// TODO !1: refacto with BaseSettingPanel
 class FibaroFgdw002SettingPanel extends React.Component {
   constructor (props) {
     super(props)
@@ -400,8 +401,6 @@ class FibaroFgdw002SettingPanel extends React.Component {
     let alarming = (normalState && isAccessControlAlarm) ? 'Opened alarm' : ((!normalState && isAccessControlAlarm) ? 'Closed alarm' : (normalState ? 'Normally closed' : 'Normally opened'))
     alarming = (isBurglarAlarm === true) ? 'Burglar alarm' : ((isHeatAlarm === true) ? 'Heat alarm' : ((isAccessControlAlarm === 'Unknown') ? 'Unknown' : alarming))
 
-    const waves = animationLevel >= 2 ? 'light' : undefined
-
     return panelReady ? (
       <div>
         <Row>
@@ -433,7 +432,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
         </Row>
         <hr />
 
-        <h5>Link to a scenarii bitmask state</h5>
+        <h5>Link state to a scenarii bitmask state</h5>
         <Row className='section card form'>
           <div className='col s12 m6'>
             <StatesDropdown defaultStateId={stateId} onChange={this.stateIdChange.bind(this)}

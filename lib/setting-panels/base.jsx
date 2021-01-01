@@ -12,7 +12,8 @@ class BaseSettingPanel extends React.Component {
     this._configurationsKeys = Object.values(configurationsToHandle) || []
     this._sliders = {}
     this._supports = {
-      batteryLevelSupport: false
+      batteryLevelSupport: false,
+      binarySwitchSupport: false
     }
 
     this.socket = props.privateSocket
@@ -32,8 +33,24 @@ class BaseSettingPanel extends React.Component {
     return this
   }
 
+  withBinarySwitchSupport () {
+    this.state.switchState = null
+    this._supports.binarySwitchSupport = true
+    return this
+  }
+
   componentDidMount (stateToMerge = {}) {
     const pop = this.props.productObjectProxy
+
+    this.socket.on('node-event-configuration-updated', (nodeId, confIndex, value) => {
+      if (this.props.nodeId !== nodeId) return
+
+      if (this.mounted) {
+        if (this.state.configuration[confIndex] !== value) {
+          this.setState({ configuration: { ...this.state.configuration, [confIndex]: value } })
+        }
+      }
+    })
 
     if (this._supports.batteryLevelSupport) {
       this.socket.on('node-event-battery-level-changed', (nodeId, confIndex, value) => {
@@ -41,6 +58,16 @@ class BaseSettingPanel extends React.Component {
 
         if (this.mounted && this.state.batteryPercent !== value.value) {
           this.setState({ batteryPercent: Math.round(value.value) })
+        }
+      })
+    }
+
+    if (this._supports.binarySwitchSupport) {
+      this.socket.on('node-event-binary-switch-changed', (nodeId, value) => {
+        if (this.props.nodeId !== nodeId) return
+
+        if (this.mounted && this.state.switchState !== value.value) {
+          this.setState({ switchState: value.value })
         }
       })
     }
@@ -55,12 +82,14 @@ class BaseSettingPanel extends React.Component {
 
       Promise.all([
         this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
-        this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null)
+        this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
+        this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null),
       ])
-      .then(([batteryPercent, batteryIcon]) => {
+      .then(([batteryPercent, batteryIcon, switchState]) => {
         if (this._supports.batteryLevelSupport) {
           state.batteryPercent = batteryPercent
           state.batteryIcon = batteryIcon
+          state.switchState = switchState
         }
 
         this.setState(state)
@@ -86,9 +115,13 @@ class BaseSettingPanel extends React.Component {
   plugConfigurationSlider (domId, configurationIndex, defaultValue, sliderParamOverrides, onChange) {
     const domSlider = $(`#${domId}-${this.props.nodeId}`)[0]
     if (domSlider) {
+      let startValue = configurationIndex ? this.state.configuration[configurationIndex] : defaultValue
+      if (startValue === undefined || startValue === null) {
+        startValue = defaultValue
+      }
       if (!this._sliders[domId] || !domSlider.noUiSlider) {
         this._sliders[domId] = noUiSlider.create(domSlider, {
-          start: (this.state.configuration[configurationIndex]) || defaultValue,
+          start: startValue,
           connect: true,
           step: 1,
           animate: true,
@@ -111,7 +144,7 @@ class BaseSettingPanel extends React.Component {
 
         this._sliders[domId].on('change', onChange)
       } else {
-        this._sliders[domId].set((this.state.configuration[configurationIndex]) || defaultValue)
+        this._sliders[domId].set(startValue)
       }
     }
   }
@@ -137,6 +170,7 @@ class BaseSettingPanel extends React.Component {
         onChange={(v) => BaseSettingPanel.prototype.changeConfiguration.bind(this)(configurationKey, v, parseInt)}
         value={`${actualValue}`}
       >
+        <option disabled>{props.label}</option>
         {possibleValues.map((label, i) => (<option key={i} value={i}>{label}</option>))}
       </Select>
     )
@@ -152,6 +186,10 @@ class BaseSettingPanel extends React.Component {
       this.setState({ configuration: { ...this.state.configuration, [index]: transformer(value) } })
     })
     .catch(console.error)
+  }
+
+  invertBinarySwitchState () {
+    this.props.productObjectProxy.binarySwitchInvert().catch(console.error)
   }
 }
 

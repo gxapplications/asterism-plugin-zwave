@@ -1,45 +1,36 @@
 'use strict'
 
-/* global $ */
 import cx from 'classnames'
+import BaseSettingPanel from './base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Preloader, Row, Button, Icon, Select } from 'react-materialize'
+import { Row, Button, Icon, Select } from 'react-materialize'
 import NameLocation from './name-location'
 
 import { Scenarii } from 'asterism-plugin-library'
 
 const { StatesDropdown } = Scenarii
 
-class QubinoZmnhjd1SettingPanel extends React.Component {
+class QubinoZmnhjd1SettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props)
 
-    this._socket = props.privateSocket
-    this.zwaveService = props.services()['asterism-plugin-zwave']
-
     this.state = {
-      panelReady: false,
       levelPercent: 20,
       stateId: null,
-      levelStateControlBehavior: 'follow',
-      configuration: {}
+      levelStateControlBehavior: 'follow'
     }
-
-    this._mounted = false
   }
 
   componentDidMount () {
-    // const configs = QubinoZmnhjd1SettingPanel.configurations
-    this._mounted = true
-    const o = this.props.productObjectProxy
+    const pop = this.props.productObjectProxy
 
-    this._socket.on('node-event-multi-level-switch-changed', (nodeId, value, instance, index) => {
+    this.socket.on('node-event-multi-level-switch-changed', (nodeId, value, instance, index) => {
       if (this.props.nodeId !== nodeId || index !== 0 || instance !== 1) {
         return
       }
-      if (this._mounted) {
-        o.multiLevelSwitchGetPercent()
+      if (this.mounted) {
+        pop.multiLevelSwitchGetPercent()
         .then((levelPercent) => {
           this.setState({ levelPercent })
         })
@@ -47,33 +38,23 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     })
 
     Promise.all([
-      o.multiLevelSwitchGetPercent(),
-      o.getStateId(),
-      o.getStateBehavior(),
-      //o.getConfiguration(configs.TEMPERATURE_ALARM_THRESHOLD_LOW),
+      pop.multiLevelSwitchGetPercent(),
+      pop.getStateId(),
+      pop.getStateBehavior()
     ])
-    .then(([levelPercent, stateId, levelStateControlBehavior]) => {
-      this.setState({
-        panelReady: true,
-        levelPercent,
-        stateId,
-        levelStateControlBehavior,
-        configuration: {}
-      })
-    })
+    .then(([levelPercent, stateId, levelStateControlBehavior]) => super.componentDidMount({
+      levelPercent, stateId, levelStateControlBehavior
+    }))
     .catch(console.error)
   }
 
-  componentWillUnmount () {
-    this._mounted = false
-  }
-
   render () {
-    const { nodeId, animationLevel, theme, reconfigureElement, services, productObjectProxy } = this.props
+    const { animationLevel, theme, services, productObjectProxy } = this.props
     const { panelReady, levelPercent, stateId, levelStateControlBehavior } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
-    const currentlies = { '0': 'Off', '15': 'Frost free', '25': 'Economic', '35': 'Comfort -2°C', '45': 'Comfort -1°C', '100': 'Comfort'}
+    const currentlies = { '0': 'Off', '15': 'Frost free', '25': 'Economic', '35': 'Comfort -2°C',
+      '45': 'Comfort -1°C', '100': 'Comfort'}
 
     return panelReady ? (
       <div>
@@ -119,7 +100,7 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
 
           {!!stateId && (stateId.length > 0) && (
             <Select s={12} label='Choose level state control behavior' icon='sync_alt'
-                    onChange={this.changeLevelStateControlBehavior.bind(this)} value={levelStateControlBehavior}>
+              onChange={this.changeLevelStateControlBehavior.bind(this)} value={levelStateControlBehavior}>
               <option value='force'>Force mode: Device will be the only one allowed to control the state</option>
               <option value='follow'>Follow mode: Device will follow level state but can be controlled anyway</option>
               <option value='controlled'>Controlled mode: state and device can control each others (warning: avoid loops with scenario actions!)</option>
@@ -127,26 +108,18 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
           )}
         </Row>
       </div>
-    ) : (
-      <div className='valign-wrapper centered-loader'>
-        <Preloader size='big' />
-      </div>
-    )
+    ) : super.render()
   }
 
   changeMultiLevelValue (value) {
     this.props.productObjectProxy.multiLevelSwitchSetPercent(value, 1)
-    this.setState({
-      levelPercent: value
-    })
+    this.setState({ levelPercent: value })
   }
 
   stateIdChange (value) {
     this.props.productObjectProxy.setStateId(value)
     .then(() => {
-      this.setState({
-        stateId: value
-      })
+      this.setState({ stateId: value })
     })
     .catch(console.error)
   }
@@ -155,29 +128,15 @@ class QubinoZmnhjd1SettingPanel extends React.Component {
     const value = event.currentTarget.value
     this.props.productObjectProxy.setStateBehavior(value)
     .then(() => {
-      this.setState({
-        levelStateControlBehavior: value
-      })
+      this.setState({ levelStateControlBehavior: value })
     })
     .catch(console.error)
   }
 }
 
 QubinoZmnhjd1SettingPanel.propTypes = {
-  serverStorage: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  animationLevel: PropTypes.number.isRequired,
-  localStorage: PropTypes.object.isRequired,
-  services: PropTypes.func.isRequired,
-  privateSocket: PropTypes.object.isRequired,
-  productObjectProxy: PropTypes.object.isRequired,
-  nodeId: PropTypes.number.isRequired,
+  ...BaseSettingPanel.propTypes,
   reconfigureElement: PropTypes.func.isRequired
-}
-
-QubinoZmnhjd1SettingPanel.configurations = {
-  /*NORMAL_STATE: 1,
-  LED_BEHAVIOR: 2,*/
 }
 
 export default QubinoZmnhjd1SettingPanel
