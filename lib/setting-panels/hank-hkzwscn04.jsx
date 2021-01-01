@@ -1,66 +1,17 @@
 'use strict'
 
-/* global $ */
 import cx from 'classnames'
+import BaseSettingPanel from './base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Row, Preloader } from 'react-materialize'
+import { Row } from 'react-materialize'
 
 import NameLocation from './name-location'
 
-class HankHkzwscn04SettingPanel extends React.Component {
+class HankHkzwscn04SettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props)
-
-    this.zwaveService = props.services()['asterism-plugin-zwave']
-
-    this.state = {
-      batteryPercent: 0,
-      batteryIcon: null,
-      associations: [],
-      panelReady: false
-    }
-
-    this._socket = props.privateSocket
-    this._mounted = false
-  }
-
-  componentDidMount () {
-    this._mounted = true
-
-    this._socket.on('node-event-battery-level-changed', (nodeId, confIndex, value) => {
-      if (this.props.nodeId !== nodeId) {
-        return
-      }
-
-      if (this._mounted) {
-        if (this.state.batteryPercent !== value.value) {
-          this.setState({
-            batteryPercent: Math.round(value.value)
-          })
-        }
-      }
-    })
-
-    const o = this.props.productObjectProxy
-    Promise.all([
-      o.batteryLevelGetPercent ? o.batteryLevelGetPercent() : -1,
-      o.batteryLevelGetIcon ? o.batteryLevelGetIcon() : '',
-      o.associableGetAssociations ? o.associableGetAssociations() : [],
-    ])
-    .then(([batteryPercent, batteryIcon, associations]) => {
-      this.setState({
-        batteryPercent: Math.round(batteryPercent),
-        batteryIcon,
-        associations,
-        panelReady: true
-      })
-    })
-    .catch(console.error)
-  }
-
-  componentWillUnmount () {
-    this._mounted = false
+    this.withBatteryLevelSupport()
   }
 
   render () {
@@ -88,23 +39,12 @@ class HankHkzwscn04SettingPanel extends React.Component {
           To do that, please triple-click quickly one of the controller buttons. This may fix the problem.
         </Row>
       </div>
-    ) : (
-      <div className='valign-wrapper centered-loader'>
-        <Preloader size='big' />
-      </div>
-    )
+    ) : super.render()
   }
 }
 
 HankHkzwscn04SettingPanel.propTypes = {
-  serverStorage: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  animationLevel: PropTypes.number.isRequired,
-  localStorage: PropTypes.object.isRequired,
-  services: PropTypes.func.isRequired,
-  privateSocket: PropTypes.object.isRequired,
-  productObjectProxy: PropTypes.object.isRequired,
-  nodeId: PropTypes.number.isRequired,
+  ...BaseSettingPanel.propTypes,
   reconfigureElement: PropTypes.func.isRequired
 }
 

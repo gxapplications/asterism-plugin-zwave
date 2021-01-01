@@ -25,6 +25,7 @@ const mode2SliderEdit = (v) => {
   return `${v - 192}m`
 }
 
+// TODO !1: refacto with BaseSettingPanel
 class FibaroFgrgbwm441SettingPanel extends React.Component {
   constructor (props) {
     super(props)

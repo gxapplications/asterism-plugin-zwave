@@ -14,6 +14,7 @@ class StandardProductChanger extends React.Component {
 
     this.standardProducts = [
       { value: 'standard-binary-switch', name: 'Binary switch' },
+      { value: '0260-8002-1000', name: 'Heiman HS1SA-Z (advanced force, cannot revert)' },
       { value: 'unknown', name: 'No support' }
     ]
 
@@ -22,11 +23,11 @@ class StandardProductChanger extends React.Component {
     }
 
     this.zwaveService.getNodeById(props.nodeId)
-    .then((node) => {
-      this.setState({
-        currentValue: node.overrideProduct || 'unknown'
+      .then((node) => {
+        this.setState({
+          currentValue: node.overrideProduct || 'unknown'
+        })
       })
-    })
   }
 
   render () {
@@ -46,13 +47,14 @@ class StandardProductChanger extends React.Component {
   }
 
   changeProductSupport (event) {
-    this.zwaveService.changeStandardProductSupport(this.props.nodeId, event.currentTarget.value)
-    .then(() => {
-      this.setState({
-        currentValue: event.currentTarget.value
+    const productSupport = event.currentTarget.value
+    this.zwaveService.changeStandardProductSupport(this.props.nodeId, productSupport)
+      .then(() => {
+        this.setState({
+          currentValue: productSupport
+        })
+        this.props.reconfigureElement()
       })
-      this.props.reconfigureElement()
-    })
   }
 
 }

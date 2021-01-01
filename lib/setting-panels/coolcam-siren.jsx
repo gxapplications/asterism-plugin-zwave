@@ -1,6 +1,7 @@
 'use strict'
 
 /* global wNumb */
+import React from 'react'
 import BaseSettingPanel from './base'
 import cx from 'classnames'
 import { Button, Row } from 'react-materialize'
@@ -9,29 +10,10 @@ import NameLocation from './name-location'
 class CoolcamSirenSettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props, CoolcamSirenSettingPanel.configurations)
-    this.withBatteryLevelSupport()
-
-    this.state = {
-      ...this.state,
-      switchState: null
-    }
+    this.withBatteryLevelSupport().withBinarySwitchSupport()
   }
 
   componentDidMount () {
-    this.socket.on('node-event-binary-switch-changed', (nodeId, value) => {
-      if (this.props.nodeId !== nodeId) {
-        return
-      }
-
-      if (this.mounted) {
-        if (this.state.switchState !== value.value) {
-          this.setState({
-            switchState: value.value
-          })
-        }
-      }
-    })
-
     this.props.productObjectProxy.binarySwitchGetState()
     .then((switchState) => super.componentDidMount({ switchState }))
     .catch(console.error)
@@ -45,17 +27,18 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
       {
         range: {
           'min': [0, 1],
-          '9%': [1, 1],
-          '90%': [126, 1],
+          '2%': [1, 1],
+          '98%': [126, 1],
           'max': [127]
         },
         pips: { // Show a scale with the slider
           mode: 'steps',
           stepped: true,
-          density: 4,
-          format: wNumb({ decimals: 1, edit: (v) => `${v}`.split('.')[0] + 's' })
+          density: 2,
+          filter: (v) => (v % 10 === 0 || v === 127) ? 1 : 0,
+          format: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : (v > 126.5 ? '∞' : `${v}`.split('.')[0] + 's') })
         },
-        tooltips: wNumb({ decimals: 1, edit: (v) => `${v}`.split('.')[0] + 's' })
+        tooltips: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : (v > 126.5 ? '∞' : `${v}`.split('.')[0] + 's') })
       },
       this.changeDoorBellDurationTime.bind(this)
     )
@@ -78,7 +61,7 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
         <Row>
           <h4 className='col s12 m12 l5'>Siren settings</h4>
           <Button className={cx('col s12 m3 l2 fluid', theme.actions.secondary)} waves={waves}
-            onClick={this.binarySwitchStateChange.bind(this)}>Turn {switchState ? 'OFF' : 'ON'}</Button>
+            onClick={this.invertBinarySwitchState.bind(this)}>Turn {switchState ? 'OFF' : 'ON'}</Button>
           <div className='col s12 m9 l5'>Siren #{nodeId} state actually "{switchState ? 'ON' : 'OFF'}".</div>
           <div className='right'>
             <i className={cx('material-icons', batteryIcon)}>{batteryIcon}</i>&nbsp;{batteryPercent}%
@@ -149,13 +132,9 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
     ) : super.render()
   }
 
-  binarySwitchStateChange () {
-    this.props.productObjectProxy.binarySwitchInvert().catch(console.error)
-  }
-
   changeDoorBellDurationTime (value) {
-    // TODO !1 : door bell duration time, seems different than for alarm ! integer de 0 à 127.
-    //  Spec values: 0: jamais, 127 infini. entre, quelle unité de temps ? default=1u
+    const index = CoolcamSirenSettingPanel.configurations.DOOR_BELL_SOUND_DURATION_TIME
+    return this.changeConfiguration(index, value[0], parseInt)
   }
 }
 

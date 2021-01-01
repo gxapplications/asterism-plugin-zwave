@@ -2,9 +2,10 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button } from 'react-materialize'
+import { Button, Row } from 'react-materialize'
 
 import StandardProductChanger from './standard-product-changer'
+import NameLocation from './name-location'
 
 class UnknownSettingPanel extends React.Component {
   constructor (props) {
@@ -33,18 +34,27 @@ class UnknownSettingPanel extends React.Component {
     const deleteWavesConfirm = (animationLevel >= 2 ? 'btn waves-effect waves-light' : 'btn') + ` ${theme.actions.negative}`
 
     return (
-      <div className='section card form'>
-        Your product is not directly supported by this version of Asterism. You can try a standard support:
-        <br />
-        <StandardProductChanger nodeId={nodeId} animationLevel={animationLevel} theme={theme}
-          zwaveService={services()['asterism-plugin-zwave']} reconfigureElement={reconfigureElement} />
-        <br /><br />
-        If you think this node ID is dead, you can remove it from the Z-wave controller here. This action
-        cannot be undone.
-        <br />
-        <Button className={deleteConfirm ? deleteWavesConfirm : deleteWaves} onClick={this.removeNode.bind(this)}>
-          <i className='material-icons'>delete</i> Remove node definitely
-        </Button>
+      <div>
+        <Row>
+          <h4 className='col s12 m12 l12'>Unsupported / unrecognized product</h4>
+        </Row>
+
+        <Row className='section card form'>
+          <h5>Change / force support</h5>
+          Your product is not directly supported by this version of Asterism or cannot be recognized directly.
+
+          <br /><br />
+          <StandardProductChanger nodeId={nodeId} animationLevel={animationLevel} theme={theme}
+            zwaveService={services()['asterism-plugin-zwave']} reconfigureElement={reconfigureElement} />
+          <br /><br />
+
+          If you think this node ID is dead, you can remove it from the Z-wave controller here. This action
+          cannot be undone.
+          <br />
+          <Button className={deleteConfirm ? deleteWavesConfirm : deleteWaves} onClick={this.removeNode.bind(this)}>
+            <i className='material-icons'>delete</i> Remove node definitely
+          </Button>
+        </Row>
       </div>
     )
   }

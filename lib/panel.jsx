@@ -98,7 +98,7 @@ class ZwaveEditPanel extends React.Component {
       'block' :
       ((element.ready === true && !element.meta.battery) ?
         'check' :
-        ((!element.battery || !element.battery.icon) ?
+        ((!element.battery || !element.battery.icon) ?
           'blur_circular' :
           element.battery.icon
         )
@@ -124,7 +124,7 @@ class ZwaveEditPanel extends React.Component {
     })
 
     return (
-      <div id='zwave-edit-panel' className={cx('thin-scrollable ZwaveEditPanel', styles.ZwaveEditPanel, { 'configurePanelOpened': !!ConfigurePanel })}>
+      <div id='zwave-edit-panel' className={cx('thin-scrollable ZwaveEditPanel', styles.ZwaveEditPanel, { 'configurePanelOpened': ConfigurePanel !== null })}>
         {(controllerState < 3 && !rescanInProgress) ? (
           <div className='not-ready'>
             <div className='valign-wrapper'>
@@ -138,19 +138,19 @@ class ZwaveEditPanel extends React.Component {
           <div className='ready'>
             <Row>
               {rescanInProgress ? (
-                <Button className={cx(theme.actions.secondary, 'col s6 m3 l3')} disabled waves={waves}>
+                <Button className={cx(theme.actions.secondary, 'col s5 m3 l3')} disabled waves={waves}>
                   <Preloader size='small' />
                 </Button>
               ) : (
-                <Button className={cx(theme.actions.secondary, 'col s6 m3 l3')} disabled={controllerState < 3}
+                <Button className={cx(theme.actions.secondary, 'col s5 m3 l3')} disabled={controllerState < 3}
                   onClick={this.rescan.bind(this)} waves={waves}>
                   <i className="material-icons left">youtube_searched_for</i>Re-scan
                 </Button>
               )}
 
-              <div className='col s5 offset-s1 m3 offset-m1 l2 offset-l1'>&nbsp;</div>
+              <div className='col s1 m3 offset-m1 l2 offset-l1'>&nbsp;</div>
 
-              <Button className={cx(theme.actions.inconspicuous, 'col s7 m4 offset-m1 l3 offset-l1')}
+              <Button className={cx(theme.actions.inconspicuous, 'col s6 m4 offset-m1 l3 offset-l1')}
                 onClick={this.openSettings.bind(this)} waves={waves}><i className="material-icons left">settings</i>Open settings</Button>
             </Row>
 
@@ -168,20 +168,33 @@ class ZwaveEditPanel extends React.Component {
         )}
 
         <div className={cx('configurePanel thin-scrollable', theme.backgrounds.body)}>
-          {ConfigurePanel ? (
+          {ConfigurePanel && (
             <ConfigurePanel productObjectProxy={configurePanelObjectProxy} serverStorage={serverStorage}
               localStorage={localStorage} theme={theme} animationLevel={animationLevel}
               reconfigureElement={this.reconfigureElement.bind(this, configurePanelObjectProxy.nodeid)}
               services={services} privateSocket={privateSocket} nodeId={configurePanelObjectProxy.nodeid}
             />
-          ) : null}
+          )}
+          {ConfigurePanel === false && (
+            <div className='not-ready'>
+              <div className='valign-wrapper'>
+                <div>
+                  <p>
+                    <Icon left>warning</Icon>
+                    The Z-wave node does not respond for now. You may try to wakeup element if it's a passive one,
+                    then open this dialog again.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
   handleCloseButton () {
-    if (!this.state.ConfigurePanel) {
+    if (this.state.ConfigurePanel === null) {
       // do not handle close button event: modal will close
       return Promise.reject(false) // eslint-disable-line prefer-promise-reject-errors
     }
@@ -206,12 +219,19 @@ class ZwaveEditPanel extends React.Component {
       const panel = this._zwaveService.getSettingPanel(element.meta.settingPanel)
       if (panel) {
         this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
-        .then((productObjectProxy) => {
-          this.setState({
-            ConfigurePanel: panel,
-            configurePanelObjectProxy: productObjectProxy
+          .then((productObjectProxy) => {
+            if (element.meta.settingPanel === 'unknown' || (productObjectProxy && productObjectProxy.getName)) {
+              this.setState({
+                ConfigurePanel: panel,
+                configurePanelObjectProxy: productObjectProxy
+              })
+            } else {
+              this.setState({
+                ConfigurePanel: false, // false means error case
+                configurePanelObjectProxy: null
+              })
+            }
           })
-        })
       }
     }
   }

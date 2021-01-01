@@ -10,9 +10,13 @@ class BaseSettingPanel extends React.Component {
     super(props)
 
     this._configurationsKeys = Object.values(configurationsToHandle) || []
+    this._alarmKeys = null
+    this._alarmMapper = null
     this._sliders = {}
     this._supports = {
-      batteryLevelSupport: false
+      batteryLevelSupport: false,
+      binarySwitchSupport: false,
+      alarmSupport: false
     }
 
     this.socket = props.privateSocket
@@ -32,8 +36,35 @@ class BaseSettingPanel extends React.Component {
     return this
   }
 
+  withBinarySwitchSupport () {
+    this.state.switchState = null
+    this._supports.binarySwitchSupport = true
+    return this
+  }
+
+  withAlarmSupport (alarmMapper) {
+    this._alarmKeys = Object.keys(alarmMapper)
+    this._alarmMapper = alarmMapper
+    this.state.alarms = {
+      alarmMapper,
+      alarmStatuses: Object.fromEntries(this._alarmKeys.map((k) => [k, 'Unknown']))
+    }
+    this._supports.alarmSupport = true
+    return this
+  }
+
   componentDidMount (stateToMerge = {}) {
     const pop = this.props.productObjectProxy
+
+    this.socket.on('node-event-configuration-updated', (nodeId, confIndex, value) => {
+      if (this.props.nodeId !== nodeId) return
+
+      if (this.mounted) {
+        if (this.state.configuration[confIndex] !== value) {
+          this.setState({ configuration: { ...this.state.configuration, [confIndex]: value } })
+        }
+      }
+    })
 
     if (this._supports.batteryLevelSupport) {
       this.socket.on('node-event-battery-level-changed', (nodeId, confIndex, value) => {
@@ -45,32 +76,62 @@ class BaseSettingPanel extends React.Component {
       })
     }
 
-    Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
-    .then((configurationValues) => {
-      const state = {
-        ...stateToMerge,
-        configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
-        panelReady: true
-      }
+    if (this._supports.binarySwitchSupport) {
+      this.socket.on('node-event-binary-switch-changed', (nodeId, value) => {
+        if (this.props.nodeId !== nodeId) return
 
-      Promise.all([
-        this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
-        this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null)
-      ])
-      .then(([batteryPercent, batteryIcon]) => {
-        if (this._supports.batteryLevelSupport) {
-          state.batteryPercent = batteryPercent
-          state.batteryIcon = batteryIcon
+        if (this.mounted && this.state.switchState !== value.value) {
+          this.setState({ switchState: value.value })
+        }
+      })
+    }
+
+    Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
+      .then((configurationValues) => {
+        const state = {
+          ...stateToMerge,
+          configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
+          panelReady: true
         }
 
-        this.setState(state)
+        Promise.all([
+          this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
+          this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
+          this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null)
+        ])
+          .then(([batteryPercent, batteryIcon, switchState]) => {
+            if (this._supports.batteryLevelSupport) {
+              state.batteryPercent = batteryPercent
+              state.batteryIcon = batteryIcon
+            }
 
-        this.mounted = true
-        this.plugWidgets()
+            if (this._supports.binarySwitchSupport) {
+              state.switchState = switchState
+            }
+
+            if (this._supports.alarmSupport) {
+              Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
+                .then((alarmStatuses) => {
+                  state.alarms = {
+                    alarmMapper: this._alarmMapper,
+                    alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
+                  }
+                  this.setState(state)
+
+                  this.mounted = true
+                  this.plugWidgets()
+                })
+                .catch(console.error)
+            } else {
+              this.setState(state)
+
+              this.mounted = true
+              this.plugWidgets()
+            }
+          })
+          .catch(console.error)
       })
       .catch(console.error)
-    })
-    .catch(console.error)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -86,9 +147,13 @@ class BaseSettingPanel extends React.Component {
   plugConfigurationSlider (domId, configurationIndex, defaultValue, sliderParamOverrides, onChange) {
     const domSlider = $(`#${domId}-${this.props.nodeId}`)[0]
     if (domSlider) {
+      let startValue = configurationIndex ? this.state.configuration[configurationIndex] : defaultValue
+      if (startValue === undefined || startValue === null) {
+        startValue = defaultValue
+      }
       if (!this._sliders[domId] || !domSlider.noUiSlider) {
         this._sliders[domId] = noUiSlider.create(domSlider, {
-          start: (this.state.configuration[configurationIndex]) || defaultValue,
+          start: startValue,
           connect: true,
           step: 1,
           animate: true,
@@ -111,7 +176,7 @@ class BaseSettingPanel extends React.Component {
 
         this._sliders[domId].on('change', onChange)
       } else {
-        this._sliders[domId].set((this.state.configuration[configurationIndex]) || defaultValue)
+        this._sliders[domId].set(startValue)
       }
     }
   }
@@ -119,7 +184,9 @@ class BaseSettingPanel extends React.Component {
   render () {
     return (
       <div className='valign-wrapper centered-loader'>
-        <Preloader size='big' />
+        <div>
+          <Preloader size='big' />
+        </div>
       </div>
     )
   }
@@ -137,6 +204,7 @@ class BaseSettingPanel extends React.Component {
         onChange={(v) => BaseSettingPanel.prototype.changeConfiguration.bind(this)(configurationKey, v, parseInt)}
         value={`${actualValue}`}
       >
+        <option disabled>{props.label}</option>
         {possibleValues.map((label, i) => (<option key={i} value={i}>{label}</option>))}
       </Select>
     )
@@ -148,10 +216,31 @@ class BaseSettingPanel extends React.Component {
       : valueOrFormElement
 
     this.props.productObjectProxy.setConfiguration(index, transformer(value))
-    .then(() => {
-      this.setState({ configuration: { ...this.state.configuration, [index]: transformer(value) } })
-    })
-    .catch(console.error)
+      .then(() => {
+        this.setState({ configuration: { ...this.state.configuration, [index]: transformer(value) } })
+      })
+      .catch(console.error)
+  }
+
+  invertBinarySwitchState () {
+    this.props.productObjectProxy.binarySwitchInvert().catch(console.error)
+  }
+
+  configurationValueToBitmask (index, size) {
+    const value = this.state.configuration[index]
+    return [...Array(size)].map((x, i) => !!(value >> i & 1))
+  }
+
+  changeConfigurationBitmask (index, size, position, valueOrFormElement, transformer = (v) => !!v) {
+    const value = (valueOrFormElement && valueOrFormElement.currentTarget)
+      ? valueOrFormElement.currentTarget.value
+      : valueOrFormElement
+
+    const bitmask = this.configurationValueToBitmask(index, size)
+    bitmask[position] = transformer(value)
+
+    const newBitmask = bitmask.reverse().reduce((res, x) => res << 1 | x, 0)
+    this.changeConfiguration(index, newBitmask)
   }
 }
 

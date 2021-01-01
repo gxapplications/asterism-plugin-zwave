@@ -1,11 +1,12 @@
 'use strict'
 
-/* global $, noUiSlider, wNumb */
+/* global wNumb */
 import cx from 'classnames'
+import BaseSettingPanel from './base'
 import debounce from 'debounce'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Select, Preloader, Row } from 'react-materialize'
+import { Button, Select, Row } from 'react-materialize'
 
 import { Scenarii } from 'asterism-plugin-library'
 
@@ -23,26 +24,16 @@ const minuter = (seconds) => {
   return `${Math.round(seconds / 3600)}hrs`
 }
 
-class FibaroFgwpe102zw5SettingPanel extends React.Component {
+class FibaroFgwpe102zw5SettingPanel extends BaseSettingPanel {
   constructor (props) {
-    super(props)
-
-    const configs = FibaroFgwpe102zw5SettingPanel.configurations
-    this.zwaveService = props.services()['asterism-plugin-zwave']
+    super(props, FibaroFgwpe102zw5SettingPanel.configurations)
+    this.withBinarySwitchSupport()
 
     this.state = {
-      switchState: null,
+      ...this.state,
       colorRingBehavior: null,
       colorRingLevelStateId: null,
-      configuration: {
-        [configs.ALWAYS_ON_FUNCTION]: null,
-        [configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE]: null,
-        [configs.OVERLOAD_SAFETY_SWITCH]: null,
-        [configs.POWER_LOAD_FOR_VIOLET_COLOR]: null,
-        [configs.POWER_AND_ENERGY_PERIODIC_REPORTS]: null
-      },
       meterLastValue: null,
-      panelReady: false,
       energyLevel: null,
       stateId: null,
       stateBehavior: null,
@@ -50,9 +41,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
       controlledBitmaskStatePosition: false
     }
 
-    this._socket = props.privateSocket
-    this._mounted = false
-
+    const configs = FibaroFgwpe102zw5SettingPanel.configurations
     this.debouncedOverloadSafetyValue = debounce((value) => {
       this.changeConfiguration(configs.OVERLOAD_SAFETY_SWITCH, value)
     }, 1200, false)
@@ -65,60 +54,31 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
   }
 
   componentDidMount () {
-    const configs = FibaroFgwpe102zw5SettingPanel.configurations
-    this._mounted = true
-
-    this._socket.on('node-event-configuration-updated', (nodeId, confIndex, value) => {
+    this.socket.on('node-event-meter-changed', (nodeId, value) => {
       if (this.props.nodeId !== nodeId) {
         return
       }
 
-      if (this._mounted) {
-        if (this.state.configuration[confIndex] !== value) {
-          this.setState({
-            configuration: { ...this.state.configuration, [confIndex]: value }
-          })
-        }
-      }
-    })
-    this._socket.on('node-event-meter-changed', (nodeId, value) => {
-      if (this.props.nodeId !== nodeId) {
-        return
-      }
-
-      if (this._mounted) {
+      if (this.mounted) {
         if (this.state.meterLastValue !== value.value) {
           this.setState({
             meterLastValue: value.value
           })
           this.props.productObjectProxy.energyConsumptionMeterGetLastCost()
           .then(costLastValue => {
-            if (this._mounted) {
+            if (this.mounted) {
               this.setState({ costLastValue })
             }
           })
         }
       }
     })
-    this._socket.on('node-event-binary-switch-changed', (nodeId, value) => {
+    this.socket.on('node-event-color-behavior-changed', (nodeId, value) => {
       if (this.props.nodeId !== nodeId) {
         return
       }
 
-      if (this._mounted) {
-        if (this.state.switchState !== value.value) {
-          this.setState({
-            switchState: value.value
-          })
-        }
-      }
-    })
-    this._socket.on('node-event-color-behavior-changed', (nodeId, value) => {
-      if (this.props.nodeId !== nodeId) {
-        return
-      }
-
-      if (this._mounted) {
+      if (this.mounted) {
         if (this.state.colorRingBehavior !== value) {
           this.setState({
             colorRingBehavior: value
@@ -126,12 +86,12 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
         }
       }
     })
-    this._socket.on('node-event-sensor-multi-level-changed', (nodeId, value) => {
+    this.socket.on('node-event-sensor-multi-level-changed', (nodeId, value) => {
       if (this.props.nodeId !== nodeId) {
         return
       }
 
-      if (this._mounted) {
+      if (this.mounted) {
         if (this.state.energyLevel !== value.value) {
           this.setState({
             energyLevel: value.value
@@ -140,40 +100,24 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
       }
     })
 
-    const o = this.props.productObjectProxy
+    const pop = this.props.productObjectProxy
     Promise.all([
-      o.binarySwitchGetState(),
-      o.getColorRingBehavior(),
-      o.getColorRingLevelStateId(),
-      o.getConfiguration(configs.ALWAYS_ON_FUNCTION),
-      o.getConfiguration(configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE),
-      o.getConfiguration(configs.OVERLOAD_SAFETY_SWITCH),
-      o.getConfiguration(configs.POWER_LOAD_FOR_VIOLET_COLOR),
-      o.getConfiguration(configs.POWER_AND_ENERGY_PERIODIC_REPORTS),
-      o.meterGetLastValue(),
-      o.sensorMultiLevelGetValue(),
-      o.energyConsumptionMeterGetLastCost(),
-      o.getStateId(),
-      o.getStateBehavior(),
-      o.getForceBitmaskStatePosition(),
-      o.getControlledBitmaskStatePosition()
+      pop.getColorRingBehavior(),
+      pop.getColorRingLevelStateId(),
+      pop.meterGetLastValue(),
+      pop.sensorMultiLevelGetValue(),
+      pop.energyConsumptionMeterGetLastCost(),
+      pop.getStateId(),
+      pop.getStateBehavior(),
+      pop.getForceBitmaskStatePosition(),
+      pop.getControlledBitmaskStatePosition()
     ])
-    .then(([switchState, colorRingBehavior, colorRingLevelStateId, alwaysOn, rememberStateAfterFailure, overloadSafetySwitch,
-      powerLoadVioletColor, periodicReports, meterLastValue, energyLevel, costLastValue, stateId, stateBehavior,
-      forceBitmaskStatePosition, controlledBitmaskStatePosition]) => {
-      this.setState({
-        switchState,
+    .then(([colorRingBehavior, colorRingLevelStateId, meterLastValue, energyLevel, costLastValue,
+      stateId, stateBehavior, forceBitmaskStatePosition, controlledBitmaskStatePosition]) => {
+      return super.componentDidMount({
         colorRingBehavior,
         colorRingLevelStateId,
-        configuration: {
-          [configs.ALWAYS_ON_FUNCTION]: alwaysOn,
-          [configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE]: rememberStateAfterFailure,
-          [configs.OVERLOAD_SAFETY_SWITCH]: overloadSafetySwitch,
-          [configs.POWER_LOAD_FOR_VIOLET_COLOR]: powerLoadVioletColor,
-          [configs.POWER_AND_ENERGY_PERIODIC_REPORTS]: periodicReports
-        },
         meterLastValue: meterLastValue ? meterLastValue.v : '--',
-        panelReady: true,
         energyLevel,
         costLastValue,
         stateId,
@@ -181,142 +125,86 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
         forceBitmaskStatePosition,
         controlledBitmaskStatePosition
       })
-
-      this.plugWidgets()
     })
     .catch(console.error)
-  }
-
-  componentWillUnmount () {
-    this._mounted = false
-  }
-
-  componentDidUpdate (prevProps, prevState) {
-    this.plugWidgets()
   }
 
   plugWidgets () {
     const config = this.state.configuration
     const configs = FibaroFgwpe102zw5SettingPanel.configurations
 
-    const domSlider1 = $(`#overload-safety-value-slider-${this.props.nodeId}`)[0]
-    if (domSlider1) {
-      if (!this._slider1 || !domSlider1.noUiSlider) {
-        this._slider1 = noUiSlider.create(domSlider1, {
-          start: (config[configs.OVERLOAD_SAFETY_SWITCH] / 10) || 0,
-          connect: true,
-          step: 1,
-          animate: true,
-          range: {
-            'min': [0],
-            '9%': [5, 5],
-            '20%': [30, 10],
-            '36%': [100, 50],
-            '56%': [500, 100],
-            '71%': [1000, 250],
-            'max': [3000]
-          },
-          format: wNumb({
-            decimals: 1
-          }),
-          pips: { // Show a scale with the slider
-            mode: 'steps',
-            stepped: true,
-            density: 4
-          },
-          tooltips: wNumb({ decimals: 1, edit: (v) => `${v}`.split('.')[0] }), // decimals: 0 does not work...
-          behaviour: 'tap-drag',
-          orientation: 'horizontal'
-        })
+    this.plugConfigurationSlider(
+      'overload-safety-value-slider',
+      null,
+      (config[configs.OVERLOAD_SAFETY_SWITCH] / 10) || 0,
+      {
+        range: {
+          'min': [0],
+          '9%': [5, 5],
+          '20%': [30, 10],
+          '36%': [100, 50],
+          '56%': [500, 100],
+          '71%': [1000, 250],
+          'max': [3000]
+        }
+      },
+      this.changeOverloadSafetyValue.bind(this)
+    )
 
-        this._slider1.on('change', this.changeOverloadSafetyValue.bind(this))
-      } else {
-        this._slider1.set((config[configs.OVERLOAD_SAFETY_SWITCH] / 10) || 0)
-      }
-    }
+    this.plugConfigurationSlider(
+      'periodic-reports-slider',
+      configs.POWER_AND_ENERGY_PERIODIC_REPORTS,
+      3600,
+      {
+        range: {
+          'min': [0, 10],
+          '19%': [60, 60], // 1min
+          '32%': [300, 300], // 5mins
+          '49%': [1800, 1800], // 30mins
+          '64%': [7200, 3600], // 2hrs -> every hour
+          'max': [32400]
+        },
+        pips: { // Show a scale with the slider
+          mode: 'steps',
+          stepped: true,
+          density: 4,
+          format: wNumb({ decimals: 1, edit: minuter })
+        },
+        tooltips: wNumb({ decimals: 1, edit: minuter })
+      },
+      this.changePeriodicReports.bind(this)
+    )
 
-    const domSlider2 = $(`#periodic-reports-slider-${this.props.nodeId}`)[0]
-    if (domSlider2) {
-      if (!this._slider2 || !domSlider2.noUiSlider) {
-        this._slider2 = noUiSlider.create(domSlider2, {
-          start: config[configs.POWER_AND_ENERGY_PERIODIC_REPORTS] || 3600,
-          connect: true,
-          step: 1,
-          animate: true,
-          range: {
-            'min': [0, 10],
-            '19%': [60, 60], // 1min
-            '32%': [300, 300], // 5mins
-            '49%': [1800, 1800], // 30mins
-            '64%': [7200, 3600], // 2hrs -> every hour
-            'max': [32400]
-          },
-          format: wNumb({
-            decimals: 1
-          }),
-          pips: { // Show a scale with the slider
-            mode: 'steps',
-            stepped: true,
-            density: 4,
-            format: wNumb({ decimals: 1, edit: minuter })
-          },
-          tooltips: wNumb({ decimals: 1, edit: minuter }), // decimals: 0 does not work...
-          behaviour: 'tap-drag',
-          orientation: 'horizontal'
-        })
-
-        this._slider2.on('change', this.changePeriodicReports.bind(this))
-      } else {
-        this._slider2.set(config[configs.POWER_AND_ENERGY_PERIODIC_REPORTS] || 3600)
-      }
-    }
-
-    const domSlider3 = $(`#power-load-violet-slider-${this.props.nodeId}`)[0]
-    if (domSlider3) {
-      if (!this._slider3 || !domSlider3.noUiSlider) {
-        this._slider3 = noUiSlider.create(domSlider3, {
-          start: (config[configs.POWER_LOAD_FOR_VIOLET_COLOR] / 10) || 2500,
-          connect: true,
-          step: 1,
-          animate: true,
-          range: {
-            'min': [100, 50],
-            '60%': [1000, 250],
-            'max': [3000]
-          },
-          format: wNumb({
-            decimals: 1
-          }),
-          pips: { // Show a scale with the slider
-            mode: 'steps',
-            stepped: true,
-            density: 4
-          },
-          tooltips: wNumb({ decimals: 1, edit: (v) => `${v}`.split('.')[0] }), // decimals: 0 does not work...
-          behaviour: 'tap-drag',
-          orientation: 'horizontal'
-        })
-
-        this._slider3.on('change', this.changePowerLoadVioletColor.bind(this))
-      } else {
-        this._slider3.set((config[configs.POWER_LOAD_FOR_VIOLET_COLOR] / 10) || 2500)
-      }
-    }
+    this.plugConfigurationSlider(
+      'power-load-violet-slider',
+      null,
+      (config[configs.POWER_LOAD_FOR_VIOLET_COLOR] / 10) || 2500,
+      {
+        range: {
+          'min': [100, 50],
+          '60%': [1000, 250],
+          'max': [3000]
+        }
+      },
+      this.changePowerLoadVioletColor.bind(this)
+    )
   }
 
   render () {
     const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
-    const { switchState, colorRingBehavior, configuration, meterLastValue, panelReady, energyLevel, colorRingLevelStateId,
-        costLastValue, stateId, stateBehavior, forceBitmaskStatePosition, controlledBitmaskStatePosition } = this.state
+    const { switchState, colorRingBehavior, configuration, meterLastValue, panelReady, energyLevel } = this.state
+    const { colorRingLevelStateId, costLastValue, stateId, stateBehavior } = this.state
+    const { forceBitmaskStatePosition, controlledBitmaskStatePosition } = this.state
     const colors = FibaroFgwpe102zw5SettingPanel.colorBehaviors
-    const configs = FibaroFgwpe102zw5SettingPanel.configurations
-    const alwaysOn = configuration[configs.ALWAYS_ON_FUNCTION] === true || configuration[configs.ALWAYS_ON_FUNCTION] === 'Active'
+
+    const c = FibaroFgwpe102zw5SettingPanel.configurations
+    const alwaysOn = configuration[c.ALWAYS_ON_FUNCTION] === true || configuration[c.ALWAYS_ON_FUNCTION] === 'Active'
     const rememberStateAfterFailure =
-        configuration[configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE] === true ||
-        configuration[configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE] === 'Wall Plug memorizes its state after a power failure'
-    const overloadSafetySwitch = configuration[configs.OVERLOAD_SAFETY_SWITCH]
-    const powerLoadVioletColor = configuration[configs.POWER_LOAD_FOR_VIOLET_COLOR]
-    const periodicReports = configuration[configs.POWER_AND_ENERGY_PERIODIC_REPORTS]
+        configuration[c.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE] === true ||
+        configuration[c.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE] === 'Wall Plug memorizes its state after a power failure'
+    const overloadSafetySwitch = configuration[c.OVERLOAD_SAFETY_SWITCH]
+    const powerLoadVioletColor = configuration[c.POWER_LOAD_FOR_VIOLET_COLOR]
+    const periodicReports = configuration[c.POWER_AND_ENERGY_PERIODIC_REPORTS]
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -325,7 +213,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
         <Row>
           <h4 className='col s12 m12 l5'>Wall plug settings</h4>
           <Button className={cx('col s12 m3 l2 fluid', theme.actions.secondary)} waves={waves} disabled={alwaysOn}
-            onClick={() => { this.binarySwitchStateChange(!switchState) }}>Turn {(alwaysOn || switchState) ? 'OFF' : 'ON'}</Button>
+            onClick={this.invertBinarySwitchState.bind(this)}>Turn {(alwaysOn || switchState) ? 'OFF' : 'ON'}</Button>
           <div className='col s12 m9 l5'>Plug #{nodeId} switch actually "{(alwaysOn || switchState) ? 'ON' : 'OFF'}" at {energyLevel | '0.0'}W.</div>
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
@@ -403,7 +291,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
                 <label>
                   ON/OFF
                   <input type='checkbox' name='always-on' value='always-on' checked={alwaysOn}
-                    onChange={() => { this.changeConfiguration(configs.ALWAYS_ON_FUNCTION, !alwaysOn) }} />
+                    onChange={() => { this.changeConfiguration(c.ALWAYS_ON_FUNCTION, !alwaysOn) }} />
                   <span className='lever'></span>
                   Always ON
                 </label>
@@ -419,7 +307,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
                 <label>
                   OFF
                   <input type='checkbox' name='remember-state-failure' value='remember-state-failure' checked={rememberStateAfterFailure}
-                    onChange={() => { this.changeConfiguration(configs.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE, !rememberStateAfterFailure) }} />
+                    onChange={() => { this.changeConfiguration(c.REMEMBER_DEVICE_STATUS_AFTER_A_POWER_FAILURE, !rememberStateAfterFailure) }} />
                   <span className='lever'></span>
                   Previous state
                 </label>
@@ -436,7 +324,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
             <Button className={cx('col s12 m6 l4 fluid', theme.actions.inconspicuous)} waves={waves}
               onClick={() => { this.props.productObjectProxy.meterResetCounter() }}>Reset energy meter</Button>
             <div className='col s12 m6 l8'>
-              Actually {meterLastValue ? meterLastValue : '0.00'} kWh {costLastValue > 0 && (
+              Actually {meterLastValue || '0.00'} kWh {costLastValue > 0 && (
                 <span>&nbsp;({Number.parseFloat(costLastValue).toFixed(2)} ¤)</span>
               )}
             </div>
@@ -457,11 +345,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
           </Row>
         </div>
       </div>
-    ) : (
-      <div className='valign-wrapper centered-loader'>
-        <Preloader size='big' />
-      </div>
-    )
+    ) : super.render()
   }
 
   changeOverloadSafetyValue (v) {
@@ -509,28 +393,11 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
     this.debouncedPeriodicReports(value)
   }
 
-  changeConfiguration (confIndex, value) {
-    this.props.productObjectProxy.setConfiguration(confIndex, value)
-    .then(() => {
-      this.setState({
-        configuration: { ...this.state.configuration, [confIndex]: value }
-      })
-    })
-    .catch(console.error)
-  }
-
-  binarySwitchStateChange (newState) {
-    this.props.productObjectProxy.binarySwitchInvert()
-    .catch(console.error)
-  }
-
   colorRingBehaviorChange (event) {
     const value = parseInt(event.currentTarget.value)
     this.props.productObjectProxy.setColorRingBehavior(value)
     .then(() => {
-      this.setState({
-        colorRingBehavior: value
-      })
+      this.setState({ colorRingBehavior: value })
     })
     .catch(console.error)
   }
@@ -538,9 +405,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
   colorRingLevelStateIdChange (value) {
     this.props.productObjectProxy.setColorRingLevelStateId(value)
     .then(() => {
-      this.setState({
-        colorRingLevelStateId: value
-      })
+      this.setState({ colorRingLevelStateId: value })
     })
     .catch(console.error)
   }
@@ -548,9 +413,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
   stateIdChange (value) {
     this.props.productObjectProxy.setStateId(value)
     .then(() => {
-      this.setState({
-        stateId: value
-      })
+      this.setState({ stateId: value })
     })
     .catch(console.error)
   }
@@ -559,9 +422,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
     const value = parseInt(event.currentTarget.value)
     this.props.productObjectProxy.setStateBehavior(value)
     .then(() => {
-      this.setState({
-        stateBehavior: value
-      })
+      this.setState({ stateBehavior: value })
     })
     .catch(console.error)
   }
@@ -605,14 +466,7 @@ class FibaroFgwpe102zw5SettingPanel extends React.Component {
 }
 
 FibaroFgwpe102zw5SettingPanel.propTypes = {
-  serverStorage: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
-  animationLevel: PropTypes.number.isRequired,
-  localStorage: PropTypes.object.isRequired,
-  services: PropTypes.func.isRequired,
-  privateSocket: PropTypes.object.isRequired,
-  productObjectProxy: PropTypes.object.isRequired,
-  nodeId: PropTypes.number.isRequired,
+  ...BaseSettingPanel.propTypes,
   reconfigureElement: PropTypes.func.isRequired
 }
 
