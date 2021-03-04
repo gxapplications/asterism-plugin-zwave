@@ -191,6 +191,22 @@ class BaseSettingPanel extends React.Component {
   invertBinarySwitchState () {
     this.props.productObjectProxy.binarySwitchInvert().catch(console.error)
   }
+
+  configurationValueToBitmask (index, size) {
+    const value = this.state.configuration[index]
+    return [...Array(size)].map((x, i) => !!(value >> i & 1))
+  }
+
+  changeConfigurationBitmask (index, size, position, valueOrFormElement, transformer = (v) => !!v) {
+    const value = (valueOrFormElement && valueOrFormElement.currentTarget)
+      ? valueOrFormElement.currentTarget.value
+      : valueOrFormElement
+
+    const bitmask = this.configurationValueToBitmask(index, size)
+    bitmask[position] = transformer(value)
+
+    this.changeConfiguration(index, bitmask.reduce((res, x) => res << 1 | x, 0))
+  }
 }
 
 BaseSettingPanel.propTypes = {
