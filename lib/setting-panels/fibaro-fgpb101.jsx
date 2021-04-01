@@ -74,7 +74,8 @@ class FibaroFgpb101SettingPanel extends BaseSettingPanel {
           </div>
           {configChanged && (
             <div className='col s12'>
-              Settings changed. You must triple-press the button, to save parameters.
+              <br/>
+              Settings changed. You must press 4 times the button, to save parameters.
             </div>
           )}
         </Row>
