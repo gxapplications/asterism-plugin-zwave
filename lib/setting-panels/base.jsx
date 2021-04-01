@@ -205,7 +205,8 @@ class BaseSettingPanel extends React.Component {
     const bitmask = this.configurationValueToBitmask(index, size)
     bitmask[position] = transformer(value)
 
-    this.changeConfiguration(index, bitmask.reduce((res, x) => res << 1 | x, 0))
+    const newBitmask = bitmask.reverse().reduce((res, x) => res << 1 | x, 0)
+    this.changeConfiguration(index, newBitmask)
   }
 }
 
