@@ -55,8 +55,7 @@
     "chartjs-plugin-crosshair": "1.1.6",
     "dayjs": "1.8.x",
     "debounce": "1.x",
-    "@hapi/joi": "15.1.x",
-    "joi-browser": "13.4.x",
+    "joi": "17.4.x",
     "openzwave-shared": "1.5.10",
     "os": "0.1.x",
     "path": "0.12.x"
@@ -83,7 +82,7 @@
     "standard": "14.x"
   },
   "peerDependencies": {
-    "asterism": ">= 1.9.0",
+    "asterism": ">= 1.10.0",
     "asterism-plugin-library": ">= 2.4.0",
     "express": "4.17.x",
     "prop-types": "15.6.x",
