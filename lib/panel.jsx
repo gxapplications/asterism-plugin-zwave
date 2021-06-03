@@ -138,19 +138,19 @@ class ZwaveEditPanel extends React.Component {
           <div className='ready'>
             <Row>
               {rescanInProgress ? (
-                <Button className={cx(theme.actions.secondary, 'col s6 m3 l3')} disabled waves={waves}>
+                <Button className={cx(theme.actions.secondary, 'col s5 m3 l3')} disabled waves={waves}>
                   <Preloader size='small' />
                 </Button>
               ) : (
-                <Button className={cx(theme.actions.secondary, 'col s6 m3 l3')} disabled={controllerState < 3}
+                <Button className={cx(theme.actions.secondary, 'col s5 m3 l3')} disabled={controllerState < 3}
                   onClick={this.rescan.bind(this)} waves={waves}>
                   <i className="material-icons left">youtube_searched_for</i>Re-scan
                 </Button>
               )}
 
-              <div className='col s5 offset-s1 m3 offset-m1 l2 offset-l1'>&nbsp;</div>
+              <div className='col s1 m3 offset-m1 l2 offset-l1'>&nbsp;</div>
 
-              <Button className={cx(theme.actions.inconspicuous, 'col s7 m4 offset-m1 l3 offset-l1')}
+              <Button className={cx(theme.actions.inconspicuous, 'col s6 m4 offset-m1 l3 offset-l1')}
                 onClick={this.openSettings.bind(this)} waves={waves}><i className="material-icons left">settings</i>Open settings</Button>
             </Row>
 
