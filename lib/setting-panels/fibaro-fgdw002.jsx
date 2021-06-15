@@ -77,7 +77,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
       if (this._mounted) {
         if (this.state.configuration[confIndex] !== value) {
           this.setState({
-            configuration: { ...this.state.configuration, [confIndex]: value }
+            configuration: { ...this.state.configuration, [confIndex]: value }
           })
         }
       }
