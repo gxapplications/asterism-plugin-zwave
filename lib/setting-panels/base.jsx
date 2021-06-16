@@ -10,10 +10,13 @@ class BaseSettingPanel extends React.Component {
     super(props)
 
     this._configurationsKeys = Object.values(configurationsToHandle) || []
+    this._alarmKeys = null
+    this._alarmMapper = null
     this._sliders = {}
     this._supports = {
       batteryLevelSupport: false,
-      binarySwitchSupport: false
+      binarySwitchSupport: false,
+      alarmSupport: false
     }
 
     this.socket = props.privateSocket
@@ -39,6 +42,17 @@ class BaseSettingPanel extends React.Component {
     return this
   }
 
+  withAlarmSupport (alarmMapper) {
+    this._alarmKeys = Object.keys(alarmMapper)
+    this._alarmMapper = alarmMapper
+    this.state.alarms = {
+      alarmMapper,
+      alarmStatuses: Object.fromEntries(this._alarmKeys.map((k) => [k, 'Unknown']))
+    }
+    this._supports.alarmSupport = true
+    return this
+  }
+
   componentDidMount (stateToMerge = {}) {
     const pop = this.props.productObjectProxy
 
@@ -47,7 +61,7 @@ class BaseSettingPanel extends React.Component {
 
       if (this.mounted) {
         if (this.state.configuration[confIndex] !== value) {
-          this.setState({ configuration: { ...this.state.configuration, [confIndex]: value } })
+          this.setState({ configuration: { ...this.state.configuration, [confIndex]: value } })
         }
       }
     })
@@ -73,33 +87,51 @@ class BaseSettingPanel extends React.Component {
     }
 
     Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
-    .then((configurationValues) => {
-      const state = {
-        ...stateToMerge,
-        configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
-        panelReady: true
-      }
-
-      Promise.all([
-        this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
-        this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
-        this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null),
-      ])
-      .then(([batteryPercent, batteryIcon, switchState]) => {
-        if (this._supports.batteryLevelSupport) {
-          state.batteryPercent = batteryPercent
-          state.batteryIcon = batteryIcon
-          state.switchState = switchState
+      .then((configurationValues) => {
+        const state = {
+          ...stateToMerge,
+          configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
+          panelReady: true
         }
 
-        this.setState(state)
+        Promise.all([
+          this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
+          this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
+          this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null)
+        ])
+          .then(([batteryPercent, batteryIcon, switchState]) => {
+            if (this._supports.batteryLevelSupport) {
+              state.batteryPercent = batteryPercent
+              state.batteryIcon = batteryIcon
+            }
 
-        this.mounted = true
-        this.plugWidgets()
+            if (this._supports.binarySwitchSupport) {
+              state.switchState = switchState
+            }
+
+            if (this._supports.alarmSupport) {
+              Promise.all(this._alarmKeys.map((k) => pop.isAlarmOn(k)))
+                .then((alarmStatuses) => {
+                  state.alarms = {
+                    alarmMapper: this._alarmMapper,
+                    alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
+                  }
+                  this.setState(state)
+
+                  this.mounted = true
+                  this.plugWidgets()
+                })
+                .catch(console.error)
+            } else {
+              this.setState(state)
+
+              this.mounted = true
+              this.plugWidgets()
+            }
+          })
+          .catch(console.error)
       })
       .catch(console.error)
-    })
-    .catch(console.error)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -182,10 +214,10 @@ class BaseSettingPanel extends React.Component {
       : valueOrFormElement
 
     this.props.productObjectProxy.setConfiguration(index, transformer(value))
-    .then(() => {
-      this.setState({ configuration: { ...this.state.configuration, [index]: transformer(value) } })
-    })
-    .catch(console.error)
+      .then(() => {
+        this.setState({ configuration: { ...this.state.configuration, [index]: transformer(value) } })
+      })
+      .catch(console.error)
   }
 
   invertBinarySwitchState () {

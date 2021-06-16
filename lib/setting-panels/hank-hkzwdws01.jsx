@@ -7,11 +7,13 @@ import React from 'react'
 import { Row } from 'react-materialize'
 
 import NameLocation from './name-location'
+import alarmMapper from '../products/hank-hkzwdws01-alarm-mapper'
 
 class HankHkzwdws01SettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props, HankHkzwdws01SettingPanel.configurations)
     this.withBatteryLevelSupport()
+    this.withAlarmSupport(alarmMapper)
 
     this.state.configChanged = false
     this.state.isAccessControlAlarm = 'Unknown'
@@ -21,36 +23,47 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     this.state.forceBitmaskStatePosition = true
   }
 
-  // TODO !0: componentDidMount, do equivalent to :
-  /**
+  componentDidMount () {
+    const pop = this.props.productObjectProxy
     Promise.all([
-      o.isAccessControlAlarmOn ? o.isAccessControlAlarmOn() : 'Unknown',
-      o.isBurglarAlarmOn ? o.isBurglarAlarmOn() : 'Unknown',
-      o.getStateId(),
-      o.getStateBehavior(),
-      o.getForceBitmaskStatePosition()
+      pop.getStateId(),
+      pop.getStateBehavior(),
+      pop.getForceBitmaskStatePosition()
     ])
-    .then(([isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition]) => {
-      this.setState({
-        isAccessControlAlarm,
-        isBurglarAlarm,
-        stateId,
-        stateBehavior,
-        forceBitmaskStatePosition
+      .then(([stateId, stateBehavior, forceBitmaskStatePosition]) => {
+        return super.componentDidMount({
+          stateId,
+          stateBehavior,
+          forceBitmaskStatePosition
+        })
       })
-      this.plugWidgets()
-    })
-    .catch(console.error)
-  **/
+      .catch(console.error)
+  }
+
+  plugWidgets () {
+    const config = this.state.configuration
+    const configs = HankHkzwdws01SettingPanel.configurations
+
+    // TODO !0: from here
+  }
 
   render () {
-    const { animationLevel, theme, productObjectProxy } = this.props
-    const { batteryPercent, batteryIcon, panelReady, configChanged } = this.state
+    const { nodeId, animationLevel, theme, productObjectProxy } = this.props
+    const { batteryPercent, batteryIcon, panelReady, configChanged, configuration } = this.state
+    const { alarmMapper, alarmStatuses } = this.state.alarms
+
+    const configs = HankHkzwdws01SettingPanel.configurations
+
+    const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
+
+    let alarming = (normalState && alarmStatuses['6']) ? 'Opened alarm' : ((!normalState && alarmStatuses['6']) ? 'Closed alarm' : (normalState ? 'Normally closed' : 'Normally opened'))
+    alarming = (alarmStatuses['7'] === true) ? 'Burglar alarm' : ((alarmStatuses['6'] === 'Unknown') ? 'Unknown' : alarming)
 
     return panelReady ? (
       <div>
         <Row>
           <h4 className='col s12 m12 l8'>Door/Window sensor settings</h4>
+          <div className='col s12 m9 l5'>Sensor #{nodeId} state actually "{alarming}".</div>
           <div className='right'>
             <i className={cx('material-icons', batteryIcon)}>{batteryIcon}</i>&nbsp;{batteryPercent}%
           </div>
@@ -58,11 +71,11 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
         </Row>
 
         <Row className='section card form'>
-          <h5>TODO: normally opened/closed boolean; then other state features like in FibaroFgdw002</h5>
+          <h5>TODO !0: normally opened/closed boolean; TODO !1: then other state features like in FibaroFgdw002</h5>
 
           {configChanged && (
             <div className='col s12'>
-              <br/>
+              <br />
               Settings changed. You must press 3 times the internal Z button, to save parameters.
             </div>
           )}
