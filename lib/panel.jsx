@@ -207,6 +207,7 @@ class ZwaveEditPanel extends React.Component {
       if (panel) {
         this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
         .then((productObjectProxy) => {
+          // TODO !0: si productObjectProxy est null, il faut mettre un warning, et ne pas ouvrir le panel de config de l'element
           this.setState({
             ConfigurePanel: panel,
             configurePanelObjectProxy: productObjectProxy

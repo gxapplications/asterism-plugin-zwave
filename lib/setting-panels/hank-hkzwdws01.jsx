@@ -16,8 +16,6 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     this.withAlarmSupport(alarmMapper)
 
     this.state.configChanged = false
-    this.state.isAccessControlAlarm = 'Unknown'
-    this.state.isBurglarAlarm = 'Unknown'
     this.state.stateId = null
     this.state.stateBehavior = 1
     this.state.forceBitmaskStatePosition = true
@@ -55,7 +53,7 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     const configs = HankHkzwdws01SettingPanel.configurations
 
     const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
-
+console.error('######## a', normalState, alarmStatuses)
     let alarming = (normalState && alarmStatuses['6']) ? 'Opened alarm' : ((!normalState && alarmStatuses['6']) ? 'Closed alarm' : (normalState ? 'Normally closed' : 'Normally opened'))
     alarming = (alarmStatuses['7'] === true) ? 'Burglar alarm' : ((alarmStatuses['6'] === 'Unknown') ? 'Unknown' : alarming)
 

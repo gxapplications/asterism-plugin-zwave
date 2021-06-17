@@ -110,7 +110,7 @@ class BaseSettingPanel extends React.Component {
             }
 
             if (this._supports.alarmSupport) {
-              Promise.all(this._alarmKeys.map((k) => pop.isAlarmOn(k)))
+              Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
                 .then((alarmStatuses) => {
                   state.alarms = {
                     alarmMapper: this._alarmMapper,
