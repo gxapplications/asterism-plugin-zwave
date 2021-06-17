@@ -206,13 +206,16 @@ class ZwaveEditPanel extends React.Component {
       const panel = this._zwaveService.getSettingPanel(element.meta.settingPanel)
       if (panel) {
         this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
-        .then((productObjectProxy) => {
-          // TODO !0: si productObjectProxy est null, il faut mettre un warning, et ne pas ouvrir le panel de config de l'element
-          this.setState({
-            ConfigurePanel: panel,
-            configurePanelObjectProxy: productObjectProxy
+          .then((productObjectProxy) => {
+            if (productObjectProxy) {
+              this.setState({
+                ConfigurePanel: panel,
+                configurePanelObjectProxy: productObjectProxy
+              })
+            } else {
+              // TODO !0: afficher un warning, invitant un wakeup du produit
+            }
           })
-        })
       }
     }
   }

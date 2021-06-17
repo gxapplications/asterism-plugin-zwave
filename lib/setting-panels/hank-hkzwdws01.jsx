@@ -39,9 +39,6 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
   }
 
   plugWidgets () {
-    const config = this.state.configuration
-    const configs = HankHkzwdws01SettingPanel.configurations
-
     // TODO !0: from here
   }
 
@@ -53,8 +50,7 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     const configs = HankHkzwdws01SettingPanel.configurations
 
     const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
-console.error('######## a', normalState, alarmStatuses)
-    let alarming = (normalState && alarmStatuses['6']) ? 'Opened alarm' : ((!normalState && alarmStatuses['6']) ? 'Closed alarm' : (normalState ? 'Normally closed' : 'Normally opened'))
+    let alarming = (normalState && alarmStatuses['6']) ? 'Closed alarm' : ((!normalState && alarmStatuses['6']) ? 'Opened alarm' : (normalState ? 'Normally opened' : 'Normally closed'))
     alarming = (alarmStatuses['7'] === true) ? 'Burglar alarm' : ((alarmStatuses['6'] === 'Unknown') ? 'Unknown' : alarming)
 
     return panelReady ? (
@@ -68,13 +64,21 @@ console.error('######## a', normalState, alarmStatuses)
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
 
+        <h5>Configuration not supported</h5>
         <Row className='section card form'>
-          <h5>TODO !0: normally opened/closed boolean; TODO !1: then other state features like in FibaroFgdw002</h5>
+          Configuration failed to work with asterism for now, so you cannot change them here.
+          {/* configuration[configs.NORMAL_STATE] */}
+          {/* configuration[configs.LOW_BATTERY_ALARM] */}
+        </Row>
+
+        <h5>Link state to a scenarii bitmask state</h5>
+        <Row className='section card form'>
+          <h5>TODO !0: other state features like in FibaroFgdw002</h5>
 
           {configChanged && (
             <div className='col s12'>
               <br />
-              Settings changed. You must press 3 times the internal Z button, to save parameters.
+              Settings changed. You must press the internal Z button during 5 seconds, to save parameters.
             </div>
           )}
         </Row>
@@ -89,7 +93,8 @@ HankHkzwdws01SettingPanel.propTypes = {
 }
 
 HankHkzwdws01SettingPanel.configurations = {
-  NORMAL_STATE: 1
+  NORMAL_STATE: 15,
+  LOW_BATTERY_ALARM: 32
 }
 
 export default HankHkzwdws01SettingPanel
