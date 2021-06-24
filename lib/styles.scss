@@ -77,8 +77,11 @@ button.modal-footer-switch {
   }
 
   & .centered-loader {
-    width: fit-content;
-    height: 90%;
+    height: -webkit-fill-available;
+
+    & div {
+      margin: auto;
+    }
   }
 
   & .configurePanel {
@@ -127,6 +130,14 @@ button.modal-footer-switch {
   & .slider {
     height: 5.4rem;
     padding-top: 1.6rem;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .ZwaveEditPanel {
+    & .configurePanel {
+      height: calc(100% - 58px);
+    }
   }
 }
 

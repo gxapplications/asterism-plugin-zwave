@@ -184,7 +184,9 @@ class BaseSettingPanel extends React.Component {
   render () {
     return (
       <div className='valign-wrapper centered-loader'>
-        <Preloader size='big' />
+        <div>
+          <Preloader size='big' />
+        </div>
       </div>
     )
   }

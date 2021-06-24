@@ -98,7 +98,7 @@ class ZwaveEditPanel extends React.Component {
       'block' :
       ((element.ready === true && !element.meta.battery) ?
         'check' :
-        ((!element.battery || !element.battery.icon) ?
+        ((!element.battery || !element.battery.icon) ?
           'blur_circular' :
           element.battery.icon
         )
@@ -124,7 +124,7 @@ class ZwaveEditPanel extends React.Component {
     })
 
     return (
-      <div id='zwave-edit-panel' className={cx('thin-scrollable ZwaveEditPanel', styles.ZwaveEditPanel, { 'configurePanelOpened': !!ConfigurePanel })}>
+      <div id='zwave-edit-panel' className={cx('thin-scrollable ZwaveEditPanel', styles.ZwaveEditPanel, { 'configurePanelOpened': ConfigurePanel !== null })}>
         {(controllerState < 3 && !rescanInProgress) ? (
           <div className='not-ready'>
             <div className='valign-wrapper'>
@@ -168,20 +168,33 @@ class ZwaveEditPanel extends React.Component {
         )}
 
         <div className={cx('configurePanel thin-scrollable', theme.backgrounds.body)}>
-          {ConfigurePanel ? (
+          {ConfigurePanel && (
             <ConfigurePanel productObjectProxy={configurePanelObjectProxy} serverStorage={serverStorage}
               localStorage={localStorage} theme={theme} animationLevel={animationLevel}
               reconfigureElement={this.reconfigureElement.bind(this, configurePanelObjectProxy.nodeid)}
               services={services} privateSocket={privateSocket} nodeId={configurePanelObjectProxy.nodeid}
             />
-          ) : null}
+          )}
+          {ConfigurePanel === false && (
+            <div className='not-ready'>
+              <div className='valign-wrapper'>
+                <div>
+                  <p>
+                    <Icon left>warning</Icon>
+                    The Z-wave node does not respond for now. You may try to wakeup element if it's a passive one,
+                    then open this dialog again.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
   }
 
   handleCloseButton () {
-    if (!this.state.ConfigurePanel) {
+    if (this.state.ConfigurePanel === null) {
       // do not handle close button event: modal will close
       return Promise.reject(false) // eslint-disable-line prefer-promise-reject-errors
     }
@@ -207,13 +220,16 @@ class ZwaveEditPanel extends React.Component {
       if (panel) {
         this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
           .then((productObjectProxy) => {
-            if (productObjectProxy) {
+            if (productObjectProxy && productObjectProxy.getName) {
               this.setState({
                 ConfigurePanel: panel,
                 configurePanelObjectProxy: productObjectProxy
               })
             } else {
-              // TODO !0: afficher un warning, invitant un wakeup du produit
+              this.setState({
+                ConfigurePanel: false, // false means error case
+                configurePanelObjectProxy: null
+              })
             }
           })
       }
