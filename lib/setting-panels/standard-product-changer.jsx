@@ -47,13 +47,14 @@ class StandardProductChanger extends React.Component {
   }
 
   changeProductSupport (event) {
-    this.zwaveService.changeStandardProductSupport(this.props.nodeId, event.currentTarget.value)
-    .then(() => {
-      this.setState({
-        currentValue: event.currentTarget.value
+    const productSupport = event.currentTarget.value
+    this.zwaveService.changeStandardProductSupport(this.props.nodeId, productSupport)
+      .then(() => {
+        this.setState({
+          currentValue: productSupport
+        })
+        this.props.reconfigureElement()
       })
-      this.props.reconfigureElement()
-    })
   }
 
 }
