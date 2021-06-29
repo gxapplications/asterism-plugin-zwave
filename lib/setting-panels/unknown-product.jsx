@@ -34,7 +34,7 @@ class UnknownSettingPanel extends React.Component {
 
     return (
       <div className='section card form'>
-        Your product is not directly supported by this version of Asterism. You can try a standard support:
+        Your product is not directly supported by this version of Asterism or cannot be recognized directly.
         <br />
         <StandardProductChanger nodeId={nodeId} animationLevel={animationLevel} theme={theme}
           zwaveService={services()['asterism-plugin-zwave']} reconfigureElement={reconfigureElement} />
