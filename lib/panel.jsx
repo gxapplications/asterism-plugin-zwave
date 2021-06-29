@@ -220,7 +220,7 @@ class ZwaveEditPanel extends React.Component {
       if (panel) {
         this._zwaveService.getProductObjectProxyForNodeId(element.nodeid, element.meta)
           .then((productObjectProxy) => {
-            if (productObjectProxy && productObjectProxy.getName) {
+            if (element.meta.settingPanel === 'unknown' || (productObjectProxy && productObjectProxy.getName)) {
               this.setState({
                 ConfigurePanel: panel,
                 configurePanelObjectProxy: productObjectProxy
