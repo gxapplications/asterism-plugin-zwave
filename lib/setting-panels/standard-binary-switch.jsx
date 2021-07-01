@@ -12,12 +12,12 @@ import StandardProductChanger from './standard-product-changer'
 class StandardBinarySwitchSettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props)
-    this.withBinarySwitchSupport()
+    this.withBinarySwitchSupport(1)
   }
 
   render () {
     const { nodeId, animationLevel, theme, reconfigureElement, productObjectProxy } = this.props
-    const { switchState, panelReady } = this.state
+    const { switchStates, panelReady } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -33,8 +33,8 @@ class StandardBinarySwitchSettingPanel extends BaseSettingPanel {
         <Row>
           <h4 className='col s12 m12 l5'>Wall plug settings</h4>
           <Button className={cx('col s12 m3 l2 fluid', theme.actions.secondary)} waves={waves}
-            onClick={this.invertBinarySwitchState.bind(this)}>Turn {switchState ? 'OFF' : 'ON'}</Button>
-          <div className='col s12 m9 l5'>Plug #{nodeId} switch actually "{switchState ? 'ON' : 'OFF'}".</div>
+            onClick={this.invertBinarySwitchState.bind(this, 1)}>Turn {switchStates[0] ? 'OFF' : 'ON'}</Button>
+          <div className='col s12 m9 l5'>Plug #{nodeId} switch actually "{switchStates[0] ? 'ON' : 'OFF'}".</div>
           <NameLocation theme={theme} animationLevel={animationLevel} productObjectProxy={productObjectProxy} />
         </Row>
       </div>

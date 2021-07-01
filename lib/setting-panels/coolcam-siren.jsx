@@ -10,12 +10,12 @@ import NameLocation from './name-location'
 class CoolcamSirenSettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props, CoolcamSirenSettingPanel.configurations)
-    this.withBatteryLevelSupport().withBinarySwitchSupport()
+    this.withBatteryLevelSupport().withBinarySwitchSupport(1)
   }
 
   componentDidMount () {
-    this.props.productObjectProxy.binarySwitchGetState()
-    .then((switchState) => super.componentDidMount({ switchState }))
+    this.props.productObjectProxy.binarySwitchGetState(1)
+    .then((switchState1) => super.componentDidMount({ switchStates: [switchState1] }))
     .catch(console.error)
   }
 
@@ -48,7 +48,7 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
     const c = CoolcamSirenSettingPanel.configurations
 
     const { nodeId, animationLevel, theme, productObjectProxy } = this.props
-    const { batteryPercent, batteryIcon, switchState, panelReady, configuration } = this.state
+    const { batteryPercent, batteryIcon, switchStates, panelReady, configuration } = this.state
 
     const defaultSirenOnMode = Number.isInteger(configuration[c.DEFAULT_SIREN_ON_MODE])
       ? configuration[c.DEFAULT_SIREN_ON_MODE]
@@ -61,8 +61,8 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
         <Row>
           <h4 className='col s12 m12 l5'>Siren settings</h4>
           <Button className={cx('col s12 m3 l2 fluid', theme.actions.secondary)} waves={waves}
-            onClick={this.invertBinarySwitchState.bind(this)}>Turn {switchState ? 'OFF' : 'ON'}</Button>
-          <div className='col s12 m9 l5'>Siren #{nodeId} state actually "{switchState ? 'ON' : 'OFF'}".</div>
+            onClick={this.invertBinarySwitchState.bind(this, 1)}>Turn {switchStates[0] ? 'OFF' : 'ON'}</Button>
+          <div className='col s12 m9 l5'>Siren #{nodeId} state actually "{switchStates[0] ? 'ON' : 'OFF'}".</div>
           <div className='right'>
             <i className={cx('material-icons', batteryIcon)}>{batteryIcon}</i>&nbsp;{batteryPercent}%
           </div>

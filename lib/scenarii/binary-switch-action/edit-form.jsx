@@ -55,6 +55,24 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     return ready ? (
       <Row className='section card form'>
         <br className='col s12 m12 l12' key={uuid.v4()} />
+        {compatibleNodes.length > 0 ? instance.data.nodes.map(({ id, instance }, idx) => (
+          <div key={uuid.v4()}>
+            <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
+              onChange={this.nodeChanged.bind(this, idx)} value={`${id}`}>
+              {compatibleNodes.map((node, i) => (
+                <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
+              ))}
+              <option key={uuid.v4()} value='0'>(Remove it)</option>
+            </Select>
+            ### {instance} ##
+            {compatibleNodes.find((n) => n.nodeid === id).binarySwitchGetSupportedInstances
+              && compatibleNodes.find((n) => n.nodeid === id).binarySwitchGetSupportedInstances()}
+            ### TODO
+          </div>
+        )) : (
+          <div>Compatible devices not found on the network.</div>
+        )}
+
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='power_off'
             onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
@@ -94,14 +112,18 @@ class ZwaveBinarySwitchActionEditForm extends React.Component {
     const newNodeId = parseInt(event.currentTarget.value)
     if (newNodeId > 0) {
       this.props.instance.data.nodeIds[index] = newNodeId
+      this.props.instance.data.nodes[index] = { id: newNodeId, instance: 1 }
     } else {
       const nodeIds = this.props.instance.data.nodeIds.filter((nodeId, idx) => idx !== index)
+      const nodes = this.props.instance.data.nodes.filter(({ id, instance }, idx) => idx !== index)
       if (nodeIds.length > 0) { // avoid to remove all nodes (1 min needed)
         this.props.instance.data.nodeIds = nodeIds
+        this.props.instance.data.nodes = nodes
       }
     }
     this.setState({
-      nodeIds: this.props.instance.data.nodeIds
+      nodeIds: this.props.instance.data.nodeIds,
+      nodes: this.props.instance.data.nodes
     })
     this.nameChange()
   }

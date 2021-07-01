@@ -36,9 +36,9 @@ class BaseSettingPanel extends React.Component {
     return this
   }
 
-  withBinarySwitchSupport () {
-    this.state.switchState = null
-    this._supports.binarySwitchSupport = true
+  withBinarySwitchSupport (instancesCount = 1) {
+    this.state.switchStates = (new Array(instancesCount)).fill(null)
+    this._supports.binarySwitchSupport = instancesCount
     return this
   }
 
@@ -80,56 +80,82 @@ class BaseSettingPanel extends React.Component {
       this.socket.on('node-event-binary-switch-changed', (nodeId, value) => {
         if (this.props.nodeId !== nodeId) return
 
-        if (this.mounted && this.state.switchState !== value.value) {
-          this.setState({ switchState: value.value })
+        if (this.mounted && this.state.switchStates[value.instance - 1] !== value.value) {
+          const switchStates = [...this.state.switchStates]
+          switchStates[value.instance - 1] = value.value
+          this.setState({ switchStates })
         }
       })
     }
 
-    Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
-      .then((configurationValues) => {
-        const state = {
-          ...stateToMerge,
-          configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
-          panelReady: true
+    const state = {
+      ...stateToMerge,
+      panelReady: true
+    }
+
+    this._componentDidMountConfigurations(pop, state, (s) => {
+      this._componentDidMountSupports(pop, s, (s2) => {
+        this.setState(s2)
+        this.mounted = true
+        this.plugWidgets()
+      })
+    })
+  }
+
+  _componentDidMountConfigurations (pop, state, callback) {
+    if (this._configurationsKeys.length > 0) {
+      Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
+        .then((configurationValues) => {
+          state.configuration = Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]]))
+          callback(state)
+        })
+        .catch(console.error)
+    } else {
+      callback(state)
+    }
+  }
+
+  _componentDidMountSupports (pop, state, callback) {
+    Promise.all([
+      this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
+      this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
+      this._supports.binarySwitchSupport > 0 ? pop.binarySwitchGetState(1) : Promise.resolve(null),
+      this._supports.binarySwitchSupport > 1 ? pop.binarySwitchGetState(2) : Promise.resolve(null),
+      this._supports.binarySwitchSupport > 2 ? pop.binarySwitchGetState(3) : Promise.resolve(null),
+      this._supports.binarySwitchSupport > 3 ? pop.binarySwitchGetState(4) : Promise.resolve(null) // XXX : can support more...
+    ])
+      .then(([batteryPercent, batteryIcon, switchState1, switchState2, switchState3, switchState4]) => {
+        if (this._supports.batteryLevelSupport) {
+          state.batteryPercent = batteryPercent
+          state.batteryIcon = batteryIcon
         }
 
-        Promise.all([
-          this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
-          this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
-          this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null)
-        ])
-          .then(([batteryPercent, batteryIcon, switchState]) => {
-            if (this._supports.batteryLevelSupport) {
-              state.batteryPercent = batteryPercent
-              state.batteryIcon = batteryIcon
-            }
+        if (this._supports.binarySwitchSupport) {
+          state.switchStates = [switchState1]
+          if (this._supports.binarySwitchSupport > 1) {
+            state.switchStates[1] = switchState2
+          }
+          if (this._supports.binarySwitchSupport > 2) {
+            state.switchStates[2] = switchState3
+          }
+          if (this._supports.binarySwitchSupport > 3) {
+            state.switchStates[3] = switchState4
+          }
+        }
 
-            if (this._supports.binarySwitchSupport) {
-              state.switchState = switchState
-            }
-
-            if (this._supports.alarmSupport) {
-              Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
-                .then((alarmStatuses) => {
-                  state.alarms = {
-                    alarmMapper: this._alarmMapper,
-                    alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
-                  }
-                  this.setState(state)
-
-                  this.mounted = true
-                  this.plugWidgets()
-                })
-                .catch(console.error)
-            } else {
-              this.setState(state)
-
-              this.mounted = true
-              this.plugWidgets()
-            }
-          })
-          .catch(console.error)
+        if (this._supports.alarmSupport) {
+          Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
+            .then((alarmStatuses) => {
+              state.alarms = {
+                alarmMapper: this._alarmMapper,
+                alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
+              }
+              callback(state)
+            })
+            .catch(console.error)
+        } else {
+          callback(state)
+        }
       })
       .catch(console.error)
   }
@@ -222,8 +248,11 @@ class BaseSettingPanel extends React.Component {
       .catch(console.error)
   }
 
-  invertBinarySwitchState () {
-    this.props.productObjectProxy.binarySwitchInvert().catch(console.error)
+  invertBinarySwitchState (instance = 1) {
+    if (!Number.isInteger(instance)) {
+      instance = 1
+    }
+    this.props.productObjectProxy.binarySwitchInvert(instance).catch(console.error)
   }
 
   configurationValueToBitmask (index, size) {
