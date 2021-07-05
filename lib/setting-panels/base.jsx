@@ -86,50 +86,62 @@ class BaseSettingPanel extends React.Component {
       })
     }
 
-    Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
-      .then((configurationValues) => {
-        const state = {
-          ...stateToMerge,
-          configuration: Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]])),
-          panelReady: true
+    const state = {
+      ...stateToMerge,
+      panelReady: true
+    }
+
+    this._componentDidMountConfigurations(pop, state, (s) => {
+      this._componentDidMountSupports(pop, s, (s2) => {
+        this.setState(s2)
+        this.mounted = true
+        this.plugWidgets()
+      })
+    })
+  }
+
+  _componentDidMountConfigurations (pop, state, callback) {
+    if (this._configurationsKeys.length > 0) {
+      Promise.all(this._configurationsKeys.map((k) => pop.getConfiguration(k)))
+        .then((configurationValues) => {
+          state.configuration = Object.fromEntries(this._configurationsKeys.map((k, i) => [k, configurationValues[i]]))
+          callback(state)
+        })
+        .catch(console.error)
+    } else {
+      callback(state)
+    }
+  }
+
+  _componentDidMountSupports (pop, state, callback) {
+    Promise.all([
+      this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
+      this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
+      this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null)
+    ])
+      .then(([batteryPercent, batteryIcon, switchState]) => {
+        if (this._supports.batteryLevelSupport) {
+          state.batteryPercent = batteryPercent
+          state.batteryIcon = batteryIcon
         }
 
-        Promise.all([
-          this._supports.batteryLevelSupport ? pop.batteryLevelGetPercent() : Promise.resolve(0),
-          this._supports.batteryLevelSupport ? pop.batteryLevelGetIcon() : Promise.resolve(null),
-          this._supports.binarySwitchSupport ? pop.binarySwitchGetState() : Promise.resolve(null)
-        ])
-          .then(([batteryPercent, batteryIcon, switchState]) => {
-            if (this._supports.batteryLevelSupport) {
-              state.batteryPercent = batteryPercent
-              state.batteryIcon = batteryIcon
-            }
+        if (this._supports.binarySwitchSupport) {
+          state.switchState = switchState
+        }
 
-            if (this._supports.binarySwitchSupport) {
-              state.switchState = switchState
-            }
-
-            if (this._supports.alarmSupport) {
-              Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
-                .then((alarmStatuses) => {
-                  state.alarms = {
-                    alarmMapper: this._alarmMapper,
-                    alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
-                  }
-                  this.setState(state)
-
-                  this.mounted = true
-                  this.plugWidgets()
-                })
-                .catch(console.error)
-            } else {
-              this.setState(state)
-
-              this.mounted = true
-              this.plugWidgets()
-            }
-          })
-          .catch(console.error)
+        if (this._supports.alarmSupport) {
+          Promise.all(this._alarmKeys.map((k) => pop.alarmIsOn(k)))
+            .then((alarmStatuses) => {
+              state.alarms = {
+                alarmMapper: this._alarmMapper,
+                alarmStatuses: Object.fromEntries(this._alarmKeys.map((k, i) => [k, alarmStatuses[i]]))
+              }
+              callback(state)
+            })
+            .catch(console.error)
+        } else {
+          callback(state)
+        }
       })
       .catch(console.error)
   }

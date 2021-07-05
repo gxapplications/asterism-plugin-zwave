@@ -19,7 +19,6 @@ class HeimanHs1sazSettingPanel extends BaseSettingPanel {
     this.withBatteryLevelSupport()
     this.withAlarmSupport(alarmMapper)
 
-    this.state.panelReady = false
     this.state.stateId = null
     this.state.stateBehavior = 1
     this.state.forceBitmaskStatePosition = true
