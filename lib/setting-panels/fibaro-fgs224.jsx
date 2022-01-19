@@ -4,9 +4,12 @@ import cx from 'classnames'
 import BaseSettingPanel from './base'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Button, Checkbox, Row } from 'react-materialize'
+import { Button, Checkbox, Row, Select } from 'react-materialize'
+import { Scenarii } from 'asterism-plugin-library'
 
 import NameLocation from './name-location'
+
+const { StatesDropdown } = Scenarii
 
 const q2Instance = 2 // Seems to change depending on the env...
 
@@ -14,12 +17,40 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
   constructor (props) {
     super(props, FibaroFgs224SettingPanel.configurations)
     this.withBinarySwitchSupport(q2Instance)
+
+    this.state = {
+      ...this.state,
+      stateId: null,
+      stateBehavior: null,
+      forceBitmaskStatePosition: true,
+      controlledBitmaskStatePosition: false
+    }
+  }
+
+  componentDidMount () {
+    const pop = this.props.productObjectProxy
+    Promise.all([
+      pop.getStateId(),
+      pop.getStateBehavior(),
+      pop.getForceBitmaskStatePosition(),
+      pop.getControlledBitmaskStatePosition()
+    ])
+    .then(([stateId, stateBehavior, forceBitmaskStatePosition, controlledBitmaskStatePosition]) => {
+      return super.componentDidMount({
+        stateId,
+        stateBehavior,
+        forceBitmaskStatePosition,
+        controlledBitmaskStatePosition
+      })
+    })
+    .catch(console.error)
   }
 
   render () {
     const c = FibaroFgs224SettingPanel.configurations
-    const { animationLevel, theme, productObjectProxy, nodeId } = this.props
-    const { panelReady, switchStates } = this.state
+    const { animationLevel, theme, productObjectProxy, nodeId, services } = this.props
+    const { panelReady, switchStates, stateId, stateBehavior } = this.state
+    const { forceBitmaskStatePosition, controlledBitmaskStatePosition } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -138,6 +169,43 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
           </div>
         </Row>
 
+        <h5>Link to a scenarii bitmask state</h5>
+        <Row className='section card form'>
+          <div className='col s12 m6'>
+            <StatesDropdown defaultStateId={stateId} onChange={this.stateIdChange.bind(this)}
+              theme={theme} animationLevel={animationLevel} services={services}
+              typeFilter={(e) => e.id === 'bitmask-state'} instanceFilter={(e) => e.typeId === 'bitmask-state'}>
+              <option key='no-state-option' value={''}>No link</option>
+            </StatesDropdown>
+          </div>
+
+          {!!stateId && (stateId.length > 0) && [
+            <Select key={0} s={12} m={6} label='Choose bitmask state position behavior'
+              onChange={this.stateBehaviorChange.bind(this)} value={`${stateBehavior}`}>
+              <option value='1'>Set state positions 1 & 2 (to 1) when ON</option>
+              <option value='-1'>Set state positions 1 & 2 (to 1) when closed</option>
+              <option value='2'>Set state positions 2 & 3 (to 1) when ON</option>
+              <option value='-2'>Set state positions 2 & 3 (to 1) when closed</option>
+              <option value='4'>Set state positions 3 & 4 (to 1) when ON</option>
+              <option value='-4'>Set state positions 3 & 4 (to 1) when closed</option>
+              <option value='8'>Set state positions 4 & 5 (to 1) when ON</option>
+              <option value='-8'>Set state positions 4 & 5 (to 1) when closed</option>
+              <option value='16'>Set state positions 5 & 6 (to 1) when ON</option>
+              <option value='-16'>Set state positions 5 & 6 (to 1) when closed</option>
+              <option value='32'>Set state positions 6 & 7 (to 1) when ON</option>
+              <option value='-32'>Set state positions 6 & 7 (to 1) when closed</option>
+              <option value='64'>Set state positions 7 & 8 (to 1) when ON</option>
+              <option value='-64'>Set state positions 7 & 8 (to 1) when closed</option>
+            </Select>,
+            <Select key={1} s={12} label='Choose bitmask state control behavior' icon='sync_alt'
+              onChange={this.changeForceBitmaskStatePosition.bind(this)} value={forceBitmaskStatePosition ? 'force' : (controlledBitmaskStatePosition ? 'controlled' : 'none')}>
+              <option value='force'>Force mode: Device will be the only one allowed to control the state</option>
+              <option value='none'>Follow mode: Device will follow any state change but can be controlled anyway</option>
+              <option value='controlled'>Controlled mode: state and device can control each others (warning: avoid loops with scenario actions!)</option>
+            </Select>
+          ]}
+        </Row>
+
         <Row className='section card form'>
           <h5>No more configuration from here</h5>
           To catch single/double/triple click actions, you need to create a <b>Central Scene Trigger</b> from
@@ -149,6 +217,60 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
         </Row>
       </div>
     ) : super.render()
+  }
+
+  stateIdChange (value) {
+    this.props.productObjectProxy.setStateId(value)
+    .then(() => {
+      this.setState({ stateId: value })
+    })
+    .catch(console.error)
+  }
+
+  stateBehaviorChange (event) {
+    const value = parseInt(event.currentTarget.value)
+    this.props.productObjectProxy.setStateBehavior(value)
+    .then(() => {
+      this.setState({ stateBehavior: value })
+    })
+    .catch(console.error)
+  }
+
+  changeForceBitmaskStatePosition (event) {
+    const value = event.currentTarget.value
+    switch (value) {
+      case 'force':
+        return this.props.productObjectProxy.setControlledBitmaskStatePosition(false)
+        .then(() => this.props.productObjectProxy.setForceBitmaskStatePosition(true))
+        .then(() => {
+          this.setState({
+            forceBitmaskStatePosition: true,
+            controlledBitmaskStatePosition: false
+          })
+        })
+        .catch(console.error)
+      case 'controlled':
+        return this.props.productObjectProxy.setForceBitmaskStatePosition(false)
+        .then(() => this.props.productObjectProxy.setControlledBitmaskStatePosition(true))
+        .then(() => {
+          this.setState({
+            forceBitmaskStatePosition: false,
+            controlledBitmaskStatePosition: true
+          })
+        })
+        .catch(console.error)
+      case 'none':
+      default:
+        return this.props.productObjectProxy.setControlledBitmaskStatePosition(false)
+        .then(() => this.props.productObjectProxy.setForceBitmaskStatePosition(false))
+        .then(() => {
+          this.setState({
+            forceBitmaskStatePosition: false,
+            controlledBitmaskStatePosition: false
+          })
+        })
+        .catch(console.error)
+    }
   }
 }
 
