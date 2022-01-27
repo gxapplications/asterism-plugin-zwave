@@ -65,4 +65,4 @@ key. It depends on your operating system. For Ubuntu 14 `lsusb` will display you
 (format 1234:5678) and thenyou can blacklist your device ID in file `/etc/default/tlp` at the
 USB_BLACKLIST option.
 
-:copyright: 2017-2020 GXApplications. [ [Roadmap/Milestones](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open) | [License](https://github.com/gxapplications/asterism-plugin-zwave/blob/master/LICENSE.md) ]
+:copyright: 2017-2022 GXApplications. [ [Roadmap/Milestones](https://github.com/gxapplications/asterism/milestones?direction=asc&sort=due_date&state=open) | [License](https://github.com/gxapplications/asterism-plugin-zwave/blob/master/LICENSE.md) ]
