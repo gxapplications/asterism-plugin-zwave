@@ -68,7 +68,9 @@ class AeotecZstickgen5SettingPanel extends BaseSettingPanel {
   }
 
   test () {
-    this.props.productObjectProxy.test()
+    this.props.productObjectProxy.test().then(() => {
+      console.log('Should be good...')
+    })
   }
 }
 
