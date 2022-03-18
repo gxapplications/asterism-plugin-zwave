@@ -128,7 +128,7 @@ class ZwaveBatteryLevelConditionEditForm extends React.Component {
       <Row className='section card form'>
         <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-            <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_full'
+            <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_4_bar'
                    onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
               {compatibleNodes.map((node, i) => (
                   <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
@@ -139,7 +139,7 @@ class ZwaveBatteryLevelConditionEditForm extends React.Component {
             <div>Compatible devices not found on the network.</div>
         )}
         <Select key={uuid.v4()} s={12} m={6} l={4}
-               label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='battery_full'
+               label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='battery_4_bar'
                onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value={''}>
           <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
