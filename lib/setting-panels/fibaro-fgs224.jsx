@@ -196,6 +196,10 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
               <option value='-32'>Set state positions 6 & 7 (to 1) when closed</option>
               <option value='64'>Set state positions 7 & 8 (to 1) when ON</option>
               <option value='-64'>Set state positions 7 & 8 (to 1) when closed</option>
+              <option value='128'>Set state positions 8 & 9 (to 1) when ON</option>
+              <option value='-128'>Set state positions 8 & 9 (to 1) when closed</option>
+              <option value='256'>Set state positions 9 & 10 (to 1) when ON</option>
+              <option value='-256'>Set state positions 9 & 10 (to 1) when closed</option>
             </Select>,
             <Select key={1} s={12} label='Choose bitmask state control behavior' icon='sync_alt'
               onChange={this.changeForceBitmaskStatePosition.bind(this)} value={forceBitmaskStatePosition ? 'force' : (controlledBitmaskStatePosition ? 'controlled' : 'none')}>

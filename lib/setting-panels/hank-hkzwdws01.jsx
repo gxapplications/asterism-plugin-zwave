@@ -99,6 +99,10 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
               <option value='-64'>Set state position 7 (to 1) when closed</option>
               <option value='128'>Set state position 8 (to 1) when opened</option>
               <option value='-128'>Set state position 8 (to 1) when closed</option>
+              <option value='256'>Set state position 9 (to 1) when opened</option>
+              <option value='-256'>Set state position 9 (to 1) when closed</option>
+              <option value='512'>Set state position 10 (to 1) when opened</option>
+              <option value='-512'>Set state position 10 (to 1) when closed</option>
             </Select>,
             <div key={1} className='col s12'>
               <div className='switch'>
