@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Select, Preloader, Row } from 'react-materialize'
+import { Select, Preloader, Row, Checkbox } from 'react-materialize'
 import uuid from 'uuid'
 
 class ZwaveSiren6TonesActionEditForm extends React.Component {
@@ -14,6 +14,7 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
       compatibleNodes: [],
       ready: false,
       nodeIds: [],
+      volume: this.props.instance.data.volume || 2,
       tone: this.props.instance.data.tone || 255,
       wait: this.props.instance.data.wait
     }
@@ -48,14 +49,14 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
   }
 
   render () {
-    const { compatibleNodes, ready } = this.state
+    const { compatibleNodes, ready, wait, tone, volume } = this.state
     const { instance } = this.props
 
     return ready ? (
       <Row className='section card form'>
         <br className='col s12 m12 l12' key={uuid.v4()} />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
-          <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='battery_4_bar'
+          <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='campaign'
             onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
             {compatibleNodes.map((node, i) => (
               <option key={uuid.v4()} value={node.nodeid}>{node.name}</option>
@@ -66,7 +67,7 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
           <div>Compatible devices not found on the network.</div>
         )}
         <Select key={uuid.v4()} s={12} m={6} l={4}
-          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='battery_4_bar'
+          label={`Z-wave device #${instance.data.nodeIds.length + 1}`} icon='campaign'
           onChange={this.nodeChanged.bind(this, instance.data.nodeIds.length)} value={''}>
           <option key={uuid.v4()} value='' disabled>(Choose one to add)</option>
           {compatibleNodes.map((node, idx) => (
@@ -74,7 +75,35 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
           ))}
         </Select>
 
-        TODO !0: tone and wait params
+        <hr className='col s12 m12 l12' key={uuid.v4()} />
+
+        <Select s={12} m={6} l={6}
+          label='Volume' icon='signal_cellular_art'
+          onChange={this.volumeChanged.bind(this)} value={volume}
+        >
+          <option value='' disabled>Volume</option>
+          <option value={1}>1</option>
+          <option value={2}>2</option>
+          <option value={3}>3</option>
+        </Select>
+        <Select s={12} m={6} l={6}
+          label='Tone to use' icon='music_note'
+          onChange={this.toneChanged.bind(this)} value={tone}
+        >
+          <option value='' disabled>Tone to use</option>
+          <option value={0}>Stop</option>
+          <option value={1}>Fire</option>
+          <option value={2}>Ambulance</option>
+          <option value={3}>Police</option>
+          <option value={4}>Alarm</option>
+          <option value={5}>Ding dong</option>
+          <option value={6}>Beep</option>
+          <option value={255}>Default tone</option>
+        </Select>
+        <Checkbox
+          className='filled-in' value='1' label='Wait for sound to finish' s={12} m={6} l={6}
+          onChange={() => this.waitChanged(!wait)} checked={wait}
+        />
       </Row>
     ) : (
       <div className='valign-wrapper centered-loader'>
@@ -109,9 +138,35 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
       .filter((node) => this.props.instance.data.nodeIds.includes(node.nodeid))
       .map((node) => `"${node.name}"`)
 
-    this.props.instance.data.name = `Siren for [${nodeNames.join(',')}] with tone "${this.props.instance.data.tone}"`
+    this.props.instance.data.name = `[${nodeNames.join(',')}]`
 
     this.props.highlightCloseButton()
+  }
+
+  waitChanged (wait) {
+    this.props.instance.data.wait = wait
+    this.setState({
+      wait: this.props.instance.data.wait
+    })
+    this.nameChange()
+  }
+
+  toneChanged (event) {
+    const tone = parseInt(event.currentTarget.value)
+    this.props.instance.data.tone = tone
+    this.setState({
+      tone: this.props.instance.data.tone
+    })
+    this.nameChange()
+  }
+
+  volumeChanged (event) {
+    const volume = parseInt(event.currentTarget.value)
+    this.props.instance.data.volume = volume
+    this.setState({
+      volume: this.props.instance.data.volume
+    })
+    this.nameChange()
   }
 }
 

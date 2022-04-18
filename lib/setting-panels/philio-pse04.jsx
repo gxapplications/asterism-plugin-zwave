@@ -20,7 +20,8 @@ class PhilioPse04SettingPanel extends BaseSettingPanel {
       ...this.state,
       playSoundControlConf: null,
       customerFunctionConf: null,
-      temperature: null
+      temperature: null,
+      volume: null
     }
   }
 
@@ -29,13 +30,15 @@ class PhilioPse04SettingPanel extends BaseSettingPanel {
     Promise.all([
       pop.getPlaySoundControlConf(),
       pop.getCustomerFunctionConf(),
-      pop.sensorMultiLevelGetFormatted()
+      pop.sensorMultiLevelGetFormatted(),
+      pop.getVolume()
     ])
-      .then(([playSoundControlConf, customerFunctionConf, temperature]) => {
+      .then(([playSoundControlConf, customerFunctionConf, temperature, volume]) => {
         return super.componentDidMount({
           playSoundControlConf,
           customerFunctionConf,
-          temperature
+          temperature,
+          volume
         })
       })
       .catch(console.error)
@@ -208,7 +211,10 @@ class PhilioPse04SettingPanel extends BaseSettingPanel {
 
           <Select
             s={12} m={6} label='Default siren tone'
-            onChange={(v) => this.changePlaySoundControl({ soundTone: parseInt(v.currentTarget.value) })}
+            onChange={(v) => {
+              this.changePlaySoundControl({ soundTone: parseInt(v.currentTarget.value) })
+              productObjectProxy.setTone(parseInt(v.currentTarget.value))
+            }}
             value={`${soundTone}`}
           >
             <option disabled>Default siren tone</option>
@@ -227,14 +233,6 @@ class PhilioPse04SettingPanel extends BaseSettingPanel {
           <div className='col s12 slider'>
             <div id={`sound-duration-slider-${nodeId}`} />
           </div>
-
-          TODO !0 : tone set, comment ca fait doublon (ou pas) avec "default siren tone" ?
-          TODO !0 : volume set, comment ca fait doublon (ou pas) avec "default siren level" 1-3 ?
-          <br />
-          <Button onClick={() => this.props.productObjectProxy.setToneAndVolume(1, 10)}>set 1, fire, v10</Button>
-          <Button onClick={() => this.props.productObjectProxy.setToneAndVolume(4, 5)}>set 4, alarm, v5</Button>
-          <Button onClick={() => this.props.productObjectProxy.setToneAndVolume(5, 10)}>set 5, dingdong, v10</Button>
-          <Button onClick={() => this.props.productObjectProxy.setToneAndVolume(6, 10)}>set 6, beep, v10</Button>
         </Row>
 
         <h5>Status reporting</h5>
@@ -319,7 +317,7 @@ class PhilioPse04SettingPanel extends BaseSettingPanel {
 
   changeSoundDuration (value) {
     const index = PhilioPse04SettingPanel.configurations.SOUND_DURATION
-    return this.changeConfiguration(index, value[0], parseInt) // TODO !0: /30 ?
+    return this.changeConfiguration(index, value[0], parseInt)
   }
 }
 
