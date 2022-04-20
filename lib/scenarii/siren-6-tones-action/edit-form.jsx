@@ -54,7 +54,7 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
 
     return ready ? (
       <Row className='section card form'>
-        <br className='col s12 m12 l12' key={uuid.v4()} />
+        <br className='col s12 m12 l12' />
         {compatibleNodes.length > 0 ? instance.data.nodeIds.map((nodeId, idx) => (
           <Select key={uuid.v4()} s={12} m={6} l={4} label={`Z-wave device #${idx + 1}`} icon='campaign'
             onChange={this.nodeChanged.bind(this, idx)} value={`${nodeId}`}>
@@ -75,7 +75,9 @@ class ZwaveSiren6TonesActionEditForm extends React.Component {
           ))}
         </Select>
 
-        <hr className='col s12 m12 l12' key={uuid.v4()} />
+        <br className='col s12 m12 l12' />
+        <hr className='col s12 m12 l12' />
+        <br className='col s12 m12 l12' />
 
         <Select s={12} m={6} l={6}
           label='Volume' icon='signal_cellular_art'
