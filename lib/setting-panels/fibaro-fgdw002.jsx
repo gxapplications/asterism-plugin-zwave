@@ -58,7 +58,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
       stateId: null,
       stateBehavior: 1,
       forceBitmaskStatePosition: true,
-      temperatureStateId: null
+      temperatureStateId: null,
+      muteAlarm6: false
     }
 
     this._socket = props.privateSocket
@@ -117,12 +118,13 @@ class FibaroFgdw002SettingPanel extends React.Component {
       o.getStateId(),
       o.getStateBehavior(),
       o.getForceBitmaskStatePosition(),
-      o.sensorMultiLevelGetStateId()
+      o.sensorMultiLevelGetStateId(),
+      o.alarmGetMuteIndex(6)
     ])
     .then(([batteryPercent, batteryIcon, temperatureValue, temperatureUnit, isHeatAlarm, isAccessControlAlarm,
         isBurglarAlarm, normalState, ledBehavior, tempMeasureInterval, tempReportsThreshold, tempForcedReportsInterval,
         tempOffset, tempAlarmReports, tempAlarmThresholdHigh, tempAlarmThresholdLow, stateId, stateBehavior,
-        forceBitmaskStatePosition, temperatureStateId]) => {
+        forceBitmaskStatePosition, temperatureStateId, muteAlarm6]) => {
       this.setState({
         batteryPercent: (batteryPercent === 'N/A') ? 'N/A' : Math.round(batteryPercent),
         batteryIcon,
@@ -146,7 +148,8 @@ class FibaroFgdw002SettingPanel extends React.Component {
         stateId,
         stateBehavior,
         forceBitmaskStatePosition,
-        temperatureStateId
+        temperatureStateId,
+        muteAlarm6
       })
 
       this.plugWidgets()
@@ -378,7 +381,7 @@ class FibaroFgdw002SettingPanel extends React.Component {
     const { nodeId, animationLevel, theme, services, productObjectProxy } = this.props
     const { batteryPercent, batteryIcon, temperatureValue, temperatureUnit, panelReady, configuration,
         isHeatAlarm, isAccessControlAlarm, isBurglarAlarm, stateId, stateBehavior, forceBitmaskStatePosition,
-        temperatureStateId } = this.state
+        temperatureStateId, muteAlarm6 } = this.state
     const configs = FibaroFgdw002SettingPanel.configurations
 
     const normalState = configuration[configs.NORMAL_STATE] === 0 || configuration[configs.NORMAL_STATE] === 'Closed' || configuration[configs.NORMAL_STATE] === 'Door/Window Closed'
@@ -575,6 +578,19 @@ class FibaroFgdw002SettingPanel extends React.Component {
           <br />
 
           <Row>
+            <div className='col s12'>
+              <div className='switch'>
+                <label>
+                  <input type='checkbox' name='mute-alarm-6' value='mute-alarm-6' checked={muteAlarm6}
+                         onChange={() => { this.muteAlarm6(!muteAlarm6) }} />
+                  <span className='lever'></span>
+                  Mute Opened/Closed sensor alarm (notifications only)
+                </label>
+              </div>
+            </div>
+          </Row>
+
+          <Row>
             <h5>Notice: Settings update</h5>
             After you change any settings, you must wakeup the sensor to update its configuration. To do that, remove the
             sensor's cover and double click on the side switch, then put back the cover.
@@ -737,6 +753,16 @@ class FibaroFgdw002SettingPanel extends React.Component {
     .then(() => {
       this.setState({
         temperatureStateId: value
+      })
+    })
+    .catch(console.error)
+  }
+
+  muteAlarm6 (value) {
+    this.props.productObjectProxy.alarmSetMuteIndex(6, value)
+    .then(() => {
+      this.setState({
+        muteAlarm6: value
       })
     })
     .catch(console.error)

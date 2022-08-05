@@ -22,6 +22,7 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     this.state.stateId = null
     this.state.stateBehavior = 1
     this.state.forceBitmaskStatePosition = true
+    this.state.muteAlarm6 = false
   }
 
   componentDidMount () {
@@ -29,13 +30,15 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
     Promise.all([
       pop.getStateId(),
       pop.getStateBehavior(),
-      pop.getForceBitmaskStatePosition()
+      pop.getForceBitmaskStatePosition(),
+      pop.alarmGetMuteIndex(6)
     ])
-      .then(([stateId, stateBehavior, forceBitmaskStatePosition]) => {
+      .then(([stateId, stateBehavior, forceBitmaskStatePosition, muteAlarm6]) => {
         return super.componentDidMount({
           stateId,
           stateBehavior,
-          forceBitmaskStatePosition
+          forceBitmaskStatePosition,
+          muteAlarm6
         })
       })
       .catch(console.error)
@@ -43,7 +46,7 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
 
   render () {
     const { nodeId, animationLevel, theme, productObjectProxy, services } = this.props
-    const { batteryPercent, batteryIcon, panelReady, configuration, stateId, stateBehavior, forceBitmaskStatePosition } = this.state
+    const { batteryPercent, batteryIcon, panelReady, configuration, stateId, stateBehavior, forceBitmaskStatePosition, muteAlarm6 } = this.state
     const { alarmStatuses } = this.state.alarms
 
     const configs = HankHkzwdws01SettingPanel.configurations
@@ -116,6 +119,20 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
             </div>
           ]}
         </Row>
+
+        <Row className='section card form'>
+          <h5>Mute alarm types</h5>
+          <div className='col s12'>
+            <div className='switch'>
+              <label>
+                <input type='checkbox' name='mute-alarm-6' value='mute-alarm-6' checked={muteAlarm6}
+                  onChange={() => { this.muteAlarm6(!muteAlarm6) }} />
+                <span className='lever'></span>
+                Mute Opened/Closed sensor alarm (notifications only)
+              </label>
+            </div>
+          </div>
+        </Row>
       </div>
     ) : super.render()
   }
@@ -149,6 +166,16 @@ class HankHkzwdws01SettingPanel extends BaseSettingPanel {
         })
       })
       .catch(console.error)
+  }
+
+  muteAlarm6 (value) {
+    this.props.productObjectProxy.alarmSetMuteIndex(6, value)
+    .then(() => {
+      this.setState({
+        muteAlarm6: value
+      })
+    })
+    .catch(console.error)
   }
 }
 
