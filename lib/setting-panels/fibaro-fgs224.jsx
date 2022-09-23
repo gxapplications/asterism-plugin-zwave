@@ -18,12 +18,16 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
     super(props, FibaroFgs224SettingPanel.configurations)
     this.withBinarySwitchSupport(q2Instance)
 
+    this.zwaveService = props.services()['asterism-plugin-zwave']
+
     this.state = {
       ...this.state,
       stateId: null,
       stateBehavior: null,
       forceBitmaskStatePosition: true,
-      controlledBitmaskStatePosition: false
+      controlledBitmaskStatePosition: false,
+      pairedNodeId: null,
+      pairableNodes: []
     }
   }
 
@@ -33,14 +37,24 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
       pop.getStateId(),
       pop.getStateBehavior(),
       pop.getForceBitmaskStatePosition(),
-      pop.getControlledBitmaskStatePosition()
+      pop.getControlledBitmaskStatePosition(),
+      pop.getPairedNodeId(),
+      this.zwaveService.getNodesByProvidedFunctions(['getPairedNodeId', 'setPairedNodeId'])
+        .then((nodes) => nodes.filter((node) => (
+            node.nodeid !== this.props.nodeId
+          && node.meta.manufacturerid === '0x010f'
+          && node.meta.productid === '0x1000'
+          && node.meta.producttype === '0x0204'
+        )))
     ])
-    .then(([stateId, stateBehavior, forceBitmaskStatePosition, controlledBitmaskStatePosition]) => {
+    .then(([stateId, stateBehavior, forceBitmaskStatePosition, controlledBitmaskStatePosition, pairedNodeId, pairableNodes]) => {
       return super.componentDidMount({
         stateId,
         stateBehavior,
         forceBitmaskStatePosition,
-        controlledBitmaskStatePosition
+        controlledBitmaskStatePosition,
+        pairedNodeId,
+        pairableNodes: pairableNodes || []
       })
     })
     .catch(console.error)
@@ -50,7 +64,7 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
     const c = FibaroFgs224SettingPanel.configurations
     const { animationLevel, theme, productObjectProxy, nodeId, services } = this.props
     const { panelReady, switchStates, stateId, stateBehavior } = this.state
-    const { forceBitmaskStatePosition, controlledBitmaskStatePosition } = this.state
+    const { forceBitmaskStatePosition, controlledBitmaskStatePosition, pairedNodeId, pairableNodes } = this.state
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -169,6 +183,17 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
           </div>
         </Row>
 
+        <h5>Pair with another module</h5>
+        <Row className='section card form'>
+          <Select s={12} m={6} label='Choose another FGS-224 to propagate Q1 & Q2 states'
+            onChange={this.pairedNodeChange.bind(this)} value={`${pairedNodeId}`}>
+            <option value=''>No pair</option>
+            {pairableNodes.map((n) => (
+              <option value={`${n.nodeid}`}>{n.name}</option>
+            ))}
+          </Select>
+        </Row>
+
         <h5>Link to a scenarii bitmask state</h5>
         <Row className='section card form'>
           <div className='col s12 m6'>
@@ -275,6 +300,15 @@ class FibaroFgs224SettingPanel extends BaseSettingPanel {
         })
         .catch(console.error)
     }
+  }
+
+  pairedNodeChange (event) {
+    const value = parseInt(event.currentTarget.value)
+    this.props.productObjectProxy.setPairedNodeId(value)
+    .then(() => {
+      this.setState({ pairedNodeId: value })
+    })
+    .catch(console.error)
   }
 }
 
