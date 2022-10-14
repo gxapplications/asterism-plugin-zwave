@@ -1,7 +1,7 @@
 'use strict'
 
 /* global $, noUiSlider, wNumb */
-import PropTypes from 'prop-types'
+import PropTypes, {object} from 'prop-types'
 import React from 'react'
 import { Preloader, Select } from 'react-materialize'
 
@@ -218,9 +218,20 @@ class BaseSettingPanel extends React.Component {
   }
 
   renderListConfigurationAsSelect (configurationKey, possibleValues, props = {}) {
+    if (!(possibleValues instanceof Array)) {
+      possibleValues = Object.entries(possibleValues).reduce((acc, [i, v]) => {
+        acc[parseInt(i, 10)] = v
+        return acc
+      }, [])
+    }
+
     const actualValue = Number.isInteger(this.state.configuration[configurationKey])
       ? this.state.configuration[configurationKey]
       : possibleValues.indexOf(this.state.configuration[configurationKey])
+
+    const filteredValues = possibleValues
+        .map((label, i) => (label ? [label, i] : null))
+        .filter((e) => !!e)
 
     return (
       <Select
@@ -231,7 +242,7 @@ class BaseSettingPanel extends React.Component {
         value={`${actualValue}`}
       >
         <option disabled>{props.label}</option>
-        {possibleValues.map((label, i) => (<option key={i} value={i}>{label}</option>))}
+        {filteredValues.map(([label, i]) => (<option key={i} value={i}>{label}</option>))}
       </Select>
     )
   }
