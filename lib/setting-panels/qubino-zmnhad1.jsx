@@ -52,30 +52,50 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
   }
 
   plugWidgets () {
+    // TODO !0: calibrer les % pour les ms, et voir si le passage de s à ms recharge les widgets.
+    const c = QubinoZmnhad1SettingPanel.configurations.AUTO_OFF_ON_SCALE
+    const inSeconds = this.state.configuration[c] === 'seconds'
+    const range = inSeconds ? {
+      'min': [0, 1],
+      '1%': [1, 1],
+      '9%': [10, 5],
+      '22%': [60, 30],
+      '27%': [120, 60],
+      '37%': [360, 120],
+      '42%': [600, 600],
+      '67%': [3600, 3600],
+      'max': [32535]
+    } : {
+      'min': [0, 10],
+      '1%': [10, 10],
+      '9%': [100, 50],
+      '40%': [1000, 100],
+      '55%': [2000, 500],
+      '68%': [10000, 1000],
+      '97%': [30000, 2535],
+      'max': [32535]
+    }
+    const filter = inSeconds
+      ? ((v) => ((v >= 120 && v % 60 === 0) || (v < 120 && v % 10 === 0) || (v === 32535)) ? 1 : 0)
+      : ((v) => [0, 10, 100, 1000, 2000, 10000, 30000, 32535].includes(v) ? 1 : 0)
+    const formatEdit = inSeconds
+      ? ((v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0])
+      : ((v) => v < 0.5 ? 'Off' : `${v}`.split('.')[0])
+
     this.plugConfigurationSlider(
       'auto-off-delay-slider',
       QubinoZmnhad1SettingPanel.configurations.AUTO_OFF_DELAY,
       0,
       {
-        range: {
-          'min': [0, 1],
-          '1%': [1, 1],
-          '9%': [10, 5],
-          '22%': [60, 30],
-          '27%': [120, 60],
-          '37%': [360, 120],
-          '42%': [600, 600],
-          '67%': [3600, 3600],
-          'max': [32535]
-        },
+        range,
         pips: { // Show a scale with the slider
           mode: 'steps',
           stepped: true,
           density: 2,
-          filter: (v) => ((v >= 120 && v % 60 === 0) || (v < 120 && v % 10 === 0) || (v === 32535)) ? 1 : 0,
-          format: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+          filter,
+          format: wNumb({ decimals: 1, edit: formatEdit })
         },
-        tooltips: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+        tooltips: wNumb({ decimals: 1, edit: formatEdit })
       },
       this.changeAutoOffDelay.bind(this)
     )
@@ -85,25 +105,15 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
       QubinoZmnhad1SettingPanel.configurations.AUTO_ON_DELAY,
       0,
       {
-        range: {
-          'min': [0, 1],
-          '1%': [1, 1],
-          '9%': [10, 5],
-          '22%': [60, 30],
-          '27%': [120, 60],
-          '37%': [360, 120],
-          '42%': [600, 600],
-          '67%': [3600, 3600],
-          'max': [32535]
-        },
+        range,
         pips: { // Show a scale with the slider
           mode: 'steps',
           stepped: true,
           density: 2,
-          filter: (v) => ((v >= 120 && v % 60 === 0) || (v < 120 && v % 10 === 0) || (v === 32535)) ? 1 : 0,
-          format: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+          filter,
+          format: wNumb({ decimals: 1, edit: formatEdit })
         },
-        tooltips: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+        tooltips: wNumb({ decimals: 1, edit: formatEdit })
       },
       this.changeAutoOnDelay.bind(this)
     )
@@ -112,7 +122,8 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
   render () {
     const c = QubinoZmnhad1SettingPanel.configurations
     const { animationLevel, theme, productObjectProxy, nodeId } = this.props
-    const { panelReady, switchStates, meterLastValueKwh, meterLastValueW } = this.state
+    const { panelReady, switchStates, meterLastValueKwh, meterLastValueW, configuration } = this.state
+    const autoOffOnScale = configuration[c.AUTO_OFF_ON_SCALE]
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -176,14 +187,14 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
           )}
           <br/>
           <div className='col s12'>
-            Automatic turning off relay after set time (in XXX) TODO !0: s or ms, depending on setting 15 above
+            Automatic turning off relay after set time (in {autoOffOnScale})
           </div>
           <div className='col s12 slider'>
             <div id={`auto-off-delay-slider-${nodeId}`} />
           </div>
           <br/><br/>
           <div className='col s12'>
-            Automatic turning on relay after set time (in XXX) TODO !0: s or ms, depending on setting 15 above
+            Automatic turning on relay after set time (in {autoOffOnScale})
           </div>
           <div className='col s12 slider'>
             <div id={`auto-on-delay-slider-${nodeId}`} />
