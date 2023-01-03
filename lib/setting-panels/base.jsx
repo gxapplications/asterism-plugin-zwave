@@ -16,6 +16,7 @@ class BaseSettingPanel extends React.Component {
     this._supports = {
       batteryLevelSupport: false,
       binarySwitchSupport: false,
+      multiLevelSwitchSupport: false,
       alarmSupport: false
     }
 
@@ -39,6 +40,12 @@ class BaseSettingPanel extends React.Component {
   withBinarySwitchSupport (instancesCount = 1) {
     this.state.switchStates = (new Array(instancesCount)).fill(null)
     this._supports.binarySwitchSupport = instancesCount
+    return this
+  }
+
+  withMultiLevelSwitchSupport (instancesCount = 1) {
+    this.state.multiLevelSwitchStates = (new Array(instancesCount)).fill(null)
+    this._supports.multiLevelSwitchSupport = instancesCount
     return this
   }
 
@@ -88,6 +95,10 @@ class BaseSettingPanel extends React.Component {
       })
     }
 
+    if (this._supports.multiLevelSwitchSupport) {
+      // TODO !0
+    }
+
     const state = {
       ...stateToMerge,
       panelReady: true
@@ -122,9 +133,17 @@ class BaseSettingPanel extends React.Component {
       this._supports.binarySwitchSupport > 0 ? pop.binarySwitchGetState(1) : Promise.resolve(null),
       this._supports.binarySwitchSupport > 1 ? pop.binarySwitchGetState(2) : Promise.resolve(null),
       this._supports.binarySwitchSupport > 2 ? pop.binarySwitchGetState(3) : Promise.resolve(null),
-      this._supports.binarySwitchSupport > 3 ? pop.binarySwitchGetState(4) : Promise.resolve(null) // XXX : can support more...
+      this._supports.binarySwitchSupport > 3 ? pop.binarySwitchGetState(4) : Promise.resolve(null), // XXX : can support more...
+      this._supports.multiLevelSwitchSupport > 0 ? pop.multiLevelSwitchGetValue(1) : Promise.resolve(null),
+      this._supports.multiLevelSwitchSupport > 1 ? pop.multiLevelSwitchGetValue(2) : Promise.resolve(null),
+      this._supports.multiLevelSwitchSupport > 2 ? pop.multiLevelSwitchGetValue(3) : Promise.resolve(null),
+      this._supports.multiLevelSwitchSupport > 3 ? pop.multiLevelSwitchGetValue(4) : Promise.resolve(null),
+      this._supports.multiLevelSwitchSupport > 4 ? pop.multiLevelSwitchGetValue(5) : Promise.resolve(null),
+      this._supports.multiLevelSwitchSupport > 5 ? pop.multiLevelSwitchGetValue(6) : Promise.resolve(null) // XXX : can support more...
     ])
-      .then(([batteryPercent, batteryIcon, switchState1, switchState2, switchState3, switchState4]) => {
+      .then(([batteryPercent, batteryIcon, switchState1, switchState2, switchState3, switchState4,
+          multiLevelSwitchState1, multiLevelSwitchState2, multiLevelSwitchState3, multiLevelSwitchState4,
+          multiLevelSwitchState5, multiLevelSwitchState6]) => {
         if (this._supports.batteryLevelSupport) {
           state.batteryPercent = batteryPercent
           state.batteryIcon = batteryIcon
@@ -140,6 +159,25 @@ class BaseSettingPanel extends React.Component {
           }
           if (this._supports.binarySwitchSupport > 3) {
             state.switchStates[3] = switchState4
+          }
+        }
+
+        if (this._supports.multiLevelSwitchSupport) {
+          state.multiLevelSwitchStates = [multiLevelSwitchState1]
+          if (this._supports.multiLevelSwitchSupport > 1) {
+            state.multiLevelSwitchStates[1] = multiLevelSwitchState2
+          }
+          if (this._supports.multiLevelSwitchSupport > 2) {
+            state.multiLevelSwitchStates[2] = multiLevelSwitchState3
+          }
+          if (this._supports.multiLevelSwitchSupport > 3) {
+            state.multiLevelSwitchStates[3] = multiLevelSwitchState4
+          }
+          if (this._supports.multiLevelSwitchSupport > 4) {
+            state.multiLevelSwitchStates[4] = multiLevelSwitchState5
+          }
+          if (this._supports.multiLevelSwitchSupport > 5) {
+            state.multiLevelSwitchStates[5] = multiLevelSwitchState6
           }
         }
 

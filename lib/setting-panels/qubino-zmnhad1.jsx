@@ -51,10 +51,20 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
     .catch(console.error)
   }
 
-  plugWidgets () {
-    // TODO !0: calibrer les % pour les ms, et voir si le passage de s à ms recharge les widgets.
+  componentWillUpdate(nextProps, nextState) {
     const c = QubinoZmnhad1SettingPanel.configurations.AUTO_OFF_ON_SCALE
-    const inSeconds = this.state.configuration[c] === 'seconds'
+
+    if (this.state?.configuration[c] && (nextState?.configuration[c] !== this.state?.configuration[c])) {
+      const domSliderOn = $(`#auto-on-delay-slider-${this.props.nodeId}`)[0]
+      const domSliderOff = $(`#auto-off-delay-slider-${this.props.nodeId}`)[0]
+      domSliderOn?.noUiSlider?.destroy()
+      domSliderOff?.noUiSlider?.destroy()
+    }
+  }
+
+  plugWidgets () {
+    const c = QubinoZmnhad1SettingPanel.configurations.AUTO_OFF_ON_SCALE
+    const inSeconds = this.state.configuration[c] === 'seconds' || this.state.configuration[c] === 0
     const range = inSeconds ? {
       'min': [0, 1],
       '1%': [1, 1],
@@ -67,12 +77,12 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
       'max': [32535]
     } : {
       'min': [0, 10],
-      '1%': [10, 10],
-      '9%': [100, 50],
-      '40%': [1000, 100],
-      '55%': [2000, 500],
-      '68%': [10000, 1000],
-      '97%': [30000, 2535],
+      '3%': [10, 10],
+      '14%': [100, 50],
+      '37%': [1000, 100],
+      '50%': [2000, 500],
+      '70%': [10000, 1000],
+      '95%': [30000, 2535],
       'max': [32535]
     }
     const filter = inSeconds
@@ -117,13 +127,63 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
       },
       this.changeAutoOnDelay.bind(this)
     )
+
+    // TODO !0: sliders: POWER_REPORTING_THRESHOLD, POWER_REPORTING_INTERVAL
+    this.plugConfigurationSlider(
+      'power-reporting-threshold-slider',
+      QubinoZmnhad1SettingPanel.configurations.POWER_REPORTING_THRESHOLD,
+      10,
+      {
+        range: {
+          'min': [0, 1],
+          '10%': [1, 1],
+          'max': [100],
+        },
+        pips: { // Show a scale with the slider
+          mode: 'steps',
+          stepped: true,
+          density: 2,
+          filter: (v) => (v % 10 === 0) ? 1 : 0,
+          format: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${v}`.split('.')[0] })
+        },
+        tooltips: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${v}`.split('.')[0] })
+      },
+      this.changePowerReportingThreshold.bind(this)
+    )
+    this.plugConfigurationSlider(
+      'power-reporting-interval-slider',
+      QubinoZmnhad1SettingPanel.configurations.POWER_REPORTING_INTERVAL,
+      300,
+      {
+        range: {
+          'min': [0, 1],
+          '1%': [1, 1],
+          '9%': [10, 5],
+          '22%': [60, 30],
+          '27%': [120, 60],
+          '37%': [360, 120],
+          '42%': [600, 600],
+          '67%': [3600, 3600],
+          'max': [32535]
+        },
+        pips: { // Show a scale with the slider
+          mode: 'steps',
+          stepped: true,
+          density: 2,
+          filter: (v) => ((v >= 120 && v % 60 === 0) || (v < 120 && v % 10 === 0) || (v === 32535)) ? 1 : 0,
+          format: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+        },
+        tooltips: wNumb({ decimals: 1, edit: (v) => v < 0.5 ? 'Off' : `${(v >= 120) ? (v/60) : v}`.split('.')[0] })
+      },
+      this.changePowerReportingInterval.bind(this)
+    )
   }
 
   render () {
     const c = QubinoZmnhad1SettingPanel.configurations
     const { animationLevel, theme, productObjectProxy, nodeId } = this.props
     const { panelReady, switchStates, meterLastValueKwh, meterLastValueW, configuration } = this.state
-    const autoOffOnScale = configuration[c.AUTO_OFF_ON_SCALE]
+    const inSeconds = configuration[c.AUTO_OFF_ON_SCALE] === 'seconds' || configuration[c.AUTO_OFF_ON_SCALE] === 0
 
     const waves = animationLevel >= 2 ? 'light' : undefined
 
@@ -187,39 +247,59 @@ class QubinoZmnhad1SettingPanel extends BaseSettingPanel {
           )}
           <br/>
           <div className='col s12'>
-            Automatic turning off relay after set time (in {autoOffOnScale})
+            Automatic turning off relay after set time (in {inSeconds ? 's' : 'ms'})
           </div>
           <div className='col s12 slider'>
             <div id={`auto-off-delay-slider-${nodeId}`} />
           </div>
           <br/><br/>
           <div className='col s12'>
-            Automatic turning on relay after set time (in {autoOffOnScale})
+            Automatic turning on relay after set time (in {inSeconds ? 's' : 'ms'})
           </div>
           <div className='col s12 slider'>
             <div id={`auto-on-delay-slider-${nodeId}`} />
           </div>
           <br/><br/>
-
-          TODO !0: sliders: POWER_REPORTING_THRESHOLD, POWER_REPORTING_INTERVAL
+          <div className='col s12'>
+            Power reporting threshold (Off or 1-100%)
+          </div>
+          <div className='col s12 slider'>
+            <div id={`power-reporting-threshold-slider-${nodeId}`} />
+          </div>
+          <br/><br/>
+          <div className='col s12'>
+            Power reporting interval (Off or 1-32535s)
+          </div>
+          <div className='col s12 slider'>
+            <div id={`power-reporting-interval-slider-${nodeId}`} />
+          </div>
+          <br/><br/>
         </Row>
 
-        TODO !3: notif (overload)
+        TODO !2: notif (overload)
       </div>
     ) : super.render()
   }
 
-  changeAutoOffDelay(value) {
+  changeAutoOffDelay (value) {
     const index = QubinoZmnhad1SettingPanel.configurations.AUTO_OFF_DELAY
     return this.changeConfiguration(index, value[0], parseInt)
   }
 
-  changeAutoOnDelay(value) {
+  changeAutoOnDelay (value) {
     const index = QubinoZmnhad1SettingPanel.configurations.AUTO_ON_DELAY
     return this.changeConfiguration(index, value[0], parseInt)
   }
 
+  changePowerReportingThreshold (value) {
+    const index = QubinoZmnhad1SettingPanel.configurations.POWER_REPORTING_THRESHOLD
+    return this.changeConfiguration(index, value[0], parseInt)
+  }
 
+  changePowerReportingInterval (value) {
+    const index = QubinoZmnhad1SettingPanel.configurations.POWER_REPORTING_INTERVAL
+    return this.changeConfiguration(index, value[0], parseInt)
+  }
 }
 
 QubinoZmnhad1SettingPanel.propTypes = {

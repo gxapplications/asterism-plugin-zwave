@@ -125,7 +125,7 @@ class CoolcamSirenSettingPanel extends BaseSettingPanel {
         <h5>Advanced</h5>
         <Row className='section card form'>
 
-          TODO !2: {defaultSirenOnMode}
+          TODO !3: {defaultSirenOnMode}
 
         </Row>
       </div>

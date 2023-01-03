@@ -23,7 +23,7 @@ class AeotecZstickgen5SettingPanel extends BaseSettingPanel {
         </Row>
 
         <Row className='section card form'>
-          TODO !1: experimental, test: add mode and remove mode
+          TODO !3: experimental, test: add mode and remove mode
           <Button
             className={cx('col s12 m3 l2 fluid', theme.actions.secondary)} waves={waves}
             onClick={this.addMode.bind(this)}
